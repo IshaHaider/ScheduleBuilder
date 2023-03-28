@@ -7,6 +7,15 @@ import java.io.*;
 import java.util.*;
 
 public class DatabaseTest {
-    
+    /*
+     * DatabaseAccess retrieves a database (sql file) that dne or cannot be read
+    */
+    @Test
+    public void testGetConnectionFails() {
+    }
+
+
+
+
 }
 
