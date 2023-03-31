@@ -17,7 +17,6 @@ public class Animal {
             this.mostActive = "Nocturnal";
         if (this.animalSpecies.equals(Species.BEAVER.toString())) 
             this.mostActive = "Diurnal";
-
     }
     public void setID(int id) { this.animalID = id; }
     public int getID() { return this.animalID; }

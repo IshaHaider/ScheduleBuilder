@@ -12,6 +12,12 @@ public class Treatment {
         this.taskID = taskID;
         this.startHour = startHour;
     }
+    public Treatment (int treatmentID, int animalID, int taskID){
+        this.treatmentID = treatmentID;
+        this.animalID = animalID;
+        this.taskID = taskID;
+        this.startHour = 24;
+    }
     public void setTreatementID(int id) { this.treatmentID = id; }
     public int getTreatementID() { return this.treatmentID; }
     public void setAnimalID(int id) { this.animalID = id; }
