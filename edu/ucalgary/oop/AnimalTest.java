@@ -10,7 +10,7 @@ public class AnimalTest {
         // Values used for all tests involving Animal class
         string expectedAnimalID = "1";
         string expectedAnimalName = "Emma";
-        string expectedAnimalSpecies = "fox"; 
+        string expectedAnimalSpecies = "fox";  
 
 
     }
