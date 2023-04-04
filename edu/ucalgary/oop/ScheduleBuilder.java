@@ -3,9 +3,6 @@ package edu.ucalgary.oop;
 import java.io.*;
 import java.sql.*;
 import java.util.*;
-
-import edu.ucalgary.oop.Schedule;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -445,9 +442,6 @@ public class ScheduleBuilder {
     }
 
     public void addBackupVolunteers(){
-
-
-        // BACKUP VOLUNTEERS
         // this method is called AFTER the schedule is created because it is the last resort if no other options of combining or moving 
         // tasks around is possible
 
