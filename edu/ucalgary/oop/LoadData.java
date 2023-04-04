@@ -125,8 +125,8 @@ public class LoadData {
                 Treatment newTreatment = new Treatment(results.getInt("TreatmentID"), results.getInt("AnimalID"),
                         results.getInt("TaskID"), results.getInt("StartHour"));
                 this.treatments.add(newTreatment);
-                // System.out.println("Treatment: " + results.getInt("TreatmentID") + ", " + results.getInt("AnimalID")
-                //         + ", " + results.getInt("TaskID") + ", " + results.getInt("StartHour"));
+                System.out.println("Treatment: " + results.getInt("TreatmentID") + ", " + results.getInt("AnimalID")
+                        + ", " + results.getInt("TaskID") + ", " + results.getInt("StartHour"));
             }
             myStmt.close();
         } catch (SQLException ex) {
@@ -137,7 +137,7 @@ public class LoadData {
     }
 
     public void addCageAndFeedingTreatments() {
-        // iterate through treatments and list all animal ID's that are associated to task ID #1
+        // iterate through treatments and list all animal ID's that are associated to task ID #1 - all orphaned animal IDs
         ArrayList<Integer> orphanAnimals = new ArrayList<Integer>();
         
         for (int treatmentIndex = 0; treatmentIndex < treatments.size(); treatmentIndex++) {
@@ -162,18 +162,18 @@ public class LoadData {
                         Treatment newTreatment = new Treatment(++currentTreatmentID, animals.get(val1).getID(),
                                 tasks.get(val2).getID(), startHour);
                         this.treatments.add(newTreatment);
-                        // System.out.println(
-                        //         "Treatment: " + newTreatment.getTreatementID() + ", " + newTreatment.getAnimalID()
-                        //                 + ", " + newTreatment.getTaskID() + ", " + newTreatment.getStartHour());
+                        System.out.println(
+                                "Treatment: " + newTreatment.getTreatementID() + ", " + newTreatment.getAnimalID()
+                                        + ", " + newTreatment.getTaskID() + ", " + newTreatment.getStartHour());
                     }
                 } else if (tasks.get(val2).getDescription()
                         .contains("Cage cleaning - " + animals.get(val1).getSpecies())) {
                     Treatment newTreatment = new Treatment(++currentTreatmentID, animals.get(val1).getID(),
                             tasks.get(val2).getID());
                     this.treatments.add(newTreatment);
-                    // System.out
-                    //         .println("Treatment: " + newTreatment.getTreatementID() + ", " + newTreatment.getAnimalID()
-                    //                 + ", " + newTreatment.getTaskID() + ", " + newTreatment.getStartHour());
+                    System.out
+                            .println("Treatment: " + newTreatment.getTreatementID() + ", " + newTreatment.getAnimalID()
+                                    + ", " + newTreatment.getTaskID() + ", " + newTreatment.getStartHour());
 
                 }
                 val2++;
@@ -405,25 +405,25 @@ public class LoadData {
     }
     
 
-    // public void createTasksList() {
-    //     for (int treatmentIndex = 0; treatmentIndex < treatments.size(); treatmentIndex++) {
-    //         String taskString = "";
-    //         int taskMaxWindow;
-    //         for (int taskIndex = 0; taskIndex < tasks.size(); taskIndex++) {
-    //             if (tasks.get(taskIndex).getID() == treatments.get(treatmentIndex).getTaskID()) {
-    //                 taskString = tasks.get(taskIndex).getDescription();
-    //                 taskMaxWindow = tasks.get(taskIndex).getMaxWindow();
-    //             }
-    //         }
-    //         for (int animalIndex = 0; animalIndex < animals.size(); animalIndex++) {
-    //             if (animals.get(animalIndex).getID() == treatments.get(treatmentIndex).getAnimalID()) {
-    //                 taskString += " (" + animals.get(animalIndex).getNickname() + ")";
-    //             }
-    //         }
-    //         System.out.println(taskString);
-    //         this.taskStrings.add(taskString);
-    //     }
-    // }
+    public void createTasksList() {
+        for (int treatmentIndex = 0; treatmentIndex < treatments.size(); treatmentIndex++) {
+            String taskString = "";
+            int taskMaxWindow;
+            for (int taskIndex = 0; taskIndex < tasks.size(); taskIndex++) {
+                if (tasks.get(taskIndex).getID() == treatments.get(treatmentIndex).getTaskID()) {
+                    taskString = tasks.get(taskIndex).getDescription();
+                    taskMaxWindow = tasks.get(taskIndex).getMaxWindow();
+                }
+            }
+            for (int animalIndex = 0; animalIndex < animals.size(); animalIndex++) {
+                if (animals.get(animalIndex).getID() == treatments.get(treatmentIndex).getAnimalID()) {
+                    taskString += " (" + animals.get(animalIndex).getNickname() + ")";
+                }
+            }
+            System.out.println(taskString);
+            this.taskStrings.add(taskString);
+        }
+    }
 
     public void close() {
         try {
@@ -446,6 +446,7 @@ public class LoadData {
         database.selectAnimals();
         database.selectTasks();
         database.selectTreatments();
+        database.createTasksList();
         database.createSchedule();
         // System.out.println("TIME[21][0]: " + times[22][0]);
         // System.out.println("TIME[21][1]: " + times[21][1]);
