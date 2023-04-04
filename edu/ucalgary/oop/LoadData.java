@@ -227,20 +227,19 @@ public class LoadData {
                 if (tasks.get(taskIndex).getID() == treatments.get(treatmentIndex).getTaskID()) {
                     if (tasks.get(taskIndex).getMaxWindow() == 2) {
                         Schedule newSchedule = new Schedule();
+                        newSchedule.setTasksList(tasks.get(taskIndex).getDescription());
+                        newSchedule.setTimeSpent(tasks.get(taskIndex).getTotalTime());
+
                         int startHourPlus1 = treatments.get(treatmentIndex).getStartHour() + 1;
                         if (startHourPlus1 > 23) startHourPlus1 -= 24;
                         
                         if (times[newSchedule.getStartTime()][0] == treatments.get(treatmentIndex).getStartHour() && 
                         times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime()) {
                             newSchedule.setStartTime(treatments.get(treatmentIndex).getStartHour());
-                            newSchedule.setTasksList(tasks.get(taskIndex).getDescription());
-                            newSchedule.setTimeSpent(tasks.get(taskIndex).getTotalTime());
+                            
                         }
-                        else { // else set the startHour to + 1 of original
-                            newSchedule.setStartTime(startHourPlus1);
-                            newSchedule.setTasksList(tasks.get(taskIndex).getDescription());
-                            newSchedule.setTimeSpent(tasks.get(taskIndex).getTotalTime());
-                        }
+                        // else set the startHour to + 1 of original
+                        else { newSchedule.setStartTime(startHourPlus1); }
 
                         if (times[newSchedule.getStartTime()][0] == newSchedule.getStartTime()) { 
                             times[newSchedule.getStartTime()][1] -= newSchedule.getTimeSpent();
@@ -261,6 +260,9 @@ public class LoadData {
                 if (tasks.get(taskIndex).getID() == treatments.get(treatmentIndex).getTaskID()) {
                     if (tasks.get(taskIndex).getMaxWindow() == 3) {
                         Schedule newSchedule = new Schedule();
+                        newSchedule.setTasksList(tasks.get(taskIndex).getDescription());
+                        newSchedule.setTimeSpent(tasks.get(taskIndex).getTotalTime());
+
                         int startHourPlus1 = treatments.get(treatmentIndex).getStartHour() + 1;
                         if (startHourPlus1 > 23) startHourPlus1 -= 24;
                         int startHourPlus2 = treatments.get(treatmentIndex).getStartHour() + 2;
@@ -268,23 +270,16 @@ public class LoadData {
 
                         // if the startTime is same as startHour and there is equal or additional time remaining in that slot...
                         if (times[newSchedule.getStartTime()][0] == treatments.get(treatmentIndex).getStartHour() 
-                        && times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime()) { 
-                            newSchedule.setStartTime(treatments.get(treatmentIndex).getStartHour());
-                            newSchedule.setTasksList(tasks.get(taskIndex).getDescription());
-                            newSchedule.setTimeSpent(tasks.get(taskIndex).getTotalTime());
-                        }
-                        else if (times[newSchedule.getStartTime()][0] == startHourPlus1
-                        && times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime()) {
+                        && times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime()) 
+                            { newSchedule.setStartTime(treatments.get(treatmentIndex).getStartHour()); }
+                        
                         // else set the startHour to + 1 of original
-                            newSchedule.setStartTime(startHourPlus1);
-                            newSchedule.setTasksList(tasks.get(taskIndex).getDescription());
-                            newSchedule.setTimeSpent(tasks.get(taskIndex).getTotalTime());
-                        }
-                        else { // else set the startHour to + 2 of original
-                            newSchedule.setStartTime(startHourPlus2);
-                            newSchedule.setTasksList(tasks.get(taskIndex).getDescription());
-                            newSchedule.setTimeSpent(tasks.get(taskIndex).getTotalTime());
-                        }
+                        else if (times[newSchedule.getStartTime()][0] == startHourPlus1
+                        && times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime()) 
+                        { newSchedule.setStartTime(startHourPlus1); }
+                        
+                        // else set the startHour to + 2 of original
+                        else { newSchedule.setStartTime(startHourPlus2); }
 
                         if (times[newSchedule.getStartTime()][0] == newSchedule.getStartTime()) { 
                             times[newSchedule.getStartTime()][1] -= newSchedule.getTimeSpent();
@@ -303,6 +298,9 @@ public class LoadData {
                 if (tasks.get(taskIndex).getID() == treatments.get(treatmentIndex).getTaskID()) {
                     if (tasks.get(taskIndex).getMaxWindow() == 4) {
                         Schedule newSchedule = new Schedule();
+                        newSchedule.setTasksList(tasks.get(taskIndex).getDescription());
+                        newSchedule.setTimeSpent(tasks.get(taskIndex).getTotalTime());
+                        
                         int startHourPlus1 = treatments.get(treatmentIndex).getStartHour() + 1;
                         if (startHourPlus1 > 23) startHourPlus1 -= 24;
                         int startHourPlus2 = treatments.get(treatmentIndex).getStartHour() + 2;
@@ -312,30 +310,21 @@ public class LoadData {
                                     
                         // if the startTime is same as startHour and there is equal or additional time remaining in that slot...
                         if (times[newSchedule.getStartTime()][0] == treatments.get(treatmentIndex).getStartHour() 
-                        && times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime()) {
-                            newSchedule.setStartTime(treatments.get(treatmentIndex).getStartHour());
-                            newSchedule.setTasksList(tasks.get(taskIndex).getDescription());
-                            newSchedule.setTimeSpent(tasks.get(taskIndex).getTotalTime());
-                        }
-                        else if (times[newSchedule.getStartTime()][0] == startHourPlus1
-                        && times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime()) {
+                        && times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime()) 
+                        { newSchedule.setStartTime(treatments.get(treatmentIndex).getStartHour()); }
+                        
                         // else set the startHour to + 1 of original
-                            newSchedule.setStartTime(startHourPlus1);
-                            newSchedule.setTasksList(tasks.get(taskIndex).getDescription());
-                            newSchedule.setTimeSpent(tasks.get(taskIndex).getTotalTime());
-                        }
-                        else if (times[newSchedule.getStartTime()][0] == startHourPlus2
-                        && times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime()) {
+                        else if (times[newSchedule.getStartTime()][0] == startHourPlus1
+                        && times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime()) 
+                        { newSchedule.setStartTime(startHourPlus1); }
+                        
                         // else set the startHour to + 2 of original
-                            newSchedule.setStartTime(startHourPlus2);
-                            newSchedule.setTasksList(tasks.get(taskIndex).getDescription());
-                            newSchedule.setTimeSpent(tasks.get(taskIndex).getTotalTime());
-                        }
-                        else { // else set the startHour to + 3 of original
-                            newSchedule.setStartTime(startHourPlus3);
-                            newSchedule.setTasksList(tasks.get(taskIndex).getDescription());
-                            newSchedule.setTimeSpent(tasks.get(taskIndex).getTotalTime());
-                        }
+                        else if (times[newSchedule.getStartTime()][0] == startHourPlus2
+                        && times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime()) 
+                        { newSchedule.setStartTime(startHourPlus2); }
+                        
+                        // else set the startHour to + 3 of original
+                        else { newSchedule.setStartTime(startHourPlus3);}
 
                         if (times[newSchedule.getStartTime()][0] == newSchedule.getStartTime()) { 
                             times[newSchedule.getStartTime()][1] -= newSchedule.getTimeSpent();
@@ -354,6 +343,9 @@ public class LoadData {
                 if (tasks.get(taskIndex).getID() == treatments.get(treatmentIndex).getTaskID()) {
                     if (tasks.get(taskIndex).getMaxWindow() == 5) {
                         Schedule newSchedule = new Schedule();
+                        newSchedule.setTasksList(tasks.get(taskIndex).getDescription());
+                        newSchedule.setTimeSpent(tasks.get(taskIndex).getTotalTime());
+                        
                         int startHourPlus1 = treatments.get(treatmentIndex).getStartHour() + 1;
                         if (startHourPlus1 > 23) startHourPlus1 -= 24;
                         int startHourPlus2 = treatments.get(treatmentIndex).getStartHour() + 2;
@@ -365,39 +357,26 @@ public class LoadData {
                              
                         // if the startTime is same as startHour and there is equal or additional time remaining in that slot...
                         if (times[newSchedule.getStartTime()][0] == treatments.get(treatmentIndex).getStartHour() 
-                        && times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime()) {
-                            newSchedule.setStartTime(treatments.get(treatmentIndex).getStartHour());
-                            newSchedule.setTasksList(tasks.get(taskIndex).getDescription());
-                            newSchedule.setTimeSpent(tasks.get(taskIndex).getTotalTime());
-                        }
-                        else if (times[newSchedule.getStartTime()][0] == startHourPlus1
-                        && times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime()) {
+                        && times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime()) 
+                        { newSchedule.setStartTime(treatments.get(treatmentIndex).getStartHour()); }
+                        
                         // else set the startHour to + 1 of original
-                            newSchedule.setStartTime(startHourPlus1);
-                            newSchedule.setTasksList(tasks.get(taskIndex).getDescription());
-                            newSchedule.setTimeSpent(tasks.get(taskIndex).getTotalTime());
-                        }
-                        else if (times[newSchedule.getStartTime()][0] == startHourPlus2
-                        && times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime()) {
+                        else if (times[newSchedule.getStartTime()][0] == startHourPlus1
+                        && times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime()) 
+                        { newSchedule.setStartTime(startHourPlus1); }
+
                         // else set the startHour to + 2 of original
-                            newSchedule.setStartTime(startHourPlus2);
-                            newSchedule.setTasksList(tasks.get(taskIndex).getDescription());
-                            newSchedule.setTimeSpent(tasks.get(taskIndex).getTotalTime());
-                        }
+                        else if (times[newSchedule.getStartTime()][0] == startHourPlus2
+                        && times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime()) 
+                        { newSchedule.setStartTime(startHourPlus2); }
 
-                        else if (times[newSchedule.getStartTime()][0] == startHourPlus3
-                        && times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime()) {
                         // else set the startHour to + 3 of original
-                            newSchedule.setStartTime(startHourPlus3);
-                            newSchedule.setTasksList(tasks.get(taskIndex).getDescription());
-                            newSchedule.setTimeSpent(tasks.get(taskIndex).getTotalTime());
-                        }
+                        else if (times[newSchedule.getStartTime()][0] == startHourPlus3
+                        && times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime()) 
+                        { newSchedule.setStartTime(startHourPlus3); }
 
-                        else { // else set the startHour to + 4 of original
-                            newSchedule.setStartTime(startHourPlus4);
-                            newSchedule.setTasksList(tasks.get(taskIndex).getDescription());
-                            newSchedule.setTimeSpent(tasks.get(taskIndex).getTotalTime());
-                        }
+                        // else set the startHour to + 4 of original
+                        else { newSchedule.setStartTime(startHourPlus4); }
 
                         if (times[newSchedule.getStartTime()][0] == newSchedule.getStartTime()) { 
                             times[newSchedule.getStartTime()][1] -= newSchedule.getTimeSpent();
