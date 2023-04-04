@@ -137,6 +137,14 @@ public class LoadData {
     }
 
     public void addCageAndFeedingTreatments() {
+        // iterate through treatments and list all animal ID's that are associated to task ID #1
+        ArrayList<Integer> orphanAnimals = new ArrayList<Integer>();
+        
+        for (int treatmentIndex = 0; treatmentIndex < treatments.size(); treatmentIndex++) {
+            if (treatments.get(treatmentIndex).getTaskID() == 1)
+                orphanAnimals.add(treatments.get(treatmentIndex).getAnimalID());
+        }
+
         int currentTreatmentID = treatments.get(treatments.size() - 1).getTreatementID(); // retrieve the latest
                                                                                           // treatment ID
         int val1 = 0, val2 = 0, startHour = 0;
@@ -150,8 +158,7 @@ public class LoadData {
                     else if (animals.get(val1).getMostActive() == "Diurnal")
                         startHour = 8;
 
-                    if (!animals.get(val1).getNickname().contains("and")) { // if not an orphan, add the feeding
-                                                                            // treatment
+                    if (!orphanAnimals.contains(animals.get(val1).getID())) { // if not an orphan, add the feeding treatment
                         Treatment newTreatment = new Treatment(++currentTreatmentID, animals.get(val1).getID(),
                                 tasks.get(val2).getID(), startHour);
                         this.treatments.add(newTreatment);
