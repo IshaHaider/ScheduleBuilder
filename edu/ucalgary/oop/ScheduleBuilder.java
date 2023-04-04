@@ -515,12 +515,8 @@ public class ScheduleBuilder {
 
     public static void main(String[] args) throws IOException{
 
-        Scanner myObj = new Scanner(System.in); // Create a Scanner object
-        System.out.println("Please enter your SQL root password: ");
-        String passInput = myObj.nextLine(); // Read user input
-
         LoadData database = new LoadData();
-        database.createConnection(passInput);
+        database.createConnection();
         database.selectAnimals();
         database.selectTasks();
         database.selectTreatments();
@@ -534,6 +530,5 @@ public class ScheduleBuilder {
         // System.out.println(database.treatments.size());
         // System.out.println(database.treatments.get(29).getTaskID());
         database.close();
-        myObj.close();
     }
 }

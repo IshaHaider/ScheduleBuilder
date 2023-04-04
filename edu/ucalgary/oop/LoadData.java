@@ -23,9 +23,9 @@ public class LoadData {
     public void setTreatments(ArrayList<Treatment> treatments){this.treatments = treatments;}
     public ArrayList<Treatment> getTreatments(){return this.treatments;}
 
-    public void createConnection(String password) {
+    public void createConnection() {
         try { // connect SQL database with Java application
-            dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "root", password);
+            dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "oop", "password");
         } catch (SQLException e) {
             e.printStackTrace();
         }
