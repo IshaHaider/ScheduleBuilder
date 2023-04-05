@@ -11,9 +11,6 @@ package edu.ucalgary.oop;
 import java.io.*;
 import java.sql.*;
 import java.util.*;
-
-import edu.ucalgary.oop.Schedule;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -31,8 +28,7 @@ public class ScheduleBuilder {
     private ArrayList<Treatment> treatments;
     private ArrayList<Schedule> schedule = new ArrayList<Schedule>();
     private static int[][] times = { {0, 60}, {1, 60}, {2, 60},{3, 60},{4, 60},{5, 60},{6, 60},{7, 60},{8, 60},{9, 60},{10, 60},{11, 60},
-    {12, 60},{13, 60},{14, 60},{15, 60},{16, 60},{17, 60},{18, 60},{19, 60},{20, 60},{21, 60},{22, 60},{23, 60},
-    };
+    {12, 60},{13, 60},{14, 60},{15, 60},{16, 60},{17, 60},{18, 60},{19, 60},{20, 60},{21, 60},{22, 60},{23, 60} };
 
     /** Constructor
      * @param data  the LoadData object containing all required data for building the schedule
@@ -293,42 +289,42 @@ public class ScheduleBuilder {
                 if (tasks.get(taskIndex).getID() == treatments.get(treatmentIndex).getTaskID()) {
                     if (tasks.get(taskIndex).getMaxWindow() == 3) {
                         boolean alreadyExists = false;
-                        // for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { // iterate through schedule to see if the task already exists
-                        //     if (times[schedule.get(scheduleIndex).getStartTime()][1] >= tasks.get(taskIndex).getDuration()){
-                        //         if (tasks.get(taskIndex).getDescription().equals("Feeding - coyote") && schedule.get(scheduleIndex).getTask().equals("Feeding - coyote")) {
-                        //             // add the animal name to schedule object...
-                        //             for (int i=0; i<animals.size(); i++) {
-                        //                 if (animals.get(i).getID() == treatments.get(treatmentIndex).getAnimalID())
-                        //                     { schedule.get(scheduleIndex).setAnimalList(animals.get(i).getNickname()); }
-                        //             }
+                        for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { // iterate through schedule to see if the task already exists
+                            if (times[schedule.get(scheduleIndex).getStartTime()][1] >= tasks.get(taskIndex).getDuration()){
+                                if (tasks.get(taskIndex).getDescription().equals("Feeding - coyote") && schedule.get(scheduleIndex).getTask().equals("Feeding - coyote")) {
+                                    // add the animal name to schedule object...
+                                    for (int i=0; i<animals.size(); i++) {
+                                        if (animals.get(i).getID() == treatments.get(treatmentIndex).getAnimalID())
+                                            { schedule.get(scheduleIndex).setAnimalList(animals.get(i).getNickname()); }
+                                    }
                                     
-                        //             // edit timeSpent and timeRemaining
-                        //             schedule.get(scheduleIndex).setTimeSpent(schedule.get(scheduleIndex).getTimeSpent() + tasks.get(taskIndex).getDuration());
-                        //             times[schedule.get(scheduleIndex).getStartTime()][1] -= tasks.get(taskIndex).getDuration();
-                        //             schedule.get(scheduleIndex).setTimeRemaining(times[schedule.get(scheduleIndex).getStartTime()][1]);
+                                    // edit timeSpent and timeRemaining
+                                    schedule.get(scheduleIndex).setTimeSpent(schedule.get(scheduleIndex).getTimeSpent() + tasks.get(taskIndex).getDuration());
+                                    times[schedule.get(scheduleIndex).getStartTime()][1] -= tasks.get(taskIndex).getDuration();
+                                    schedule.get(scheduleIndex).setTimeRemaining(times[schedule.get(scheduleIndex).getStartTime()][1]);
                                     
-                        //             alreadyExists = true;
-                        //         }
+                                    alreadyExists = true;
+                                }
 
-                        //         else if (tasks.get(taskIndex).getDescription().equals("Feeding - fox") && schedule.get(scheduleIndex).getTask().equals("Feeding - fox")) {                               
-                        //             // add the animal name to schedule object...
-                        //             for (int i=0; i<animals.size(); i++) {
-                        //                 if (animals.get(i).getID() == treatments.get(treatmentIndex).getAnimalID())
-                        //                     { schedule.get(scheduleIndex).setAnimalList(animals.get(i).getNickname()); }
-                        //             }
+                                else if (tasks.get(taskIndex).getDescription().equals("Feeding - fox") && schedule.get(scheduleIndex).getTask().equals("Feeding - fox")) {                               
+                                    // add the animal name to schedule object...
+                                    for (int i=0; i<animals.size(); i++) {
+                                        if (animals.get(i).getID() == treatments.get(treatmentIndex).getAnimalID())
+                                            { schedule.get(scheduleIndex).setAnimalList(animals.get(i).getNickname()); }
+                                    }
 
-                        //             // edit timeSpent and timeRemaining
-                        //             schedule.get(scheduleIndex).setTimeSpent(schedule.get(scheduleIndex).getTimeSpent() + tasks.get(taskIndex).getDuration());
+                                    // edit timeSpent and timeRemaining
+                                    schedule.get(scheduleIndex).setTimeSpent(schedule.get(scheduleIndex).getTimeSpent() + tasks.get(taskIndex).getDuration());
 
-                        //             if (times[schedule.get(scheduleIndex).getStartTime()][0] == schedule.get(scheduleIndex).getStartTime()) { 
-                        //                 times[schedule.get(scheduleIndex).getStartTime()][1] -= tasks.get(taskIndex).getDuration();
-                        //                 schedule.get(scheduleIndex).setTimeRemaining(times[schedule.get(scheduleIndex).getStartTime()][1]);
-                        //             }
-                        //             alreadyExists = true;
-                        //         }
-                        //     }
+                                    if (times[schedule.get(scheduleIndex).getStartTime()][0] == schedule.get(scheduleIndex).getStartTime()) { 
+                                        times[schedule.get(scheduleIndex).getStartTime()][1] -= tasks.get(taskIndex).getDuration();
+                                        schedule.get(scheduleIndex).setTimeRemaining(times[schedule.get(scheduleIndex).getStartTime()][1]);
+                                    }
+                                    alreadyExists = true;
+                                }
+                            }
                             
-                        // }
+                        }
                         
                         if (!alreadyExists) {
                             Schedule newSchedule = new Schedule();
@@ -494,121 +490,52 @@ public class ScheduleBuilder {
     }
 
     /** combineSimilarTasks()
-     * 
+     * iterates over the times array and checks all of the scheduled tasks per hour.
+     * A temporary array stores the first occurence of every task in that hour, if the 
+     * task re-occurs, then they is grouped together. Once all start hours have been 
+     * checked and grouped together, another for-loop iterates over the hours once
+     * again and re-calculates the remaining time after each task is performed.
      * @return   void
     */
     public void combineSimilarTasks() throws IncorrectTimeException{
-        // iterate through times, store each task in a temp array. if the task already exists in the array, 
-        // edit the quantity, timeSpent, timeRemaining, and animalList features of that schedule task
-
-        // when the start hour and description from the tempArray matches, then return the schedule object containing that
-        // give the new schedule object an ID thats stored in the tempMap.
-        // match that ID with 
-
-        // edit timeSpent and timeRemaining
         for (int i = 0; i < times.length; i++) { // iterate through the times
             ArrayList<String> tempList = new ArrayList<String>();
-
+            int totalRemainingTime = 60;
             for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { //iterate through the schedule arrayList
                 if (schedule.get(scheduleIndex).getStartTime() == times[i][0]) {
                     String key = schedule.get(scheduleIndex).getTask();
-                    
-                    if (tempList.contains(key)){ // if the task exists in the map
-    
+                    if (tempList.contains(key)){ // if the task exists in the list
                         for (int scheduleIndex2 = 0; scheduleIndex2 < schedule.size(); scheduleIndex2++) {
-                            if (schedule.get(scheduleIndex2).getTask() == schedule.get(scheduleIndex).getTask()
-                            && schedule.get(scheduleIndex2).getStartTime() == schedule.get(scheduleIndex).getStartTime()) {
+                            // find the first element where the startHour and description are the same as current task
+                            if (schedule.get(scheduleIndex2).getTask() == schedule.get(scheduleIndex).getTask() &&
+                                schedule.get(scheduleIndex2).getStartTime() == schedule.get(scheduleIndex).getStartTime()) 
+                            {
                                 schedule.get(scheduleIndex2).setAnimalList(schedule.get(scheduleIndex).getAnimalList().get(0));
-                                // edit timeSpent and timeRemaining
-                                // System.out.println("schedule.get(scheduleIndex2).getTimeSpent() " + schedule.get(scheduleIndex2).getTimeSpent());
-                                // System.out.println("Animal: " + schedule.get(scheduleIndex2).getAnimalList().get(0));
-                                // System.out.println("schedule.get(scheduleIndex).getTimeSpent() " + schedule.get(scheduleIndex).getTimeSpent());
+                                // if the schedule element is already present, then add the current schedule element's animal and timeSpent into that
                                 int time = schedule.get(scheduleIndex2).getTimeSpent() + schedule.get(scheduleIndex).getTimeSpent();
                                 schedule.get(scheduleIndex2).setTimeSpent(time);
-    
-                                //times[schedule.get(scheduleIndex2).getStartTime()][1] -= schedule.get(scheduleIndex).getTimeSpent();
-                                //schedule.get(scheduleIndex2).setTimeRemaining(times[schedule.get(scheduleIndex2).getStartTime()][1]);
+                                break; // stop once first task is matched
                             }
-                            break;
                         }
-                        //System.out.println("EXISTS Key: " + key + " Value: " + (tempMap.get(key)));
-                        //System.out.println("BEFORE: " + schedule.get(scheduleIndex).getTask() + ", " + schedule.get(scheduleIndex).getAnimalList().get(0));
+                        // since it is a duplicate task, remove it from the schedule ArrayList and decrement the index
                         schedule.remove(scheduleIndex);
-                        //System.out.println("AFTER: " + schedule.get(scheduleIndex - 1).getTask() + ", " + schedule.get(scheduleIndex - 1).getAnimalList().get(0));
-                        
                         scheduleIndex--;
-                        // if the schedule element is already present, then use that element and update its features 
                     }
-                    else { 
-                        tempList.add(key);
-                        //System.out.println("Key: " + key + " Value: " + newSchedule.get(key));
-                    }
+                    else { tempList.add(key); }
                 }
             }
         }
 
-
-        //     for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { //iterate through the schedule arrayList
-        //         if (schedule.get(scheduleIndex).getStartTime() == times[i][0]) {
-        //             String key = schedule.get(scheduleIndex).getTask();
-                    
-        //             if (tempMap.containsKey(key)){ // if the task exists in the array
-        //                 schedule.remove(scheduleIndex);
-        //                 tempMap.put(key, tempMap.get(key) + 1);
-        //                 System.out.println("EXISTS Key: " + key + " Value: " + (tempMap.get(key)));
-        //                 scheduleIndex++;
-        //                 // if the schedule element is already present, then use that element and update its features 
-        //             }
-        //             else { 
-        //                 tempMap.put(key, 1);
-        //                 System.out.println("Key: " + key + " Value: " + tempMap.get(key));
-        //             }
-        //         }
-        //     }
-        // }
-        
-        // for (int i = 0; i < times.length; i++) { // iterate through the times
-        //     HashMap<String, Integer> tempMap = new HashMap<String, Integer>();
-
-        //     for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { //iterate through the schedule arrayList
-        //         if (schedule.get(scheduleIndex).getStartTime() == times[i][0]) {
-        //             String key = schedule.get(scheduleIndex).getTask();
-                    
-        //             if (tempMap.containsKey(key)){ // if the task exists in the array
-        //                 schedule.remove(scheduleIndex);
-        //                 tempMap.put(key, tempMap.get(key) + 1);
-        //                 System.out.println("EXISTS Key: " + key + " Value: " + (tempMap.get(key)));
-        //                 scheduleIndex++;
-        //                 // if the schedule element is already present, then use that element and update its features 
-        //             }
-        //             else { 
-        //                 tempMap.put(key, 1);
-        //                 System.out.println("Key: " + key + " Value: " + tempMap.get(key));
-        //             }
-        //         }
-        //     }
-        // }
-        
-
-
-        // for (int i = 0; i < times.length; i++){ //iterate through the times
-        //     for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { //iterate through the schedule arrayList
-        //         int existCount = 0;
-        //         String tempTask = "";
-        //         if (times[i][0] == schedule.get(scheduleIndex).getStartTime()){
-        //             tempTask = schedule.get(scheduleIndex).getTask();
-        //             existCount++;
-        //         }
-        //         if (existCount > 0){
-        //             if (schedule.get(scheduleIndex).getTask().equals(tempTask))
-        //                 existCount++;
-        //         }
-        //         System.out.println("TIME: " + times[i][0]);
-        //         System.out.println("TASK: " + schedule.get(scheduleIndex).getTask());
-        //         System.out.println("existCount: " + existCount);
-
-        //     }
-        // }
+        for (int i = 0; i < times.length; i++) { // iterate through the times
+            times[i][1] = 60; // reset the remaining time to 60 
+            for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { //iterate through the schedule arrayList
+                if (schedule.get(scheduleIndex).getStartTime() == times[i][0]) { // find all schedule objects for this hour
+                    // update the remaining time in the times array along with the timeRemaining data member of the object
+                    times[schedule.get(scheduleIndex).getStartTime()][1] -= schedule.get(scheduleIndex).getTimeSpent();
+                    schedule.get(scheduleIndex).setTimeRemaining(times[schedule.get(scheduleIndex).getStartTime()][1]); 
+                }
+            }
+        }
     }
 
     /** addBackupVolunteer()
@@ -645,7 +572,7 @@ public class ScheduleBuilder {
             }
         }
 
-        // THIS IS TEMPORARY COMMENT TO SEE THE OUTPUT, DO NOT DELETE THANK YOU!
+        // // THIS IS TEMPORARY COMMENT TO SEE THE OUTPUT, DO NOT DELETE THANK YOU!
         // for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) {
         //     if (schedule.get(scheduleIndex).getTask() != null){
         //         System.out.println("Task: " + schedule.get(scheduleIndex).getTask() + "\n    Start Time: " + schedule.get(scheduleIndex).getStartTime() + "\n    Time spent: " 
