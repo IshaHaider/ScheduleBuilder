@@ -501,21 +501,21 @@ public class ScheduleBuilder {
         // iterate through times, store each task in a temp array. if the task already exists in the array, 
         // edit the quantity, timeSpent, timeRemaining, and animalList features of that schedule task
 
-        for (int i = 0; i < times.length; i++) { // iterate through the times
-            ArrayList<ArrayList<String>> tempArray = new ArrayList<ArrayList<String>>();
-            for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { //iterate through the schedule arrayList
-                if (schedule.get(scheduleIndex).getStartTime() == times[i][0]) {
-                    if (tempArray.contains(schedule.get(scheduleIndex).getTask())){ // if the task exists in the array
-                        schedule.remove(scheduleIndex);
-                    }
-                    else { 
-                        tempArray.add(schedule.get(scheduleIndex).getTask(), scheduleIndex); 
-                        System.out.println(tempArray.get(0));
+        // for (int i = 0; i < times.length; i++) { // iterate through the times
+        //     ArrayList<ArrayList<String>> tempArray = new ArrayList<ArrayList<String>>();
+        //     for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { //iterate through the schedule arrayList
+        //         if (schedule.get(scheduleIndex).getStartTime() == times[i][0]) {
+        //             if (tempArray.contains(schedule.get(scheduleIndex).getTask())){ // if the task exists in the array
+        //                 schedule.remove(scheduleIndex);
+        //             }
+        //             else { 
+        //                 tempArray.add(schedule.get(scheduleIndex).getTask(), scheduleIndex); 
+        //                 System.out.println(tempArray.get(0));
 
-                    }
-                }
-            }
-        }
+        //             }
+        //         }
+        //     }
+        // }
         
         // for (int i = 0; i < times.length; i++){ //iterate through the times
         //     for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { //iterate through the schedule arrayList
