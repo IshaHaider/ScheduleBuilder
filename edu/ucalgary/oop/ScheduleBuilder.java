@@ -497,26 +497,100 @@ public class ScheduleBuilder {
      * 
      * @return   void
     */
-    public void combineSimilarTasks() {
+    public void combineSimilarTasks() throws IncorrectTimeException{
         // iterate through times, store each task in a temp array. if the task already exists in the array, 
         // edit the quantity, timeSpent, timeRemaining, and animalList features of that schedule task
 
-        // for (int i = 0; i < times.length; i++) { // iterate through the times
-        //     ArrayList<ArrayList<String>> tempArray = new ArrayList<ArrayList<String>>();
+        // when the start hour and description from the tempArray matches, then return the schedule object containing that
+        // give the new schedule object an ID thats stored in the tempMap.
+        // match that ID with 
+
+        // edit timeSpent and timeRemaining
+        for (int i = 0; i < times.length; i++) { // iterate through the times
+            ArrayList<String> tempList = new ArrayList<String>();
+
+            for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { //iterate through the schedule arrayList
+                if (schedule.get(scheduleIndex).getStartTime() == times[i][0]) {
+                    String key = schedule.get(scheduleIndex).getTask();
+                    
+                    if (tempList.contains(key)){ // if the task exists in the map
+    
+                        for (int scheduleIndex2 = 0; scheduleIndex2 < schedule.size(); scheduleIndex2++) {
+                            if (schedule.get(scheduleIndex2).getTask() == schedule.get(scheduleIndex).getTask()
+                            && schedule.get(scheduleIndex2).getStartTime() == schedule.get(scheduleIndex).getStartTime()) {
+                                schedule.get(scheduleIndex2).setAnimalList(schedule.get(scheduleIndex).getAnimalList().get(0));
+                                // edit timeSpent and timeRemaining
+                                // System.out.println("schedule.get(scheduleIndex2).getTimeSpent() " + schedule.get(scheduleIndex2).getTimeSpent());
+                                // System.out.println("Animal: " + schedule.get(scheduleIndex2).getAnimalList().get(0));
+                                // System.out.println("schedule.get(scheduleIndex).getTimeSpent() " + schedule.get(scheduleIndex).getTimeSpent());
+                                int time = schedule.get(scheduleIndex2).getTimeSpent() + schedule.get(scheduleIndex).getTimeSpent();
+                                schedule.get(scheduleIndex2).setTimeSpent(time);
+    
+                                //times[schedule.get(scheduleIndex2).getStartTime()][1] -= schedule.get(scheduleIndex).getTimeSpent();
+                                //schedule.get(scheduleIndex2).setTimeRemaining(times[schedule.get(scheduleIndex2).getStartTime()][1]);
+                            }
+                            break;
+                        }
+                        //System.out.println("EXISTS Key: " + key + " Value: " + (tempMap.get(key)));
+                        //System.out.println("BEFORE: " + schedule.get(scheduleIndex).getTask() + ", " + schedule.get(scheduleIndex).getAnimalList().get(0));
+                        schedule.remove(scheduleIndex);
+                        //System.out.println("AFTER: " + schedule.get(scheduleIndex - 1).getTask() + ", " + schedule.get(scheduleIndex - 1).getAnimalList().get(0));
+                        
+                        scheduleIndex--;
+                        // if the schedule element is already present, then use that element and update its features 
+                    }
+                    else { 
+                        tempList.add(key);
+                        //System.out.println("Key: " + key + " Value: " + newSchedule.get(key));
+                    }
+                }
+            }
+        }
+
+
         //     for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { //iterate through the schedule arrayList
         //         if (schedule.get(scheduleIndex).getStartTime() == times[i][0]) {
-        //             if (tempArray.contains(schedule.get(scheduleIndex).getTask())){ // if the task exists in the array
+        //             String key = schedule.get(scheduleIndex).getTask();
+                    
+        //             if (tempMap.containsKey(key)){ // if the task exists in the array
         //                 schedule.remove(scheduleIndex);
+        //                 tempMap.put(key, tempMap.get(key) + 1);
+        //                 System.out.println("EXISTS Key: " + key + " Value: " + (tempMap.get(key)));
+        //                 scheduleIndex++;
+        //                 // if the schedule element is already present, then use that element and update its features 
         //             }
         //             else { 
-        //                 tempArray.add(schedule.get(scheduleIndex).getTask(), scheduleIndex); 
-        //                 System.out.println(tempArray.get(0));
-
+        //                 tempMap.put(key, 1);
+        //                 System.out.println("Key: " + key + " Value: " + tempMap.get(key));
         //             }
         //         }
         //     }
         // }
         
+        // for (int i = 0; i < times.length; i++) { // iterate through the times
+        //     HashMap<String, Integer> tempMap = new HashMap<String, Integer>();
+
+        //     for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { //iterate through the schedule arrayList
+        //         if (schedule.get(scheduleIndex).getStartTime() == times[i][0]) {
+        //             String key = schedule.get(scheduleIndex).getTask();
+                    
+        //             if (tempMap.containsKey(key)){ // if the task exists in the array
+        //                 schedule.remove(scheduleIndex);
+        //                 tempMap.put(key, tempMap.get(key) + 1);
+        //                 System.out.println("EXISTS Key: " + key + " Value: " + (tempMap.get(key)));
+        //                 scheduleIndex++;
+        //                 // if the schedule element is already present, then use that element and update its features 
+        //             }
+        //             else { 
+        //                 tempMap.put(key, 1);
+        //                 System.out.println("Key: " + key + " Value: " + tempMap.get(key));
+        //             }
+        //         }
+        //     }
+        // }
+        
+
+
         // for (int i = 0; i < times.length; i++){ //iterate through the times
         //     for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { //iterate through the schedule arrayList
         //         int existCount = 0;
