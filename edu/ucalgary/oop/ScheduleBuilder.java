@@ -293,42 +293,42 @@ public class ScheduleBuilder {
                 if (tasks.get(taskIndex).getID() == treatments.get(treatmentIndex).getTaskID()) {
                     if (tasks.get(taskIndex).getMaxWindow() == 3) {
                         boolean alreadyExists = false;
-                        for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { // iterate through schedule to see if the task already exists
-                            if (times[schedule.get(scheduleIndex).getStartTime()][1] >= tasks.get(taskIndex).getDuration()){
-                                if (tasks.get(taskIndex).getDescription().equals("Feeding - coyote") && schedule.get(scheduleIndex).getTask().equals("Feeding - coyote")) {
-                                    // add the animal name to schedule object...
-                                    for (int i=0; i<animals.size(); i++) {
-                                        if (animals.get(i).getID() == treatments.get(treatmentIndex).getAnimalID())
-                                            { schedule.get(scheduleIndex).setAnimalList(animals.get(i).getNickname()); }
-                                    }
+                        // for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { // iterate through schedule to see if the task already exists
+                        //     if (times[schedule.get(scheduleIndex).getStartTime()][1] >= tasks.get(taskIndex).getDuration()){
+                        //         if (tasks.get(taskIndex).getDescription().equals("Feeding - coyote") && schedule.get(scheduleIndex).getTask().equals("Feeding - coyote")) {
+                        //             // add the animal name to schedule object...
+                        //             for (int i=0; i<animals.size(); i++) {
+                        //                 if (animals.get(i).getID() == treatments.get(treatmentIndex).getAnimalID())
+                        //                     { schedule.get(scheduleIndex).setAnimalList(animals.get(i).getNickname()); }
+                        //             }
                                     
-                                    // edit timeSpent and timeRemaining
-                                    schedule.get(scheduleIndex).setTimeSpent(schedule.get(scheduleIndex).getTimeSpent() + tasks.get(taskIndex).getDuration());
-                                    times[schedule.get(scheduleIndex).getStartTime()][1] -= tasks.get(taskIndex).getDuration();
-                                    schedule.get(scheduleIndex).setTimeRemaining(times[schedule.get(scheduleIndex).getStartTime()][1]);
+                        //             // edit timeSpent and timeRemaining
+                        //             schedule.get(scheduleIndex).setTimeSpent(schedule.get(scheduleIndex).getTimeSpent() + tasks.get(taskIndex).getDuration());
+                        //             times[schedule.get(scheduleIndex).getStartTime()][1] -= tasks.get(taskIndex).getDuration();
+                        //             schedule.get(scheduleIndex).setTimeRemaining(times[schedule.get(scheduleIndex).getStartTime()][1]);
                                     
-                                    alreadyExists = true;
-                                }
+                        //             alreadyExists = true;
+                        //         }
 
-                                else if (tasks.get(taskIndex).getDescription().equals("Feeding - fox") && schedule.get(scheduleIndex).getTask().equals("Feeding - fox")) {                               
-                                    // add the animal name to schedule object...
-                                    for (int i=0; i<animals.size(); i++) {
-                                        if (animals.get(i).getID() == treatments.get(treatmentIndex).getAnimalID())
-                                            { schedule.get(scheduleIndex).setAnimalList(animals.get(i).getNickname()); }
-                                    }
+                        //         else if (tasks.get(taskIndex).getDescription().equals("Feeding - fox") && schedule.get(scheduleIndex).getTask().equals("Feeding - fox")) {                               
+                        //             // add the animal name to schedule object...
+                        //             for (int i=0; i<animals.size(); i++) {
+                        //                 if (animals.get(i).getID() == treatments.get(treatmentIndex).getAnimalID())
+                        //                     { schedule.get(scheduleIndex).setAnimalList(animals.get(i).getNickname()); }
+                        //             }
 
-                                    // edit timeSpent and timeRemaining
-                                    schedule.get(scheduleIndex).setTimeSpent(schedule.get(scheduleIndex).getTimeSpent() + tasks.get(taskIndex).getDuration());
+                        //             // edit timeSpent and timeRemaining
+                        //             schedule.get(scheduleIndex).setTimeSpent(schedule.get(scheduleIndex).getTimeSpent() + tasks.get(taskIndex).getDuration());
 
-                                    if (times[schedule.get(scheduleIndex).getStartTime()][0] == schedule.get(scheduleIndex).getStartTime()) { 
-                                        times[schedule.get(scheduleIndex).getStartTime()][1] -= tasks.get(taskIndex).getDuration();
-                                        schedule.get(scheduleIndex).setTimeRemaining(times[schedule.get(scheduleIndex).getStartTime()][1]);
-                                    }
-                                    alreadyExists = true;
-                                }
-                            }
+                        //             if (times[schedule.get(scheduleIndex).getStartTime()][0] == schedule.get(scheduleIndex).getStartTime()) { 
+                        //                 times[schedule.get(scheduleIndex).getStartTime()][1] -= tasks.get(taskIndex).getDuration();
+                        //                 schedule.get(scheduleIndex).setTimeRemaining(times[schedule.get(scheduleIndex).getStartTime()][1]);
+                        //             }
+                        //             alreadyExists = true;
+                        //         }
+                        //     }
                             
-                        }
+                        // }
                         
                         if (!alreadyExists) {
                             Schedule newSchedule = new Schedule();
@@ -544,7 +544,9 @@ public class ScheduleBuilder {
      * values (meaning the time remaining for each hour) in the times array is 
      * negative, if it is, then it finds all Schedule objects associated with that 
      * hour and updates them to have a backup volunteer. Additionally, it doubles 
-     * the time remaining as now there are two volunteers for that hour.
+     * the time remaining as now there are two volunteers for that hour. To calls on a GUI class
+     * to inform the user that there is a need and will not continue the program untill the user 
+     * confirms that they have gotten the backup volunteer
      * @throws IncorrectTimeException
      * @return   void
     */
@@ -553,6 +555,10 @@ public class ScheduleBuilder {
             int count = 0;
             for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { //iterate through the schedule arrayList
                 if ((times[i][1] < 0) || count != 0) { // if the timeRemaining for any time slot is negative...
+                    VolunteerGUI volunteer = new VolunteerGUI(Integer.toString(times[i][0]));
+                    while(volunteer.getState()){
+                        //delaying ...
+                    }
                     if (times[i][0] == schedule.get(scheduleIndex).getStartTime()) { // find the time slots in the schedule arrayList
                         schedule.get(scheduleIndex).setBackupRequired(true); // make those objects have backup volunteer
                         if (count == 0 ) { // get the original time remaining (which is not negative)
