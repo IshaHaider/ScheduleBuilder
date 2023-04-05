@@ -1,10 +1,10 @@
 /** 
-@author ENSF380 Group 20
-* LoadData is a java class that creates the SQL connection
-* loads all the tables from the SQL data base
-* and closes the connection in the end
-@version    2.1
-@since 1.0
+ * @author ENSF380 Group 20
+ * LoadData is a java class that creates the SQL connection
+ * loads all the tables from the SQL data base
+ * and closes the connection in the end
+ * @version     2.1
+ * @since       1.0
 */
 
 package edu.ucalgary.oop;
@@ -20,13 +20,13 @@ public class LoadData {
     private ArrayList<Treatment> treatments = new ArrayList<Treatment>();
     
     /** Default Constructor
-    * @return   
+     * @return   
     */
     public LoadData() {}
 
     /** Setters 
-    * setter methods assigning the parameter value to the stored object
-    * @return   void
+     * setter methods assigning the parameter value to the stored object
+     * @return   void
     */
     public void setResults(ResultSet results) { this.results = results; }
     public void setAnimals(ArrayList<Animal> animals) { this.animals = animals; }
@@ -34,7 +34,7 @@ public class LoadData {
     public void setTreatments(ArrayList<Treatment> treatments) { this.treatments = treatments; }
     
     /** Getters
-    * getter methods returning the stored object requested
+     * getter methods returning the stored object requested
     */
     public ResultSet getResults() { return this.results; }
     public ArrayList<Animal> getAnimals() { return this.animals; }
@@ -42,8 +42,8 @@ public class LoadData {
     public ArrayList<Treatment> getTreatments() { return this.treatments; }
 
     /** createConnection()
-    * Connects SQL database with Java application
-    * @return   void
+     * Connects SQL database with Java application
+     * @return   void
     */
     public void createConnection() {
         try { 
@@ -53,8 +53,8 @@ public class LoadData {
     }
 
     /** selectAnimals()
-    * Loads all data from ANIMALS SQL table into animals ArrayList
-    * @return   void  
+     * Loads all data from ANIMALS SQL table into animals ArrayList
+     * @return   void  
     */
     public void selectAnimals() throws SpeciesNotFoundException {
         try {
@@ -65,7 +65,7 @@ public class LoadData {
                         results.getString("AnimalSpecies"));
                 this.animals.add(newAnimal);
                 // System.out.println("Animal: " + results.getInt("AnimalID") + ", " + results.getString("AnimalSpecies")
-                //         + ", " + results.getString("AnimalNickname"));
+                //         + ", " + results.getString("AnimalNickname") + ", " + newAnimal.getMostActive());
             }
             myStmt.close();
         } catch (SQLException ex) {
@@ -76,8 +76,8 @@ public class LoadData {
     }
 
     /** selectTasks()
-    * Loads all data from TASKS SQL table into tasks ArrayList
-    * @return   void  
+     * Loads all data from TASKS SQL table into tasks ArrayList
+     * @return   void  
     */
     public void selectTasks() {
         try {
@@ -101,47 +101,28 @@ public class LoadData {
     }
 
     /** addCageAndFeedingTasks()
-    * Manually creates the cage cleaning and feeding (only non-orphaned animals) tasks for animals
-    * @return   void  
+     * Manually creates the cage cleaning and feeding (only non-orphaned animals) tasks for animals
+     * @return   void  
     */
     public void addCageAndFeedingTasks() {
         // add normal feeding and cage cleaning
         int currentTaskID = tasks.get(tasks.size() - 1).getID() + 1; // retrieve the latest task ID and increment it
-        int prepTime = 0;
-        int feedingDuration = 0;
-        int cageDuration = 5;
-
-        // maxWindowFeeding = 3 and maxWindowCage = 24
+        
+        // constants: maxWindowFeeding = 3, maxWindowCage = 24, feedingDuration = 5
         for (Species species : Species.values()) {
-            if (species.toString() == "coyote") {
-                prepTime = 10;
-                feedingDuration = 5;
-                cageDuration = 5;
-            } else if (species.toString() == "fox") {
-                prepTime = 5;
-                feedingDuration = 5;
-                cageDuration = 5;
-            } else if (species.toString() == "porcupine") {
-                prepTime = 0;
-                feedingDuration = 5;
-                cageDuration = 10;
-            } else if (species.toString() == "raccoon") {
-                prepTime = 0;
-                feedingDuration = 5;
-                cageDuration = 5;
-            } else {
-                prepTime = 0;
-                feedingDuration = 5;
-                cageDuration = 5;
-            }
+            int prepTime = 0, cageDuration = 5;
+            if (species.toString() == "coyote") { prepTime = 10; } 
+            else if (species.toString() == "fox") { prepTime = 5; } 
+            else if (species.toString() == "porcupine") { cageDuration = 10; }
+            
             try {
-                Task newFeedingTask = new Task(currentTaskID++, "Feeding - " + species.toString(), feedingDuration,
+                Task newFeedingTask = new Task(currentTaskID++, "Feeding - " + species.toString(), 5,
                     prepTime, 3);
                 this.tasks.add(newFeedingTask);
-                // System.out.println("Task: " + newFeedingTask.getID() + ", " + newFeedingTask.getDescription());
+                //System.out.println("Task: " + newFeedingTask.getID() + ", " + newFeedingTask.getDescription()+", " + newFeedingTask.getTotalTime());
                 Task newCageTask = new Task(currentTaskID++, "Cage cleaning - " + species.toString(), cageDuration, 0, 24);
                 this.tasks.add(newCageTask);
-                // System.out.println("Task: " + newCageTask.getID() + ", " + newCageTask.getDescription());
+                //System.out.println("Task: " + newCageTask.getID() + ", " + newCageTask.getDescription()+ ", " + newCageTask.getTotalTime());
             } 
             catch (IllegalArgumentException e) {
                 System.out.println("IllegalArgumentException exception when creating task object"); }
@@ -149,8 +130,8 @@ public class LoadData {
     }
 
     /** selectTreatments()
-    * Loads all data from TREATMENTS SQL table into treatments ArrayList
-    * @return   void  
+     * Loads all data from TREATMENTS SQL table into treatments ArrayList
+     * @return   void  
     */
     public void selectTreatments() {
         try {
@@ -174,16 +155,16 @@ public class LoadData {
     }
 
     /** addCageAndFeedingTreatments()
-    * Checks if the animal species is present in the treatments ArrayList
-    * If it is, then it adds the corresponding cage cleaning and feeding tasks to the treatments ArrayList
-    * @return   void  
+     * Checks if the animal species is present in the treatments ArrayList
+     * If it is, then it adds the corresponding cage cleaning and feeding tasks to the treatments ArrayList
+     * @return   void  
     */
     public void addCageAndFeedingTreatments() {
         // iterate through treatments and list all animal ID's that are associated to task ID #1 - all orphaned animal IDs
         ArrayList<Integer> orphanAnimals = new ArrayList<Integer>();
         for (int treatmentIndex = 0; treatmentIndex < treatments.size(); treatmentIndex++) {
             if (treatments.get(treatmentIndex).getTaskID() == 1)
-                orphanAnimals.add(treatments.get(treatmentIndex).getAnimalID());
+                { orphanAnimals.add(treatments.get(treatmentIndex).getAnimalID()); }
         }
 
         int currentTreatmentID = treatments.get(treatments.size() - 1).getTreatementID(); // retrieve the latest
@@ -197,7 +178,7 @@ public class LoadData {
                     else if (animals.get(val1).getMostActive() == "Diurnal") { startHour = 8; }
 
                     if (!orphanAnimals.contains(animals.get(val1).getID())) { // if not an orphan, add the feeding treatment
-                        try{
+                        try {
                             Treatment newTreatment = new Treatment(++currentTreatmentID, animals.get(val1).getID(),
                                 tasks.get(val2).getID(), startHour);
                             this.treatments.add(newTreatment);
@@ -209,7 +190,8 @@ public class LoadData {
                         }
                         
                     }
-                } else if (tasks.get(val2).getDescription().contains("Cage cleaning - " + animals.get(val1).getSpecies())) {
+                } 
+                else if (tasks.get(val2).getDescription().contains("Cage cleaning - " + animals.get(val1).getSpecies())) {
                     try {
                         Treatment newTreatment = new Treatment(++currentTreatmentID, animals.get(val1).getID(),
                             tasks.get(val2).getID());
@@ -229,8 +211,8 @@ public class LoadData {
     }
 
     /** close() 
-    * Closes the SQL connection
-    * @return   void  
+     * Closes the SQL connection
+     * @return   void  
     */
     public void close() {
         try {
@@ -241,5 +223,4 @@ public class LoadData {
         }
     }
 
-    
 }

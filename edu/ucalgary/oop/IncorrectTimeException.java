@@ -1,9 +1,9 @@
 /** 
-@author ENSF380 Group 20
-* IncorrectTimeException is a java class extending the Exception class.
-* It is thrown whenever the total time exceeds an allowed time of 60 minutes.
-@version    1.2
-@since 1.0
+ * @author ENSF380 Group 20
+ * IncorrectTimeException is a java class extending the Exception class.
+ * It is thrown whenever the total time exceeds an allowed time of 60 minutes.
+ * @version     1.2
+ * @since       1.0
 */
 package edu.ucalgary.oop;
 

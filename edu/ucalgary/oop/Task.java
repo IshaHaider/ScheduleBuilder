@@ -1,12 +1,12 @@
 /** 
-@author ENSF380 Group 20
-* Task is a java class representing one row of data from the Task table of the EWR database. 
-* the totalTime data member is an integer array, where:
-* totalTime[0] = the duration per animal
-* totalTime[1] = prepTime
-* totalTime[2] = total time of the task combining the duration and prepTime
-@version    1.2
-@since 1.0
+ * @author ENSF380 Group 20
+ * Task is a java class representing one row of data from the Task table of the EWR database. 
+ * the totalTime data member is an integer array, where:
+ * totalTime[0] = the duration per animal
+ * totalTime[1] = prepTime
+ * totalTime[2] = total time of the task combining the duration and prepTime
+ * @version     1.2
+ * @since       1.0
 */
 
 package edu.ucalgary.oop;
@@ -18,12 +18,12 @@ public class Task {
     private int maxWindow;
 
     /** Constructor
-    * Initializes the data members of the Task class setting the prepTime member to 0 as default
-    * @param  id  an integer value of the task ID
-    * @param  descr the description of the task
-    * @param  duration length of time the task takes per animal
-    * @param  maxWindow maximum flexibility the task has in terms of hours
-    * @return
+     * Initializes the data members of the Task class setting the prepTime member to 0 as default
+     * @param  id  an integer value of the task ID
+     * @param  descr the description of the task
+     * @param  duration length of time the task takes per animal
+     * @param  maxWindow maximum flexibility the task has in terms of hours
+     * @return
     */
     public Task (int id, String descr, int duration, int maxWindow ){
         this.taskId = id;
@@ -35,13 +35,13 @@ public class Task {
     }
 
     /** Constructor
-    * Initializes the data members of the Task class
-    * @param  id  an integer value of the task ID
-    * @param  descr the description of the task
-    * @param  duration length of time the task takes per animal
-    * @param  prepTime length of prep time the task takes, regardless of number of animals
-    * @param  maxWindow maximum flexibility the task has in terms of hours
-    * @return 
+     * Initializes the data members of the Task class
+     * @param  id  an integer value of the task ID
+     * @param  descr the description of the task
+     * @param  duration length of time the task takes per animal
+     * @param  prepTime length of prep time the task takes, regardless of number of animals
+     * @param  maxWindow maximum flexibility the task has in terms of hours
+     * @return 
     */
     public Task (int id, String descr, int duration, int prepTime, int maxWindow ){
         this.taskId = id;
@@ -53,8 +53,8 @@ public class Task {
     }
 
     /** Setters 
-    * setter methods assigning the parameter value to the stored object
-    * @return   void
+     * setter methods assigning the parameter value to the stored object
+     * @return   void
     */
     public void setID(int id) { this.taskId = id; }
     public void setDescription(String descr) { this.taskDescr = descr; }
@@ -64,7 +64,7 @@ public class Task {
     public void setMaxWindow(int maxWindow) { this.maxWindow = maxWindow; }
 
     /** Getters
-    * getter methods returning the stored object requested
+     * getter methods returning the stored object requested
     */
     public int getID() { return this.taskId; }
     public String getDescription() { return this.taskDescr; }
