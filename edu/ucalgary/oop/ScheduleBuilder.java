@@ -11,6 +11,9 @@ package edu.ucalgary.oop;
 import java.io.*;
 import java.sql.*;
 import java.util.*;
+
+import edu.ucalgary.oop.Schedule;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -490,50 +493,48 @@ public class ScheduleBuilder {
     }
 
     /** combineSimilarTasks()
-     * iterates over the times array and checks all of the scheduled tasks per hour.
-     * A temporary array stores the first occurence of every task in that hour, if the 
-     * task re-occurs, then they is grouped together. Once all start hours have been 
-     * checked and grouped together, another for-loop iterates over the hours once
-     * again and re-calculates the remaining time after each task is performed.
+     * iterates over the times array and checks all of the scheduled tasks per hour, 
+     * storing only the first occurrence of each task. A temporary HashMap stores these tasks 
+     * Strings as keys with temporary "ID" values. These ID values are used as the keys for a 
+     * second temporary HashMap that stores the Schedule objects. 
+     * 1st nested for-loop: iterates over the schedule ArrayList. If the task is new, it 
+     * is added to the two HashMaps. If the task re-occurs, the pre-existing task and Schedule object are
+     * found in the HashMaps and updated accordingly. Finally, the repeated task is removed 
+     * from the schedule ArrayList.
+     * 2nd nested for-loop: iterates over the HashMap containing the non-duplicate Schedule 
+     * objects of that hour. Re-calculates the remaining time after each task is performed.
      * @return   void
     */
     public void combineSimilarTasks() throws IncorrectTimeException{
         for (int i = 0; i < times.length; i++) { // iterate through the times
-            ArrayList<String> tempList = new ArrayList<String>();
-            int totalRemainingTime = 60;
+            HashMap<String, Integer> mapForString = new HashMap<String, Integer>();
+            HashMap<Integer, Schedule> mapForSchedule = new HashMap<Integer, Schedule>();
+            int count =  0;
+            times[i][1] = 60;
+            
             for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { //iterate through the schedule arrayList
                 if (schedule.get(scheduleIndex).getStartTime() == times[i][0]) {
                     String key = schedule.get(scheduleIndex).getTask();
-                    if (tempList.contains(key)){ // if the task exists in the list
-                        for (int scheduleIndex2 = 0; scheduleIndex2 < schedule.size(); scheduleIndex2++) {
-                            // find the first element where the startHour and description are the same as current task
-                            if (schedule.get(scheduleIndex2).getTask() == schedule.get(scheduleIndex).getTask() &&
-                                schedule.get(scheduleIndex2).getStartTime() == schedule.get(scheduleIndex).getStartTime()) 
-                            {
-                                schedule.get(scheduleIndex2).setAnimalList(schedule.get(scheduleIndex).getAnimalList().get(0));
-                                // if the schedule element is already present, then add the current schedule element's animal and timeSpent into that
-                                int time = schedule.get(scheduleIndex2).getTimeSpent() + schedule.get(scheduleIndex).getTimeSpent();
-                                schedule.get(scheduleIndex2).setTimeSpent(time);
-                                break; // stop once first task is matched
-                            }
-                        }
+                    if (mapForString.containsKey(key)){ // if the task exists in the list
+                        Schedule tempSchedule = mapForSchedule.get(mapForString.get(key));
+                        tempSchedule.setAnimalList(schedule.get(scheduleIndex).getAnimalList().get(0));
+                        int time = tempSchedule.getTimeSpent() + schedule.get(scheduleIndex).getTimeSpent();
+                        tempSchedule.setTimeSpent(time);
                         // since it is a duplicate task, remove it from the schedule ArrayList and decrement the index
                         schedule.remove(scheduleIndex);
                         scheduleIndex--;
                     }
-                    else { tempList.add(key); }
+                    else { 
+                        mapForString.put(key, count); 
+                        mapForSchedule.put(count, schedule.get(scheduleIndex));
+                        count++; 
+                    }
                 }
             }
-        }
-
-        for (int i = 0; i < times.length; i++) { // iterate through the times
-            times[i][1] = 60; // reset the remaining time to 60 
-            for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { //iterate through the schedule arrayList
-                if (schedule.get(scheduleIndex).getStartTime() == times[i][0]) { // find all schedule objects for this hour
-                    // update the remaining time in the times array along with the timeRemaining data member of the object
-                    times[schedule.get(scheduleIndex).getStartTime()][1] -= schedule.get(scheduleIndex).getTimeSpent();
-                    schedule.get(scheduleIndex).setTimeRemaining(times[schedule.get(scheduleIndex).getStartTime()][1]); 
-                }
+            for (int mapIndex = 0; mapIndex < mapForSchedule.size(); mapIndex++){ //iterate through the HashMap containing the schedules
+                // update the remaining time in the times array along with the timeRemaining data member of the object
+                times[i][1] -= mapForSchedule.get(mapIndex).getTimeSpent();
+                mapForSchedule.get(mapIndex).setTimeRemaining(times[i][1]);
             }
         }
     }
@@ -556,17 +557,17 @@ public class ScheduleBuilder {
             int count = 0;
             for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { //iterate through the schedule arrayList
                 if ((times[i][1] < 0) || count != 0) { // if the timeRemaining for any time slot is negative...
-                    VolunteerGUI volunteer = new VolunteerGUI(Integer.toString(times[i][0]));
-                    while(volunteer.getState()){
-                        //delaying ...
-                    }
+                    // VolunteerGUI volunteer = new VolunteerGUI(Integer.toString(times[i][0]));
+                    // while(volunteer.getState()){
+                    //     //delaying ...
+                    // }
                     if (times[i][0] == schedule.get(scheduleIndex).getStartTime()) { // find the time slots in the schedule arrayList
-                        schedule.get(scheduleIndex).setBackupRequired(true); // make those objects have backup volunteer
-                        if (count == 0 ) { // get the original time remaining (which is not negative)
-                            times[i][1] = schedule.get(scheduleIndex).getTimeRemaining() * 2; // double the TimeRemaining attribute for initial remaining time
-                            count++; }
-                        else { times[i][1] -= schedule.get(scheduleIndex).getTimeSpent(); }
-                        schedule.get(scheduleIndex).setTimeRemaining(times[i][1]);
+                    schedule.get(scheduleIndex).setBackupRequired(true); // make those objects have backup volunteer
+                    if (count == 0 ) { // get the original time remaining (which is not negative)
+                        times[i][1] = schedule.get(scheduleIndex).getTimeRemaining() * 2; // double the TimeRemaining attribute for initial remaining time
+                        count++; }
+                    else { times[i][1] -= schedule.get(scheduleIndex).getTimeSpent(); }
+                    schedule.get(scheduleIndex).setTimeRemaining(times[i][1]);
                     }
                 }
             }
@@ -616,7 +617,14 @@ public class ScheduleBuilder {
                 
                 if (times[i][0] == schedule.get(scheduleIndex).getStartTime()) { // find the time slots in the schedule arrayList
                     if (count == 0 ) { // if it is first task under this time slot, check for backup volunteer
-                        if (schedule.get(scheduleIndex).getBackupRequired() == true) { textForHour += " [+ backup volunteer] \n"; }
+                        if (schedule.get(scheduleIndex).getBackupRequired() == true) { 
+                            textForHour += " [+ backup volunteer] \n"; 
+                            VolunteerGUI volunteer = new VolunteerGUI(Integer.toString(times[i][0]));
+                            while(volunteer.getState()){
+                                //delaying ...
+                            }
+                        }
+                        
                         else { textForHour += "\n"; }
                         count++;
                     }
