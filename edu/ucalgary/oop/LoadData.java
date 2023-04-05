@@ -1,5 +1,13 @@
-package edu.ucalgary.oop;
+/** 
+@author ENSF380 Group 20
+* LoadData is a java class that creates the SQL connection
+* loads all the tables from the SQL data base
+* and closes the connection in the end
+@version    2.1
+@since 1.0
+*/
 
+package edu.ucalgary.oop;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -11,27 +19,44 @@ public class LoadData {
     private ArrayList<Task> tasks = new ArrayList<Task>();
     private ArrayList<Treatment> treatments = new ArrayList<Treatment>();
     
+    /** Default Constructor
+    * @return   
+    */
     public LoadData() {}
 
-    // getters and setters
-    public void setResults(ResultSet results){this.results = results;}
-    public ResultSet getResults(){return this.results;}
-    public void setAnimals(ArrayList<Animal> animals){this.animals = animals;}
-    public ArrayList<Animal> getAnimals(){return this.animals;}
-    public void setTasks(ArrayList<Task> tasks){this.tasks = tasks;}
-    public ArrayList<Task> getTasks(){return this.tasks;}
-    public void setTreatments(ArrayList<Treatment> treatments){this.treatments = treatments;}
-    public ArrayList<Treatment> getTreatments(){return this.treatments;}
+    /** Setters 
+    * setter methods assigning the parameter value to the stored object
+    * @return   void
+    */
+    public void setResults(ResultSet results) { this.results = results; }
+    public void setAnimals(ArrayList<Animal> animals) { this.animals = animals; }
+    public void setTasks(ArrayList<Task> tasks) { this.tasks = tasks; }
+    public void setTreatments(ArrayList<Treatment> treatments) { this.treatments = treatments; }
+    
+    /** Getters
+    * getter methods returning the stored object requested
+    */
+    public ResultSet getResults() { return this.results; }
+    public ArrayList<Animal> getAnimals() { return this.animals; }
+    public ArrayList<Task> getTasks() { return this.tasks; }
+    public ArrayList<Treatment> getTreatments() { return this.treatments; }
 
+    /** createConnection()
+    * Connects SQL database with Java application
+    * @return   void
+    */
     public void createConnection() {
-        try { // connect SQL database with Java application
+        try { 
             dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "oop", "password");
         } catch (SQLException e) {
-            e.printStackTrace();
-        }
+            e.printStackTrace();}
     }
 
-    public void selectAnimals() {
+    /** selectAnimals()
+    * Loads all data from ANIMALS SQL table into animals ArrayList
+    * @return   void  
+    */
+    public void selectAnimals() throws SpeciesNotFoundException {
         try {
             Statement myStmt = dbConnect.createStatement();
             results = myStmt.executeQuery("SELECT * FROM animals"); // select all animals
@@ -46,9 +71,14 @@ public class LoadData {
         } catch (SQLException ex) {
             ex.printStackTrace();
         } catch (IllegalArgumentException e) {
+            System.out.println("IllegalArgumentException exception when creating animal object");
         }
     }
 
+    /** selectTasks()
+    * Loads all data from TASKS SQL table into tasks ArrayList
+    * @return   void  
+    */
     public void selectTasks() {
         try {
             Statement myStmt = dbConnect.createStatement();
@@ -64,11 +94,16 @@ public class LoadData {
         } catch (SQLException ex) {
             ex.printStackTrace();
         } catch (IllegalArgumentException e) {
+            System.out.println("IllegalArgumentException exception when creating task object");
         }
 
         addCageAndFeedingTasks();
     }
 
+    /** addCageAndFeedingTasks()
+    * Manually creates the cage cleaning and feeding (only non-orphaned animals) tasks for animals
+    * @return   void  
+    */
     public void addCageAndFeedingTasks() {
         // add normal feeding and cage cleaning
         int currentTaskID = tasks.get(tasks.size() - 1).getID() + 1; // retrieve the latest task ID and increment it
@@ -99,17 +134,24 @@ public class LoadData {
                 feedingDuration = 5;
                 cageDuration = 5;
             }
-            Task newFeedingTask = new Task(currentTaskID++, "Feeding - " + species.toString(), feedingDuration,
+            try {
+                Task newFeedingTask = new Task(currentTaskID++, "Feeding - " + species.toString(), feedingDuration,
                     prepTime, 3);
-            this.tasks.add(newFeedingTask);
-            System.out.println("Task: " + newFeedingTask.getID() + ", " + newFeedingTask.getDescription());
-            Task newCageTask = new Task(currentTaskID++, "Cage cleaning - " + species.toString(), cageDuration, 0, 24);
-            this.tasks.add(newCageTask);
-            System.out.println("Task: " + newCageTask.getID() + ", " + newCageTask.getDescription());
+                this.tasks.add(newFeedingTask);
+                // System.out.println("Task: " + newFeedingTask.getID() + ", " + newFeedingTask.getDescription());
+                Task newCageTask = new Task(currentTaskID++, "Cage cleaning - " + species.toString(), cageDuration, 0, 24);
+                this.tasks.add(newCageTask);
+                // System.out.println("Task: " + newCageTask.getID() + ", " + newCageTask.getDescription());
+            } 
+            catch (IllegalArgumentException e) {
+                System.out.println("IllegalArgumentException exception when creating task object"); }
         }
-
     }
 
+    /** selectTreatments()
+    * Loads all data from TREATMENTS SQL table into treatments ArrayList
+    * @return   void  
+    */
     public void selectTreatments() {
         try {
             Statement myStmt = dbConnect.createStatement();
@@ -126,10 +168,16 @@ public class LoadData {
         } catch (SQLException ex) {
             ex.printStackTrace();
         } catch (IllegalArgumentException e) {
+            System.out.println("IllegalArgumentException exception when creating treatment object");
         }
         addCageAndFeedingTreatments();
     }
 
+    /** addCageAndFeedingTreatments()
+    * Checks if the animal species is present in the treatments ArrayList
+    * If it is, then it adds the corresponding cage cleaning and feeding tasks to the treatments ArrayList
+    * @return   void  
+    */
     public void addCageAndFeedingTreatments() {
         // iterate through treatments and list all animal ID's that are associated to task ID #1 - all orphaned animal IDs
         ArrayList<Integer> orphanAnimals = new ArrayList<Integer>();
@@ -144,30 +192,34 @@ public class LoadData {
         while (animals.size() > val1) {
             while (tasks.size() > val2) {
                 if (tasks.get(val2).getDescription().contains("Feeding - " + animals.get(val1).getSpecies())) {
-                    if (animals.get(val1).getMostActive() == "Nocturnal")
-                        startHour = 0;
-                    else if (animals.get(val1).getMostActive() == "Crepuscular")
-                        startHour = 19;
-                    else if (animals.get(val1).getMostActive() == "Diurnal")
-                        startHour = 8;
+                    if (animals.get(val1).getMostActive() == "Nocturnal") { startHour = 0; }
+                    else if (animals.get(val1).getMostActive() == "Crepuscular") { startHour = 19; }
+                    else if (animals.get(val1).getMostActive() == "Diurnal") { startHour = 8; }
 
                     if (!orphanAnimals.contains(animals.get(val1).getID())) { // if not an orphan, add the feeding treatment
-                        Treatment newTreatment = new Treatment(++currentTreatmentID, animals.get(val1).getID(),
+                        try{
+                            Treatment newTreatment = new Treatment(++currentTreatmentID, animals.get(val1).getID(),
                                 tasks.get(val2).getID(), startHour);
-                        this.treatments.add(newTreatment);
-                        System.out.println(
-                                "Treatment: " + newTreatment.getTreatementID() + ", " + newTreatment.getAnimalID()
-                                        + ", " + newTreatment.getTaskID() + ", " + newTreatment.getStartHour());
+                            this.treatments.add(newTreatment);
+                            // System.out.println(
+                            //         "Treatment: " + newTreatment.getTreatementID() + ", " + newTreatment.getAnimalID()
+                            //                 + ", " + newTreatment.getTaskID() + ", " + newTreatment.getStartHour());
+                        } catch (IllegalArgumentException e) {
+                            System.out.println("IllegalArgumentException exception when creating treatment object");
+                        }
+                        
                     }
-                } else if (tasks.get(val2).getDescription()
-                        .contains("Cage cleaning - " + animals.get(val1).getSpecies())) {
-                    Treatment newTreatment = new Treatment(++currentTreatmentID, animals.get(val1).getID(),
+                } else if (tasks.get(val2).getDescription().contains("Cage cleaning - " + animals.get(val1).getSpecies())) {
+                    try {
+                        Treatment newTreatment = new Treatment(++currentTreatmentID, animals.get(val1).getID(),
                             tasks.get(val2).getID());
-                    this.treatments.add(newTreatment);
-                    System.out
-                            .println("Treatment: " + newTreatment.getTreatementID() + ", " + newTreatment.getAnimalID()
-                                    + ", " + newTreatment.getTaskID() + ", " + newTreatment.getStartHour());
-
+                        this.treatments.add(newTreatment);
+                        // System.out
+                        //         .println("Treatment: " + newTreatment.getTreatementID() + ", " + newTreatment.getAnimalID()
+                        //                 + ", " + newTreatment.getTaskID() + ", " + newTreatment.getStartHour());
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("IllegalArgumentException exception when creating treatment object");
+                    }
                 }
                 val2++;
             }
@@ -176,6 +228,10 @@ public class LoadData {
         }
     }
 
+    /** close() 
+    * Closes the SQL connection
+    * @return   void  
+    */
     public void close() {
         try {
             results.close();
