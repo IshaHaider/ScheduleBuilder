@@ -8,6 +8,9 @@ import java.util.regex.*;
 
 public class LoadDataTest{ 
 
+    //////Start of Animal.java testing:
+    
+    // Values used for all tests involving Recipe class
     int expectedAnimalID = 1;
     String expectedAnimalNickname = "Emma";
     String expectedAnimalSpecies = "fox";  
