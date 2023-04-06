@@ -43,6 +43,26 @@ public class ScheduleBuilder {
         this.treatments = new ArrayList<>(data.getTreatments());
     }
 
+    /** Setters 
+     * setter methods assigning the parameter value to the stored object
+     * @return   void
+    */
+    public void setAnimals(ArrayList<Animal> animals) { this.animals = animals; }
+    public void setTasks(ArrayList<Task> tasks) { this.tasks = tasks; }
+    public void setTreatments(ArrayList<Treatment> treatments) { this.treatments = treatments; }
+    public void setSchedule(ArrayList<Schedule> schedule) { this.schedule = schedule; }
+    public static void setTimes(int[][] newTimes) { times = newTimes; }
+    
+    /** Getters
+     * getter methods returning the stored object requested
+    */
+    public ArrayList<Animal> getAnimals() { return this.animals; }
+    public ArrayList<Task> getTasks() { return this.tasks; }
+    public ArrayList<Treatment> getTreatments() { return this.treatments; }
+    public ArrayList<Schedule> getSchedule() { return this.schedule; }
+    public static int[][] getTimes() { return times; }
+
+
     /** createSchedule()
      * Calls on all required methods to create the schedule. 
      * First check for all treatments with MaxWindow ranging from 1 to 5
@@ -557,10 +577,6 @@ public class ScheduleBuilder {
             int count = 0;
             for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { //iterate through the schedule arrayList
                 if ((times[i][1] < 0) || count != 0) { // if the timeRemaining for any time slot is negative...
-                    // VolunteerGUI volunteer = new VolunteerGUI(Integer.toString(times[i][0]));
-                    // while(volunteer.getState()){
-                    //     //delaying ...
-                    // }
                     if (times[i][0] == schedule.get(scheduleIndex).getStartTime()) { // find the time slots in the schedule arrayList
                     schedule.get(scheduleIndex).setBackupRequired(true); // make those objects have backup volunteer
                     if (count == 0 ) { // get the original time remaining (which is not negative)
