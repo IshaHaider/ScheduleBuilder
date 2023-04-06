@@ -292,7 +292,7 @@ public class ScheduleBuilderTest{
     // TESTING SCHEDULEBUILDER
 
     // testing constructor for ScheduleBuilder class
-    // @Test 
+    @Test 
     public void testScheduleBuilderConstructor() {
         // create a LoadData object
         LoadData testData = new LoadData();
