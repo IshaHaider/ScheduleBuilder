@@ -12,12 +12,14 @@ public class errorGUI {
     public String task;
     public String user_change;
     public boolean states;
+    public String given_animal; 
 
-    public errorGUI(String cases, int StartingHour, String given_task){
+    public errorGUI(String cases, int StartingHour, String given_task, String animal){
         this.startingHour = StartingHour;
         this.reason = cases;
         this.task = given_task;
         this.states = true;
+        this.given_animal = animal;
         if(this.reason == "negative"){
             negativeFixingGui();
         }
@@ -35,7 +37,7 @@ public class errorGUI {
 
         JPanel panel = new JPanel(new BorderLayout(10, 10)); 
 
-        String display = "There are not enough workers available for this task: " + this.task;
+        String display = "There are not enough workers available for this task: " + this.task + "with pet: " + this.given_animal;
         JLabel titleLabel = new JLabel(display);
         titleLabel.setFont(new Font("Arial", Font.PLAIN, 16)); 
 
@@ -76,7 +78,7 @@ public class errorGUI {
         
         JPanel panel = new JPanel(new BorderLayout(10, 10)); 
 
-        String display = "There are too many tasks in this delgated hour: " + this.task;
+        String display = "There are too many tasks in this delgated hour: " + this.task + "with pet: " + this.given_animal;
         JLabel titleLabel = new JLabel(display);
         titleLabel.setFont(new Font("Arial", Font.PLAIN, 16)); 
 
@@ -112,3 +114,5 @@ public class errorGUI {
     public boolean getStates(){return this.states;}
 
 }
+
+

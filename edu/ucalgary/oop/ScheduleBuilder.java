@@ -28,6 +28,7 @@ import java.time.format.DateTimeFormatter;
 public class ScheduleBuilder {
     private ArrayList<Animal> animals;
     private ArrayList<Task> tasks;
+    private LoadData db; 
     private ArrayList<Treatment> treatments;
     private ArrayList<Schedule> schedule = new ArrayList<Schedule>();
     private static int[][] times = { {0, 60}, {1, 60}, {2, 60},{3, 60},{4, 60},{5, 60},{6, 60},{7, 60},{8, 60},{9, 60},{10, 60},{11, 60},
@@ -38,6 +39,7 @@ public class ScheduleBuilder {
      * @return 
     */
     public ScheduleBuilder(LoadData data){
+        this.db = data; 
         this.animals = new ArrayList<>(data.getAnimals());
         this.tasks = new ArrayList<>(data.getTasks());
         this.treatments = new ArrayList<>(data.getTreatments());
@@ -618,24 +620,82 @@ public class ScheduleBuilder {
         BufferedWriter outputStream = new BufferedWriter(new FileWriter("output.txt"));
         outputStream.write("Schedule for " + date + ":\n\n");
 
+        //A big string of all of the values previous to it all
         for (int i = 0; i < times.length; i++) { // iterate through the times
             String textForHour = String.valueOf(times[i][0]) + ":00";
             int count = 0;
+            //this.db.changes(1, 5, 9, 22);
+            
             for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { // iterate through the schedule arrayList
                 if (schedule.get(scheduleIndex).getTimeRemaining() < 0) { 
-                    //you should give back the start timings and the animals that are creating this issue 
-                   errorGUI error = new errorGUI("negative", schedule.get(scheduleIndex).getStartTime(), schedule.get(scheduleIndex).getTaskString()); 
-                   while(error.getStates()){ 
+                    //how do i know which animal contrubited to this...?
+                    // getthe AnimalID and the TaskID and pass it to the user so they know where, but also store that 
+                    String animal; 
+                    if(schedule.get(scheduleIndex).getAnimalList().size() == 1){
+                        ArrayList<String> x = (schedule.get(scheduleIndex).getAnimalList());
+                        animal = x.get(0);  
+                    }
+                    //HELLOOOOOOO ISHA IDK HOW TO DO THIS PART TO FIND THE ONE PET WHERE IT IS MAKING THAT MISTAKE......!!!! CALL ME PLS 
+                    else{
+                        animal = "print"; 
+                    }
+                    errorGUI error = new errorGUI("negative", schedule.get(scheduleIndex).getStartTime(), schedule.get(scheduleIndex).getTask(), animal); 
+                   
+                    while(error.getStates()){ 
                        continue; 
-                   } int newHour = error.getSelectedHour(); 
+                   
+                    } 
+                    //retriving the values
+                    int newHour = error.getSelectedHour(); 
+                    int petID = 0; 
+                    int taskID = 0 ;
 
+                    for(Animal x : this.animals){
+                        if(x.getNickname() == animal){
+                            petID = x.getID();
+                        }
+                    }
+
+                    for(Task y: this.tasks){
+                        if(y.getDescription() == schedule.get(scheduleIndex).getTask()){
+                            taskID = y.getID(); 
+                        }
+                    }
+
+                    //changing the database.. we want to change treatments
+                    this.db.changes(petID, newHour, taskID, schedule.get(scheduleIndex).getStartTime());
                 }
                 else if (schedule.get(scheduleIndex).getBackupRequired() && (schedule.get(scheduleIndex).getTimeRemaining() + schedule.get(scheduleIndex).getTimeSpent()) > 120) {
-                    errorGUI error = new errorGUI("over", schedule.get(scheduleIndex).getStartTime(), schedule.get(scheduleIndex).getTaskString()); 
+                    String animal; 
+                    if(schedule.get(scheduleIndex).getAnimalList().size() == 1){
+                        ArrayList<String> x = (schedule.get(scheduleIndex).getAnimalList());
+                        animal = x.get(0);  
+                    }
+                    //HELLOOOOOOO ISHA IDK HOW TO DO THIS PART TO FIND THE ONE PET WHERE IT IS MAKING THAT MISTAKE......!!!! CALL ME PLS 
+                    else{
+                        animal = "print"; 
+                    }
+                    errorGUI error = new errorGUI("over", schedule.get(scheduleIndex).getStartTime(), schedule.get(scheduleIndex).getTask(), animal); 
                     while(error.getStates()){
                         continue; 
                     } int newHour = error.getSelectedHour(); 
+                    int petID = 0;
+                    int taskID = 0;
+                    
+                    for(Animal x : this.animals){
+                        if(x.getNickname() == animal){
+                            petID = x.getID();
+                        }
+                    }
 
+                    for(Task y: this.tasks){
+                        if(y.getDescription() == schedule.get(scheduleIndex).getTask()){
+                            taskID = y.getID(); 
+                        }
+                    }
+
+                    //changing the database....we want to change treatments
+                    this.db.changes(petID, newHour, taskID, schedule.get(scheduleIndex).getStartTime()); 
                 }
                 
                 if (times[i][0] == schedule.get(scheduleIndex).getStartTime()) { // find the time slots in the schedule arrayList
@@ -669,6 +729,7 @@ public class ScheduleBuilder {
             e.printStackTrace(); }
 
         displaysch displas = new displaysch("start"); 
+        this.db.close(); 
     
     }
 
@@ -690,6 +751,6 @@ public class ScheduleBuilder {
 
         ScheduleBuilder schedule = new ScheduleBuilder(database);
         schedule.createSchedule();
-        database.close();
+        //database.close();
     }
 }

@@ -210,6 +210,24 @@ public class LoadData {
         }
     }
 
+    public void changes(int animalID, int hour, int taskID, int OGhour){ 
+        try{
+            String changing_statement = "update TREATMENTS set StartHour = ? where AnimalID = ? and TaskID = ? and StartHour = ?"; 
+            PreparedStatement ps = dbConnect.prepareStatement(changing_statement);
+            ps.setInt(1,hour);
+            ps.setInt(2,animalID);
+            ps.setInt(3,taskID);
+            ps.setInt(4,OGhour); 
+            int x = ps.executeUpdate();
+            ps.close(); 
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+
+
     /** close() 
      * Closes the SQL connection
      * @return   void  
