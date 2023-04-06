@@ -320,6 +320,73 @@ public class ScheduleBuilderTest{
 
     // testing createSchedule() in ScheduleBuilder class
     
+    //////Start of treatment.java testing:
+
+    @Test //if first constructor  passes valid values for all parameters
+    public void testAllTreatmentGetters (){
+        Treatment t = new Treatment(1, 2, 3, 10);
+        assertEquals(1, t.getTreatementID());
+        assertEquals(2, t.getAnimalID());
+        assertEquals(3, t.getTaskID());
+        assertEquals(10, t.getStartHour());
+        
+    }
+    @Test //if the second constructor passes valid values for treatmentID, animalID, and taskID
+    public void testSecondTreatmentGetters (){
+        Treatment t = new Treatment(1, 2, 3);
+        assertEquals(1, t.getTreatementID());
+        assertEquals(2, t.getAnimalID());
+        assertEquals(3, t.getTaskID());
+        
+    } 
+    @Test // if the setter methods is setting new values for each property
+    public void testTreatmentSetters (){
+        Treatment t = new Treatment(1, 2, 3);
+        t.setTreatementID(4);
+        t.setAnimalID(5);
+        t.setTaskID(6);
+        t.setStartHour(12);
+        assertEquals(4, t.getTreatementID());
+        assertEquals(5, t.getAnimalID());
+        assertEquals(6, t.getTaskID());
+        assertEquals(12, t.getStartHour());        
+        
+    } 
+    @Test //if the first constructor is passing an invalid value for the startHour parameter (less than 0)
+    public void testConstructorWithInvalidStartHour(){
+        assertThrows(IllegalArgumentException.class, () -> {
+            Treatment t = new Treatment(1, 2, 3, -1);
+        });
+        
+    }
+    @Test //if the first constructor is passing an invalid value for the startHour parameter (greater than or equal to 24)
+    public void testConstructorWithInvalidStartHourOutOfRange(){
+        assertThrows(IllegalArgumentException.class, () -> {
+            Treatment t = new Treatment(1, 2, 3, 24);
+        });
+        
+    }
+    @Test //if the second constructor is passing an invalid value for the treatmentID parameter (less than or equal to 0)
+    public void testConstructorWithInvalidTreatmentID(){
+        assertThrows(IllegalArgumentException.class, () -> {
+            Treatment t = new Treatment(0, 2, 3);
+        });
+        
+    }
+    @Test //if the second constructor is passing an invalid value for the animalID parameter (less than or equal to 0)
+    public void testConstructorWithInvalidAnimalID(){
+        assertThrows(IllegalArgumentException.class, () -> {
+            Treatment t = new Treatment(1, 0, 3);
+        });
+        
+    }
+    @Test //if the second constructor is passing an invalid value for the taskID parameter (less than or equal to 0)
+    public void testConstructorWithInvalidTaskID(){
+        assertThrows(IllegalArgumentException.class, () -> {
+            Treatment t = new Treatment(1, 2, 0);
+        });
+        
+    }
 
 
 }
