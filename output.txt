@@ -1,28 +1,19 @@
-Schedule for 2023-04-05:
+Schedule for 2023-04-06:
 
 0:00
 * Kit feeding (1: Annie, Oliver and Mowgli)
 * Feeding - fox (1: Slinky)
-* Cage cleaning - coyote (1: Loner)
-* Cage cleaning - coyote (1: Biter)
-* Cage cleaning - coyote (1: Bitter)
-* Cage cleaning - coyote (1: Pencil)
+* Cage cleaning - coyote (4: Loner, Biter, Bitter, Pencil)
 
 1:00
-* Cage cleaning - coyote (1: Eraser)
-* Cage cleaning - fox (1: Annie, Oliver and Mowgli)
-* Cage cleaning - fox (1: Slinky)
-* Cage cleaning - porcupine (1: Spike)
-* Cage cleaning - porcupine (1: Javelin)
-* Cage cleaning - porcupine (1: Gatekeeper)
-* Cage cleaning - porcupine (1: Sunshine)
-* Cage cleaning - coyote (1: Boots)
+* Cage cleaning - coyote (2: Eraser, Boots)
+* Cage cleaning - fox (2: Annie, Oliver and Mowgli, Slinky)
+* Cage cleaning - porcupine (4: Spike, Javelin, Gatekeeper, Sunshine)
 
 2:00
 * Kit feeding (1: Annie, Oliver and Mowgli)
 * Cage cleaning - porcupine (1: Shadow)
-* Cage cleaning - coyote (1: Spin)
-* Cage cleaning - coyote (1: Spot)
+* Cage cleaning - coyote (2: Spin, Spot)
 
 3:00
 no tasks 
@@ -58,11 +49,9 @@ no tasks
 
 13:00
 * Eyedrops (1: Biter)
-* Inspect broken leg (1: Biter)
-* Inspect broken leg (1: Spin)
+* Inspect broken leg (2: Biter, Spin)
 * Mange treatment (1: Spin)
-* Give vitamin injection (1: Bitter)
-* Give vitamin injection (1: Pencil)
+* Give vitamin injection (2: Bitter, Pencil)
 
 14:00
 * Kit feeding (1: Annie, Oliver and Mowgli)
@@ -89,17 +78,13 @@ no tasks
 
 20:00
 * Kit feeding (1: Annie, Oliver and Mowgli)
-* Feeding - porcupine (1: Javelin)
-* Feeding - porcupine (1: Gatekeeper)
-* Feeding - porcupine (1: Sunshine)
-* Feeding - porcupine (1: Shadow)
+* Feeding - porcupine (4: Javelin, Gatekeeper, Sunshine, Shadow)
 
 21:00
 * Feeding - coyote (3: Boots, Spin, Spot)
 
 22:00
-* Eyedrops (1: Loner)
-* Eyedrops (1: Javelin)
+* Eyedrops (2: Loner, Javelin)
 * Give fluid injection (1: Boots)
 
 23:00

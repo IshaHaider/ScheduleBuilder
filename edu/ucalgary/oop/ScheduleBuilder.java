@@ -607,12 +607,19 @@ public class ScheduleBuilder {
             int count = 0;
             for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { // iterate through the schedule arrayList
                 if (schedule.get(scheduleIndex).getTimeRemaining() < 0) { 
-                    throw new ScheduleFailException("The schedule cannot be built as the remaining time is negative. " +
-                    "You can rearrange some tasks and adjust their start hours in order to fit them correctly in the schedule.");
+                    //you should give back the start timings and the animals that are creating this issue 
+                   errorGUI error = new errorGUI("negative", schedule.get(scheduleIndex).getStartTime(), schedule.get(scheduleIndex).getTaskString()); 
+                   while(error.getStates()){ 
+                       continue; 
+                   } int newHour = error.getSelectedHour(); 
+
                 }
                 else if (schedule.get(scheduleIndex).getBackupRequired() && (schedule.get(scheduleIndex).getTimeRemaining() + schedule.get(scheduleIndex).getTimeSpent()) > 120) {
-                    throw new ScheduleFailException("The schedule cannot be built as the total time exceeds the allowed time." +
-                    "You can rearrange some tasks and adjust their start hours in order to fit them correctly in the schedule.");
+                    errorGUI error = new errorGUI("over", schedule.get(scheduleIndex).getStartTime(), schedule.get(scheduleIndex).getTaskString()); 
+                    while(error.getStates()){
+                        continue; 
+                    } int newHour = error.getSelectedHour(); 
+
                 }
                 
                 if (times[i][0] == schedule.get(scheduleIndex).getStartTime()) { // find the time slots in the schedule arrayList
@@ -621,7 +628,7 @@ public class ScheduleBuilder {
                             textForHour += " [+ backup volunteer] \n"; 
                             VolunteerGUI volunteer = new VolunteerGUI(Integer.toString(times[i][0]));
                             while(volunteer.getState()){
-                                //delaying ...
+                                continue; 
                             }
                         }
                         
@@ -636,7 +643,7 @@ public class ScheduleBuilder {
             if (count == 0 ) { textForHour += "\nno tasks \n"; }
             textForHour += "\n";
             outputStream.write(textForHour);
-        }
+        } 
     
         // try/catch for closing file
         try { 
@@ -644,6 +651,8 @@ public class ScheduleBuilder {
         } catch (IOException e) { 
             System.out.println("I/O exception when trying to close file");
             e.printStackTrace(); }
+
+        displaysch displas = new displaysch("start"); 
     
     }
 
