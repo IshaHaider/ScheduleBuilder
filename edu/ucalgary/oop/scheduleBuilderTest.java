@@ -293,30 +293,30 @@ public class ScheduleBuilderTest{
 
     // testing constructor for ScheduleBuilder class
     // @Test 
-    // public void testScheduleBuilderConstructor() {
-    //     // create a LoadData object
-    //     LoadData testData = new LoadData();
-    //     ArrayList<Animal> animals = new ArrayList<>();
-    //     animals.add(new Animal("Cat"));
-    //     animals.add(new Animal("Dog"));
-    //     testData.setAnimals(animals);
-    //     ArrayList<Task> tasks = new ArrayList<>();
-    //     tasks.add(new Task("Feed"));
-    //     tasks.add(new Task("Walk"));
-    //     testData.setTasks(tasks);
-    //     ArrayList<Treatment> treatments = new ArrayList<>();
-    //     treatments.add(new Treatment("Vaccination"));
-    //     treatments.add(new Treatment("Deworming"));
-    //     testData.setTreatments(treatments);
+    public void testScheduleBuilderConstructor() {
+        // create a LoadData object
+        LoadData testData = new LoadData();
+        ArrayList<Animal> animals = new ArrayList<>();
+        animals.add(new Animal("Cat"));
+        animals.add(new Animal("Dog"));
+        testData.setAnimals(animals);
+        ArrayList<Task> tasks = new ArrayList<>();
+        tasks.add(new Task("Feed"));
+        tasks.add(new Task("Walk"));
+        testData.setTasks(tasks);
+        ArrayList<Treatment> treatments = new ArrayList<>();
+        treatments.add(new Treatment("Vaccination"));
+        treatments.add(new Treatment("Deworming"));
+        testData.setTreatments(treatments);
 
-    //     // create a ScheduleBuilder Object
-    //     ScheduleBuilder testScheduleBuilderConstructor = new ScheduleBuilder(testData);
+        // create a ScheduleBuilder Object
+        ScheduleBuilder testScheduleBuilderConstructor = new ScheduleBuilder(testData);
 
-    //     // check if constructor accurately assigns values
-    //     assertEquals(animals, testScheduleBuilderConstructor.getAnimals());
-    //     assertEquals(tasks, testScheduleBuilderConstructor.getTasks());
-    //     assertEquals(treatments, testScheduleBuilderConstructor.getTreatments());
-    // }
+        // check if constructor accurately assigns values
+        assertEquals(animals, testScheduleBuilderConstructor.getAnimals());
+        assertEquals(tasks, testScheduleBuilderConstructor.getTasks());
+        assertEquals(treatments, testScheduleBuilderConstructor.getTreatments());
+    }
 
     // testing createSchedule() in ScheduleBuilder class
     
