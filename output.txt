@@ -39,6 +39,7 @@ no tasks
 no tasks 
 
 10:00
+* Rebandage leg wound (1: Slinky)
 * Kit feeding (1: Annie, Oliver and Mowgli)
 
 11:00
@@ -72,16 +73,15 @@ no tasks
 * Kit feeding (1: Annie, Oliver and Mowgli)
 
 19:00
-* Rebandage leg wound (1: Slinky)
 * Feeding - coyote (5: Loner, Biter, Bitter, Pencil, Eraser)
-* Feeding - porcupine (1: Spike)
+* Feeding - porcupine (5: Spike, Javelin, Gatekeeper, Sunshine, Shadow)
 
 20:00
 * Kit feeding (1: Annie, Oliver and Mowgli)
-* Feeding - porcupine (4: Javelin, Gatekeeper, Sunshine, Shadow)
+* Feeding - coyote (3: Boots, Spin, Spot)
 
 21:00
-* Feeding - coyote (3: Boots, Spin, Spot)
+no tasks 
 
 22:00
 * Eyedrops (2: Loner, Javelin)
