@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 public class Schedule{
     private ArrayList<String> animalList = new ArrayList<String>() ;
+    private ArrayList<Integer> treatmentIndices = new ArrayList<Integer>();
     private String task;
     private int startTime;
     private int timeSpent;
@@ -33,8 +34,9 @@ public class Schedule{
      * @throws IncorrectTimeException
      * @return   
     */
-    public Schedule(String task, String animal, int startTime, int timeSpent )
+    public Schedule(int treatmentID, String task, String animal, int startTime, int timeSpent )
     throws IncorrectTimeException {
+        this.treatmentIndices.add(treatmentID);
         this.task = task;
         this.animalList.add(animal);
         this.startTime = startTime;
@@ -56,8 +58,9 @@ public class Schedule{
      * @throws IncorrectTimeException
      * @return   
     */
-    public Schedule(String task, String animal, int startTime, int quantity, int timeSpent, int timeRemaining, boolean backupRequired)
+    public Schedule(int treatmentID, String task, String animal, int startTime, int quantity, int timeSpent, int timeRemaining, boolean backupRequired)
     throws IncorrectTimeException {
+        this.treatmentIndices.add(treatmentID);
         this.task = task;
         this.animalList.add(animal);
         this.startTime = startTime;
@@ -78,6 +81,7 @@ public class Schedule{
      * setter methods assigning the parameter value to the stored object
      * @return   void
     */
+    public void setTreatmentIndices(int treatmentID) { this.treatmentIndices.add(treatmentID);}
     public void setTask(String task) { this.task = task; }
     public void setAnimalList(String animal) { 
         this.animalList.add(animal);
@@ -97,6 +101,7 @@ public class Schedule{
     /** Getters
      * getter methods returning the stored object requested
     */
+    public ArrayList<Integer> getTreatmentIndices() { return treatmentIndices;}
     public String getTask() { return this.task; }
     public ArrayList<String> getAnimalList() { return this.animalList; }
     public String getTaskString() { return this.taskString; }
