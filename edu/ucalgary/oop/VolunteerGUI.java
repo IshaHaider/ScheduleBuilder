@@ -67,7 +67,6 @@ public class VolunteerGUI implements ActionListener {
 
     public void actionPerformed(ActionEvent event){
         this.exists = false; 
-        System.out.println("Exited"); 
         this.frame.setVisible(false); 
     }
 

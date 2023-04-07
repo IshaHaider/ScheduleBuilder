@@ -659,7 +659,7 @@ public class ScheduleBuilder {
                             textForHour += " [+ backup volunteer] \n"; 
                             VolunteerGUI volunteer = new VolunteerGUI(Integer.toString(times[i][0]));
                             while(volunteer.getState()){
-                                continue; 
+                                System.out.println(volunteer.getState()); 
                             }
                         }
                         
