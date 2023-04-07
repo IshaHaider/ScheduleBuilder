@@ -1,58 +1,98 @@
 /** 
  * @author ENSF380 Group 20
  * Animal is a java class representing one row of data from the Animal table of the EWR database. 
- * @version     1.2
+ * @version     1.3
  * @since       1.0
 */
 package edu.ucalgary.oop;
 
-public class Animal {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.sql.*;
+
+public class Animal implements LoadData {
+    private final static String query = "SELECT * FROM animals";
+    private static HashMap<Integer, Animal> animals = new HashMap<Integer, Animal>();
+
     private int animalID;
     private String animalName;
     private String animalSpecies;
-    private final String MOSTACTIVE;
+    private String mostActive;
+
+    /** Default Constructor
+     * @return  
+    */
+    public Animal() {}
 
     /** Constructor
      * Initializes the data members of the Animal class
-     * Sets the MOSTACTIVE data member using the Species enumeration:
-     *      Species: coyote or porcupine --> mostActive = Crepuscular
-     *      Species: fox or raccon --> mostActive = Nocturnal
-     *      Species: beaver--> mostActive = Diurnal
      * @param  id  an integer value of the animal ID
      * @param  name a string of the animal nickname
      * @param  species a string of the animal species
-     * @throws SpeciesNotFoundException
+     * @param  mostActive a string of the animal's mostActive period
      * @return  
     */
-    public Animal (int id, String name, String species) throws SpeciesNotFoundException {
+    public Animal (int id, String name, String species, String mostActive) {
         this.animalID = id;
         this.animalName = name;
         this.animalSpecies = species;
+        this.mostActive = mostActive;
+    }
 
-        if (this.animalSpecies.equals(Species.COYOTE.toString()) || this.animalSpecies.equals(Species.PORCUPINE.toString())) 
-            MOSTACTIVE = Species.COYOTE.mostActivePeriod();
-        else if (this.animalSpecies.equals(Species.FOX.toString()) || this.animalSpecies.equals(Species.RACCOON.toString())) 
-            MOSTACTIVE = Species.FOX.mostActivePeriod();
-        else if (this.animalSpecies.equals(Species.BEAVER.toString())) 
-            MOSTACTIVE = Species.BEAVER.mostActivePeriod();
-        else { 
-            throw new SpeciesNotFoundException("the animal " + name + " is not of a permitted species: " 
-            + species + "please only enter animals of the following species: coyote, porcupine, fox, raccoon, or beaver"); }
+    /** storeHashMap() interface method 
+     * loads data from the SQL database into a animals HashMap
+     * @return 
+    */
+    public void storeHashMap() throws SpeciesNotFoundException{
+        try {
+            Connection dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "oop", "password");
+            Statement myStmt = dbConnect.createStatement();
+            ResultSet results = myStmt.executeQuery(query);
+            while (results.next()) { // for each animal entry, add it as an Animal object to animals ArrayList
+                this.animalID = results.getInt("AnimalID");
+                this.animalName = results.getString("AnimalNickname");
+                this.animalSpecies = results.getString("AnimalSpecies");
+                
+                if (this.animalSpecies.equals(Species.COYOTE.toString()) || this.animalSpecies.equals(Species.PORCUPINE.toString())) 
+                    this.mostActive = Species.COYOTE.mostActivePeriod();
+                else if (this.animalSpecies.equals(Species.FOX.toString()) || this.animalSpecies.equals(Species.RACCOON.toString())) 
+                    this.mostActive = Species.FOX.mostActivePeriod();
+                else if (this.animalSpecies.equals(Species.BEAVER.toString())) 
+                    this.mostActive = Species.BEAVER.mostActivePeriod();
+                else { 
+                    throw new SpeciesNotFoundException("the animal " + animalName + " is not of a permitted species: " 
+                    + animalSpecies + "please only enter animals of the following species: coyote, porcupine, fox, raccoon, or beaver"); } 
+                
+                Animal newAnimal = new Animal(animalID, animalName, animalSpecies, mostActive);
+                animals.put(animalID, newAnimal);
+            }
+            myStmt.close();
+            results.close();
+            dbConnect.close();
+        } catch (IllegalArgumentException e) {
+            System.out.println("IllegalArgumentException exception when creating animal object");
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 
     /** Setters 
      * setter methods assigning the parameter value to the stored object
      * @return   void
     */
-    public void setID(int id) { this.animalID = id; }
+    public void setAnimalID(int id) { this.animalID = id; }
     public void setNickname(String name) { this.animalName = name; }
     public void setSpecies(String species) { this.animalSpecies = species; }
+    public void setMostActive(String mostActive) { this.mostActive = mostActive; }
+    public static void setAnimals(HashMap<Integer, Animal> newAnimals) { animals = newAnimals; }
 
     /** Getters
      * getter methods returning the stored object requested
     */
-    public int getID() { return this.animalID; }
+    public int getAnimalID() { return this.animalID; }
     public String getNickname() { return this.animalName; }
     public String getSpecies() { return this.animalSpecies; }
-    public String getMostActive() { return this.MOSTACTIVE; }
+    public String getMostActive() { return this.mostActive; }
+    public static HashMap<Integer, Animal> getAnimals() { return animals; }
+
 }

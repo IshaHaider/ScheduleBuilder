@@ -8,13 +8,14 @@
 package edu.ucalgary.oop;
 import java.util.ArrayList;
 
-public class Schedule {
+public class Schedule{
     private ArrayList<String> animalList = new ArrayList<String>() ;
     private String task;
-    private String taskString;
     private int startTime;
-    private int quantity = 1;
     private int timeSpent;
+
+    private String taskString;
+    private int quantity = 1;
     private int timeRemaining = 60;
     private boolean backupRequired = false;
 
@@ -22,6 +23,26 @@ public class Schedule {
      * @return   
     */
     public Schedule(){}
+
+    /** Constructor
+     * Initializes the data members of the Schedule class
+     * @param  task  a string of the task description
+     * @param  animal a string of the animal nickname, added to the animaList ArrayList
+     * @param  startTime an integer value of the start hour of the treatment
+     * @param  timeSpent an integer value of the total time spent on treatment
+     * @throws IncorrectTimeException
+     * @return   
+    */
+    public Schedule(String task, String animal, int startTime, int timeSpent )
+    throws IncorrectTimeException {
+        this.task = task;
+        this.animalList.add(animal);
+        this.startTime = startTime;
+        this.timeSpent = timeSpent;
+
+        if (timeSpent > 60 && !backupRequired) 
+        { throw new IncorrectTimeException("The time spent exceeds the allowed time in one hour: " + timeSpent ); }
+    }
 
     /** Constructor
      * Initializes the data members of the Schedule class

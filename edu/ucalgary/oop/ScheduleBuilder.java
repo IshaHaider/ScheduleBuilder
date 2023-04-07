@@ -26,44 +26,34 @@ import java.time.format.DateTimeFormatter;
 */
 
 public class ScheduleBuilder {
-    private ArrayList<Animal> animals;
-    private ArrayList<Task> tasks;
-    private LoadData db; 
-    private ArrayList<Treatment> treatments;
+    private HashMap<Integer, Treatment> allTreatments = new HashMap<Integer, Treatment>();
     private ArrayList<Schedule> schedule = new ArrayList<Schedule>();
     private static int[][] times = { {0, 60}, {1, 60}, {2, 60},{3, 60},{4, 60},{5, 60},{6, 60},{7, 60},{8, 60},{9, 60},{10, 60},{11, 60},
     {12, 60},{13, 60},{14, 60},{15, 60},{16, 60},{17, 60},{18, 60},{19, 60},{20, 60},{21, 60},{22, 60},{23, 60} };
 
-    /** Constructor
-     * @param data  the LoadData object containing all required data for building the schedule
+    /** Default Constructor
      * @return 
     */
-    public ScheduleBuilder(LoadData data){
-        this.db = data; 
-        this.animals = new ArrayList<>(data.getAnimals());
-        this.tasks = new ArrayList<>(data.getTasks());
-        this.treatments = new ArrayList<>(data.getTreatments());
+    public ScheduleBuilder() throws SpeciesNotFoundException{
+        Treatment treatment = new Treatment();
+        treatment.storeHashMap();
+        allTreatments = Treatment.getTreatments();
     }
 
     /** Setters 
      * setter methods assigning the parameter value to the stored object
      * @return   void
     */
-    public void setAnimals(ArrayList<Animal> animals) { this.animals = animals; }
-    public void setTasks(ArrayList<Task> tasks) { this.tasks = tasks; }
-    public void setTreatments(ArrayList<Treatment> treatments) { this.treatments = treatments; }
+    public void setAllTreatments(HashMap<Integer, Treatment> newTreatments) { this.allTreatments = newTreatments; }
     public void setSchedule(ArrayList<Schedule> schedule) { this.schedule = schedule; }
     public static void setTimes(int[][] newTimes) { times = newTimes; }
     
     /** Getters
      * getter methods returning the stored object requested
     */
-    public ArrayList<Animal> getAnimals() { return this.animals; }
-    public ArrayList<Task> getTasks() { return this.tasks; }
-    public ArrayList<Treatment> getTreatments() { return this.treatments; }
+    public HashMap<Integer, Treatment> getAllTreatments() { return this.allTreatments; }
     public ArrayList<Schedule> getSchedule() { return this.schedule; }
     public static int[][] getTimes() { return times; }
-
 
     /** createSchedule()
      * Calls on all required methods to create the schedule. 
@@ -80,127 +70,35 @@ public class ScheduleBuilder {
     */
     public void createSchedule() throws IOException, IncorrectTimeException, ScheduleFailException{
         createScheduleMaxWindow1();
-        
-        // add cage cleaning tasks...
+
+        // add cage cleaning tasks to schedule...
         // iterate through treatments, if treatmentID == taskID where taskDescr == "cage cleaning - species", 
         // iterate through times and find a place where timeremaining >= taskTotalTime  
-        for (int treatmentIndex = 0; treatmentIndex < treatments.size(); treatmentIndex++) {
-            for (int taskIndex = 0; taskIndex < tasks.size(); taskIndex++) {
-                if (tasks.get(taskIndex).getID() == treatments.get(treatmentIndex).getTaskID()) {
-                    if (tasks.get(taskIndex).getDescription().equals("Cage cleaning - coyote")) {
-                        for (int timeIndex = 0; timeIndex < times.length; timeIndex++) {
-                            if (times[timeIndex][1] >= tasks.get(taskIndex).getTotalTime()) { // if timeRemaining of that hour >= taskTotalTime 
-                                Schedule newSchedule = new Schedule();
-                                newSchedule.setTask(tasks.get(taskIndex).getDescription());
-                                newSchedule.setTimeSpent(tasks.get(taskIndex).getTotalTime());
-                                newSchedule.setStartTime(times[timeIndex][0]);
-
-                                times[timeIndex][1] -= newSchedule.getTimeSpent();
-                                newSchedule.setTimeRemaining(times[timeIndex][1]);
-                                
-                                // set the animal name to schedule object...
-                                for (int i=0; i<animals.size(); i++) {
-                                    if (animals.get(i).getID() == treatments.get(treatmentIndex).getAnimalID())
-                                        { newSchedule.setAnimalList(animals.get(i).getNickname()); }
-                                }
-                                this.schedule.add(newSchedule);
-                                break;
-                            } 
-                        }
-                    }
-                    
-                    else if (tasks.get(taskIndex).getDescription().equals("Cage cleaning - fox")) {
-                        for (int timeIndex = 0; timeIndex < times.length; timeIndex++) {
-                            if (times[timeIndex][1] >= tasks.get(taskIndex).getTotalTime()) { // if timeRemaining of that hour >= taskTotalTime 
-                                Schedule newSchedule = new Schedule();
-                                newSchedule.setTask(tasks.get(taskIndex).getDescription());
-                                newSchedule.setTimeSpent(tasks.get(taskIndex).getTotalTime());
-                                newSchedule.setStartTime(times[timeIndex][0]);
-        
-                                times[timeIndex][1] -= newSchedule.getTimeSpent();
-                                newSchedule.setTimeRemaining(times[timeIndex][1]);
-                                
-                                // set the animal name to schedule object...
-                                for (int i=0; i<animals.size(); i++) {
-                                    if (animals.get(i).getID() == treatments.get(treatmentIndex).getAnimalID())
-                                        { newSchedule.setAnimalList(animals.get(i).getNickname()); }
-                                }
-                                this.schedule.add(newSchedule);
-                                break;
-                            } 
-                        }
-                    }
-                    
-                    else if (tasks.get(taskIndex).getDescription().equals("Cage cleaning - porcupine")) {
-                        for (int timeIndex = 0; timeIndex < times.length; timeIndex++) {
-                            if (times[timeIndex][1] >= tasks.get(taskIndex).getTotalTime()){ // if timeRemaining of that hour >= taskTotalTime 
-                                Schedule newSchedule = new Schedule();
-                                newSchedule.setTask(tasks.get(taskIndex).getDescription());
-                                newSchedule.setTimeSpent(tasks.get(taskIndex).getTotalTime());
-                                newSchedule.setStartTime(times[timeIndex][0]);
+        String[] searchStrings = {"Cage cleaning - coyote", "Cage cleaning - fox", "Cage cleaning - porcupine", "Cage cleaning - raccoon", "Cage cleaning - beaver"};
+        for (int treatmentKey : allTreatments.keySet()) {
+            Task currentTask = allTreatments.get(treatmentKey).getTask();
+            for (String search : searchStrings){ 
+                if (allTreatments.get(treatmentKey).getTask().getDescription().equals(search)) {
+                    for (int timeIndex = 0; timeIndex < times.length; timeIndex++) {
+                        if (times[timeIndex][1] >= currentTask.getTotalTime()) { // if timeRemaining of that hour >= taskTotalTime 
+                            Schedule newSchedule = new Schedule();
+                            newSchedule.setTask(currentTask.getDescription());
+                            newSchedule.setTimeSpent(currentTask.getTotalTime());
+                            newSchedule.setStartTime(times[timeIndex][0]);
     
-                                times[timeIndex][1] -= newSchedule.getTimeSpent();
-                                newSchedule.setTimeRemaining(times[timeIndex][1]);
-                                
-                                // set the animal name to schedule object...
-                                for (int i=0; i<animals.size(); i++) {
-                                    if (animals.get(i).getID() == treatments.get(treatmentIndex).getAnimalID())
-                                        { newSchedule.setAnimalList(animals.get(i).getNickname()); }
-                                }
-                                this.schedule.add(newSchedule);
-                                break;
-                            } 
-                        }
-                        
-                    }
-                    
-                    else if (tasks.get(taskIndex).getDescription().equals("Cage cleaning - raccoon")) {
-                        for (int timeIndex = 0; timeIndex < times.length; timeIndex++) {
-                            if (times[timeIndex][1] >= tasks.get(taskIndex).getTotalTime()){ // if timeRemaining of that hour >= taskTotalTime 
-                                Schedule newSchedule = new Schedule();
-                                newSchedule.setTask(tasks.get(taskIndex).getDescription());
-                                newSchedule.setTimeSpent(tasks.get(taskIndex).getTotalTime());
-                                newSchedule.setStartTime(times[timeIndex][0]);
-
-                                times[timeIndex][1] -= newSchedule.getTimeSpent();
-                                newSchedule.setTimeRemaining(times[timeIndex][1]);
-                                
-                                // set the animal name to schedule object...
-                                for (int i=0; i<animals.size(); i++) {
-                                    if (animals.get(i).getID() == treatments.get(treatmentIndex).getAnimalID())
-                                        { newSchedule.setAnimalList(animals.get(i).getNickname()); }
-                                }
-                                this.schedule.add(newSchedule);
-                                break;
-                            } 
-                        }
-                    }
-                    
-                    else if (tasks.get(taskIndex).getDescription().equals("Cage cleaning - beaver")) {
-                        for (int timeIndex = 0; timeIndex < times.length; timeIndex++) {
-                            if (times[timeIndex][1] >= tasks.get(taskIndex).getTotalTime()){ // if timeRemaining of that hour >= taskTotalTime 
-                                Schedule newSchedule = new Schedule();
-                                newSchedule.setTask(tasks.get(taskIndex).getDescription());
-                                newSchedule.setTimeSpent(tasks.get(taskIndex).getTotalTime());
-                                newSchedule.setStartTime(times[timeIndex][0]);
-
-                                times[timeIndex][1] -= newSchedule.getTimeSpent();
-                                newSchedule.setTimeRemaining(times[timeIndex][1]);
-                                
-                                // set the animal name to schedule object...
-                                for (int i=0; i<animals.size(); i++) {
-                                    if (animals.get(i).getID() == treatments.get(treatmentIndex).getAnimalID())
-                                        { newSchedule.setAnimalList(animals.get(i).getNickname()); }
-                                }
-                                this.schedule.add(newSchedule);
-                                break;
-                            }
+                            times[timeIndex][1] -= newSchedule.getTimeSpent();
+                            newSchedule.setTimeRemaining(times[timeIndex][1]);
+                            newSchedule.setAnimalList(allTreatments.get(treatmentKey).getAnimal().getNickname());
+                            
+                            this.schedule.add(newSchedule);
+                            break;
                         } 
                     }
                 }
+            
             }
         }
-        
+
         combineSimilarTasks();
         addBackupVolunteer();
         printToText();
@@ -217,31 +115,21 @@ public class ScheduleBuilder {
      * @return   void
     */
     public void createScheduleMaxWindow1() throws IncorrectTimeException{
+        
         // iterate through treatments for maxWindow = 1...
-        for (int treatmentIndex = 0; treatmentIndex < treatments.size(); treatmentIndex++) {
-            // iterate through tasks to get maxWindow = 1...
-            for (int taskIndex = 0; taskIndex < tasks.size(); taskIndex++) {
-                if (tasks.get(taskIndex).getID() == treatments.get(treatmentIndex).getTaskID()) {
-                    if (tasks.get(taskIndex).getMaxWindow() == 1) {
-                        Schedule newSchedule = new Schedule();
-                        newSchedule.setStartTime(treatments.get(treatmentIndex).getStartHour());
-                        newSchedule.setTask(tasks.get(taskIndex).getDescription());
-                        newSchedule.setTimeSpent(tasks.get(taskIndex).getTotalTime());
-                        
-                        // set the animal name to schedule object...
-                        for (int i=0; i<animals.size(); i++) {
-                            if (animals.get(i).getID() == treatments.get(treatmentIndex).getAnimalID())
-                                { newSchedule.setAnimalList(animals.get(i).getNickname()); }
-                        }
+        for (int treatmentKey : allTreatments.keySet()) {
+            Task currentTask = allTreatments.get(treatmentKey).getTask();
+            Animal currentAnimal = allTreatments.get(treatmentKey).getAnimal();
+            Treatment currentTreatment = allTreatments.get(treatmentKey);
 
-                        if (times[newSchedule.getStartTime()][0] == newSchedule.getStartTime()) { 
-                            times[newSchedule.getStartTime()][1] -= newSchedule.getTimeSpent();
-                            newSchedule.setTimeRemaining(times[newSchedule.getStartTime()][1]);
-                        }
-                        
-                        this.schedule.add(newSchedule);
-                    }
-                }
+            if (currentTask.getMaxWindow() == 1) {
+                Schedule newSchedule = new Schedule(currentTask.getDescription(), currentAnimal.getNickname(), 
+                currentTreatment.getStartHour(), currentTask.getTotalTime());
+                
+                times[newSchedule.getStartTime()][1] -= newSchedule.getTimeSpent();
+                newSchedule.setTimeRemaining(times[newSchedule.getStartTime()][1]);
+                
+                this.schedule.add(newSchedule);
             }
         }
         createScheduleMaxWindow2();
@@ -259,39 +147,28 @@ public class ScheduleBuilder {
     */
     public void createScheduleMaxWindow2() throws IncorrectTimeException{
         // iterate through treatments for maxWindow = 2...
-        for (int treatmentIndex = 0; treatmentIndex < treatments.size(); treatmentIndex++) {
-            // iterate through tasks to get maxWindow = 2...
-            for (int taskIndex = 0; taskIndex < tasks.size(); taskIndex++) {
-                if (tasks.get(taskIndex).getID() == treatments.get(treatmentIndex).getTaskID()) {
-                    if (tasks.get(taskIndex).getMaxWindow() == 2) {
-                        Schedule newSchedule = new Schedule();
-                        newSchedule.setTask(tasks.get(taskIndex).getDescription());
-                        newSchedule.setTimeSpent(tasks.get(taskIndex).getTotalTime());
-                        newSchedule.setStartTime(treatments.get(treatmentIndex).getStartHour());
-                        
-                        int startHourPlus1 = treatments.get(treatmentIndex).getStartHour() + 1;
-                        if (startHourPlus1 > 23) { startHourPlus1 -= 24; }
+        for (int treatmentKey : allTreatments.keySet()) {
+            Task currentTask = allTreatments.get(treatmentKey).getTask();
+            Animal currentAnimal = allTreatments.get(treatmentKey).getAnimal();
+            Treatment currentTreatment = allTreatments.get(treatmentKey);
 
-                        // set the animal name to schedule object...
-                        for (int i=0; i<animals.size(); i++) {
-                            if (animals.get(i).getID() == treatments.get(treatmentIndex).getAnimalID())
-                                { newSchedule.setAnimalList(animals.get(i).getNickname()); }
-                        }
+            if (currentTask.getMaxWindow() == 2) {
+                Schedule newSchedule = new Schedule(currentTask.getDescription(), currentAnimal.getNickname(), 
+                currentTreatment.getStartHour(), currentTask.getTotalTime());
+                
+                int startHourPlus1 = currentTreatment.getStartHour() + 1;
+                if (startHourPlus1 > 23) { startHourPlus1 -= 24; }
+                
+                // if there is no equal or additional time remaining in the original time slot...
+                if (! (times[newSchedule.getStartTime()][1] >= currentTask.getTotalTime()))
+                    { newSchedule.setStartTime(startHourPlus1);  }
 
-                        // if there is no equal or additional time remaining in the original time slot...
-                        if (! (times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime()))
-                            { newSchedule.setStartTime(startHourPlus1);  }
-
-                        if (times[newSchedule.getStartTime()][0] == newSchedule.getStartTime()) { 
-                            times[newSchedule.getStartTime()][1] -= newSchedule.getTimeSpent();
-                            newSchedule.setTimeRemaining(times[newSchedule.getStartTime()][1]);
-                        }
-                        
-                        this.schedule.add(newSchedule);
-                        
-                    }
-                }
+                times[newSchedule.getStartTime()][1] -= newSchedule.getTimeSpent();
+                newSchedule.setTimeRemaining(times[newSchedule.getStartTime()][1]);
+                
+                this.schedule.add(newSchedule);
             }
+            
         }
         createScheduleMaxWindow3();
     }
@@ -307,83 +184,55 @@ public class ScheduleBuilder {
      * @return   void
     */
     public void createScheduleMaxWindow3() throws IncorrectTimeException{
+        String[] searchStrings = {"Feeding - coyote", "Feeding - fox"}; // the only two tasks that require a prepTime
         // iterate through treatments for maxWindow = 3...
-        for (int treatmentIndex = 0; treatmentIndex < treatments.size(); treatmentIndex++) {
-            // iterate through tasks to get maxWindow = 3...
-            for (int taskIndex = 0; taskIndex < tasks.size(); taskIndex++) {
-                if (tasks.get(taskIndex).getID() == treatments.get(treatmentIndex).getTaskID()) {
-                    if (tasks.get(taskIndex).getMaxWindow() == 3) {
-                        boolean alreadyExists = false;
-                        for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { // iterate through schedule to see if the task already exists
-                            if (times[schedule.get(scheduleIndex).getStartTime()][1] >= tasks.get(taskIndex).getDuration()){
-                                if (tasks.get(taskIndex).getDescription().equals("Feeding - coyote") && schedule.get(scheduleIndex).getTask().equals("Feeding - coyote")) {
-                                    // add the animal name to schedule object...
-                                    for (int i=0; i<animals.size(); i++) {
-                                        if (animals.get(i).getID() == treatments.get(treatmentIndex).getAnimalID())
-                                            { schedule.get(scheduleIndex).setAnimalList(animals.get(i).getNickname()); }
-                                    }
-                                    
-                                    // edit timeSpent and timeRemaining
-                                    schedule.get(scheduleIndex).setTimeSpent(schedule.get(scheduleIndex).getTimeSpent() + tasks.get(taskIndex).getDuration());
-                                    times[schedule.get(scheduleIndex).getStartTime()][1] -= tasks.get(taskIndex).getDuration();
-                                    schedule.get(scheduleIndex).setTimeRemaining(times[schedule.get(scheduleIndex).getStartTime()][1]);
-                                    
-                                    alreadyExists = true;
-                                }
+        for (int treatmentKey : allTreatments.keySet()) {
+            Task currentTask = allTreatments.get(treatmentKey).getTask();
+            Animal currentAnimal = allTreatments.get(treatmentKey).getAnimal();
+            Treatment currentTreatment = allTreatments.get(treatmentKey);
 
-                                else if (tasks.get(taskIndex).getDescription().equals("Feeding - fox") && schedule.get(scheduleIndex).getTask().equals("Feeding - fox")) {                               
-                                    // add the animal name to schedule object...
-                                    for (int i=0; i<animals.size(); i++) {
-                                        if (animals.get(i).getID() == treatments.get(treatmentIndex).getAnimalID())
-                                            { schedule.get(scheduleIndex).setAnimalList(animals.get(i).getNickname()); }
-                                    }
+            if (currentTask.getMaxWindow() == 3) {
+                boolean alreadyExists = false;
+                for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { // iterate through schedule to see if the task already exists
+                    if (times[schedule.get(scheduleIndex).getStartTime()][1] >= currentTask.getDuration()){
+                        for (String search : searchStrings){ 
+                            if (currentTask.getDescription().equals(search) && schedule.get(scheduleIndex).getTask().equals(search)){
+                                // add the animal name to schedule object...
+                                schedule.get(scheduleIndex).setAnimalList(currentAnimal.getNickname());
+                                
+                                // edit timeSpent and timeRemaining
+                                schedule.get(scheduleIndex).setTimeSpent(schedule.get(scheduleIndex).getTimeSpent() + currentTask.getDuration());
+                                times[schedule.get(scheduleIndex).getStartTime()][1] -= currentTask.getDuration();
 
-                                    // edit timeSpent and timeRemaining
-                                    schedule.get(scheduleIndex).setTimeSpent(schedule.get(scheduleIndex).getTimeSpent() + tasks.get(taskIndex).getDuration());
-
-                                    if (times[schedule.get(scheduleIndex).getStartTime()][0] == schedule.get(scheduleIndex).getStartTime()) { 
-                                        times[schedule.get(scheduleIndex).getStartTime()][1] -= tasks.get(taskIndex).getDuration();
-                                        schedule.get(scheduleIndex).setTimeRemaining(times[schedule.get(scheduleIndex).getStartTime()][1]);
-                                    }
-                                    alreadyExists = true;
-                                }
+                                schedule.get(scheduleIndex).setTimeRemaining(times[schedule.get(scheduleIndex).getStartTime()][1]);
+                                alreadyExists = true;
                             }
                             
-                        }
-                        
-                        if (!alreadyExists) {
-                            Schedule newSchedule = new Schedule();
-                            newSchedule.setTask(tasks.get(taskIndex).getDescription());
-                            newSchedule.setTimeSpent(tasks.get(taskIndex).getTotalTime());
-                            newSchedule.setStartTime(treatments.get(treatmentIndex).getStartHour());
-    
-                            int startHourPlus1 = treatments.get(treatmentIndex).getStartHour() + 1;
-                            if (startHourPlus1 > 23) { startHourPlus1 -= 24; }
-                            int startHourPlus2 = treatments.get(treatmentIndex).getStartHour() + 2;
-                            if (startHourPlus2 > 23) { startHourPlus2 -= 24; }
-                            
-                            // set the animal name to schedule object...
-                            for (int i=0; i<animals.size(); i++) {
-                                if (animals.get(i).getID() == treatments.get(treatmentIndex).getAnimalID())
-                                    { newSchedule.setAnimalList(animals.get(i).getNickname()); }
-                            }
-    
-                            // if there is no equal or additional time remaining in the original time slot...
-                            if (! (times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime())) {
-                                newSchedule.setStartTime(startHourPlus1); // set the startHour to + 1 of original
-                                // if there is no equal or additional time remaining in the new time slot...
-                                if (! (times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime())) 
-                                    {  newSchedule.setStartTime(startHourPlus2); } // set the startHour to + 2 of original
-                            }
-                            
-                            if (times[newSchedule.getStartTime()][0] == newSchedule.getStartTime()) { 
-                                times[newSchedule.getStartTime()][1] -= newSchedule.getTimeSpent();
-                                newSchedule.setTimeRemaining(times[newSchedule.getStartTime()][1]);
-                            }
-                            
-                            this.schedule.add(newSchedule);
                         }
                     }
+                }
+                if (!alreadyExists) {
+                    Schedule newSchedule = new Schedule(currentTask.getDescription(), currentAnimal.getNickname(), 
+                    currentTreatment.getStartHour(), currentTask.getTotalTime());
+
+                    int startHourPlus1 = currentTreatment.getStartHour() + 1;
+                    if (startHourPlus1 > 23) { startHourPlus1 -= 24; }
+                    int startHourPlus2 = currentTreatment.getStartHour() + 2;
+                    if (startHourPlus2 > 23) { startHourPlus2 -= 24; }
+
+                    
+                    // if there is no equal or additional time remaining in the original time slot...
+                    if (! (times[newSchedule.getStartTime()][1] >= currentTask.getTotalTime())) {
+                        newSchedule.setStartTime(startHourPlus1); // set the startHour to + 1 of original
+                        // if there is no equal or additional time remaining in the new time slot...
+                        if (! (times[newSchedule.getStartTime()][1] >= currentTask.getTotalTime())) 
+                            {  newSchedule.setStartTime(startHourPlus2); } // set the startHour to + 2 of original
+                    }
+
+                    times[newSchedule.getStartTime()][1] -= newSchedule.getTimeSpent();
+                    newSchedule.setTimeRemaining(times[newSchedule.getStartTime()][1]);
+
+                    this.schedule.add(newSchedule);
                 }
             }
         }
@@ -402,48 +251,38 @@ public class ScheduleBuilder {
     */
     public void createScheduleMaxWindow4() throws IncorrectTimeException{
         // iterate through treatments for maxWindow = 4...
-        for (int treatmentIndex = 0; treatmentIndex < treatments.size(); treatmentIndex++) {
-            // iterate through tasks to get maxWindow = 4...
-            for (int taskIndex = 0; taskIndex < tasks.size(); taskIndex++) {
-                if (tasks.get(taskIndex).getID() == treatments.get(treatmentIndex).getTaskID()) {
-                    if (tasks.get(taskIndex).getMaxWindow() == 4) {
-                        Schedule newSchedule = new Schedule();
-                        newSchedule.setTask(tasks.get(taskIndex).getDescription());
-                        newSchedule.setTimeSpent(tasks.get(taskIndex).getTotalTime());
-                        newSchedule.setStartTime(treatments.get(treatmentIndex).getStartHour());
+        for (int treatmentKey : allTreatments.keySet()) {
+            Task currentTask = allTreatments.get(treatmentKey).getTask();
+            Animal currentAnimal = allTreatments.get(treatmentKey).getAnimal();
+            Treatment currentTreatment = allTreatments.get(treatmentKey);
 
-                        int startHourPlus1 = treatments.get(treatmentIndex).getStartHour() + 1;
-                        if (startHourPlus1 > 23) { startHourPlus1 -= 24; }
-                        int startHourPlus2 = treatments.get(treatmentIndex).getStartHour() + 2;
-                        if (startHourPlus2 > 23) { startHourPlus2 -= 24; }
-                        int startHourPlus3 = treatments.get(treatmentIndex).getStartHour() + 3;
-                        if (startHourPlus3 > 23) { startHourPlus3 -= 24; }
-                         
-                        // set the animal name to schedule object...
-                        for (int i=0; i<animals.size(); i++) {
-                            if (animals.get(i).getID() == treatments.get(treatmentIndex).getAnimalID())
-                                { newSchedule.setAnimalList(animals.get(i).getNickname()); }
-                        }
+            if (currentTask.getMaxWindow() == 4) {
+                Schedule newSchedule = new Schedule(currentTask.getDescription(), currentAnimal.getNickname(), 
+                currentTreatment.getStartHour(), currentTask.getTotalTime());
 
-                        // if there is no equal or additional time remaining in the original time slot...
-                        if (! (times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime())) {
-                            newSchedule.setStartTime(startHourPlus1); // set the startHour to + 1 of original
-                            // if there is no equal or additional time remaining in the new time slot...
-                            if (! (times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime())) {
-                                newSchedule.setStartTime(startHourPlus2); // set the startHour to + 2 of original
-                                // if there is no equal or additional time remaining in the new time slot...
-                                if (! (times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime()))
-                                    { newSchedule.setStartTime(startHourPlus3);} // set the startHour to + 3 of original
-                            }
-                        }
-
-                        if (times[newSchedule.getStartTime()][0] == newSchedule.getStartTime()) { 
-                            times[newSchedule.getStartTime()][1] -= newSchedule.getTimeSpent();
-                            newSchedule.setTimeRemaining(times[newSchedule.getStartTime()][1]);
-                        }
-                        this.schedule.add(newSchedule);
+                int startHourPlus1 = currentTreatment.getStartHour() + 1;
+                if (startHourPlus1 > 23) { startHourPlus1 -= 24; }
+                int startHourPlus2 = currentTreatment.getStartHour() + 2;
+                if (startHourPlus2 > 23) { startHourPlus2 -= 24; }
+                int startHourPlus3 = currentTreatment.getStartHour() + 3;
+                if (startHourPlus3 > 23) { startHourPlus3 -= 24; }
+    
+                // if there is no equal or additional time remaining in the original time slot...
+                if (! (times[newSchedule.getStartTime()][1] >= currentTask.getTotalTime())) {
+                    newSchedule.setStartTime(startHourPlus1); // set the startHour to + 1 of original
+                    // if there is no equal or additional time remaining in the new time slot...
+                    if (! (times[newSchedule.getStartTime()][1] >= currentTask.getTotalTime())) {
+                        newSchedule.setStartTime(startHourPlus2); // set the startHour to + 2 of original
+                        // if there is no equal or additional time remaining in the new time slot...
+                        if (! (times[newSchedule.getStartTime()][1] >= currentTask.getTotalTime()))
+                            { newSchedule.setStartTime(startHourPlus3);} // set the startHour to + 3 of original
                     }
                 }
+
+                times[newSchedule.getStartTime()][1] -= newSchedule.getTimeSpent();
+                newSchedule.setTimeRemaining(times[newSchedule.getStartTime()][1]);
+
+                this.schedule.add(newSchedule);
             }
         }
         createScheduleMaxWindow5();
@@ -461,57 +300,45 @@ public class ScheduleBuilder {
     */
     public void createScheduleMaxWindow5() throws IncorrectTimeException{
         // iterate through treatments for maxWindow = 5...
-        for (int treatmentIndex = 0; treatmentIndex < treatments.size(); treatmentIndex++) {
-            // iterate through tasks to get maxWindow = 5...
-            for (int taskIndex = 0; taskIndex < tasks.size(); taskIndex++) {
-                if (tasks.get(taskIndex).getID() == treatments.get(treatmentIndex).getTaskID()) {
-                    if (tasks.get(taskIndex).getMaxWindow() == 5) {
-                        Schedule newSchedule = new Schedule();
-                        newSchedule.setTask(tasks.get(taskIndex).getDescription());
-                        newSchedule.setTimeSpent(tasks.get(taskIndex).getTotalTime());
-                        newSchedule.setStartTime(treatments.get(treatmentIndex).getStartHour());
+        for (int treatmentKey : allTreatments.keySet()) {
+            Task currentTask = allTreatments.get(treatmentKey).getTask();
+            Animal currentAnimal = allTreatments.get(treatmentKey).getAnimal();
+            Treatment currentTreatment = allTreatments.get(treatmentKey);
 
-                        int startHourPlus1 = treatments.get(treatmentIndex).getStartHour() + 1;
-                        if (startHourPlus1 > 23) { startHourPlus1 -= 24; }
-                        int startHourPlus2 = treatments.get(treatmentIndex).getStartHour() + 2;
-                        if (startHourPlus2 > 23) { startHourPlus2 -= 24; }
-                        int startHourPlus3 = treatments.get(treatmentIndex).getStartHour() + 3;
-                        if (startHourPlus3 > 23) { startHourPlus3 -= 24; }
-                        int startHourPlus4 = treatments.get(treatmentIndex).getStartHour() + 4;
-                        if (startHourPlus4 > 23) { startHourPlus4 -= 24; }
-                             
-                        // set the animal name to schedule object...
-                        for (int i=0; i<animals.size(); i++) {
-                            if (animals.get(i).getID() == treatments.get(treatmentIndex).getAnimalID())
-                                { newSchedule.setAnimalList(animals.get(i).getNickname()); }
-                        }
+            if (currentTask.getMaxWindow() == 5) {
+                Schedule newSchedule = new Schedule(currentTask.getDescription(), currentAnimal.getNickname(), 
+                currentTreatment.getStartHour(), currentTask.getTotalTime());
 
-                        // if there is no equal or additional time remaining in the original time slot...
-                        if (! (times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime())) {
-                            newSchedule.setStartTime(startHourPlus1); // set the startHour to + 1 of original
+                int startHourPlus1 = currentTreatment.getStartHour() + 1;
+                if (startHourPlus1 > 23) { startHourPlus1 -= 24; }
+                int startHourPlus2 = currentTreatment.getStartHour() + 2;
+                if (startHourPlus2 > 23) { startHourPlus2 -= 24; }
+                int startHourPlus3 = currentTreatment.getStartHour() + 3;
+                if (startHourPlus3 > 23) { startHourPlus3 -= 24; }
+                int startHourPlus4 = currentTreatment.getStartHour() + 4;
+                if (startHourPlus4 > 23) { startHourPlus4 -= 24; }
+
+                // if there is no equal or additional time remaining in the original time slot...
+                if (! (times[newSchedule.getStartTime()][1] >= currentTask.getTotalTime())) {
+                    newSchedule.setStartTime(startHourPlus1); // set the startHour to + 1 of original
+                    // if there is no equal or additional time remaining in the new time slot...
+                    if (! (times[newSchedule.getStartTime()][1] >= currentTask.getTotalTime())) {
+                        newSchedule.setStartTime(startHourPlus2); // set the startHour to + 2 of original
+                        // if there is no equal or additional time remaining in the new time slot...
+                        if (! (times[newSchedule.getStartTime()][1] >= currentTask.getTotalTime())) { 
+                            newSchedule.setStartTime(startHourPlus3); // set the startHour to + 3 of original
                             // if there is no equal or additional time remaining in the new time slot...
-                            if (! (times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime())) {
-                                newSchedule.setStartTime(startHourPlus2); // set the startHour to + 2 of original
-                                // if there is no equal or additional time remaining in the new time slot...
-                                if (! (times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime())) { 
-                                    newSchedule.setStartTime(startHourPlus3); // set the startHour to + 3 of original
-                                    // if there is no equal or additional time remaining in the new time slot...
-                                    if (! (times[newSchedule.getStartTime()][1] >= tasks.get(taskIndex).getTotalTime()))
-                                        { newSchedule.setStartTime(startHourPlus4); } // set the startHour to + 3 of original
-                                }
-                            } 
-                                
-                        } 
-                        if (times[newSchedule.getStartTime()][0] == newSchedule.getStartTime()) { 
-                            times[newSchedule.getStartTime()][1] -= newSchedule.getTimeSpent();
-                            newSchedule.setTimeRemaining(times[newSchedule.getStartTime()][1]);
+                            if (! (times[newSchedule.getStartTime()][1] >= currentTask.getTotalTime()))
+                                { newSchedule.setStartTime(startHourPlus4); } // set the startHour to + 3 of original
                         }
-                        this.schedule.add(newSchedule);
-                    }
+                    } 
                 }
+                times[newSchedule.getStartTime()][1] -= newSchedule.getTimeSpent();
+                newSchedule.setTimeRemaining(times[newSchedule.getStartTime()][1]);
+
+                this.schedule.add(newSchedule);
             }
         }
-
     }
 
     /** combineSimilarTasks()
@@ -528,14 +355,14 @@ public class ScheduleBuilder {
      * @return   void
     */
     public void combineSimilarTasks() throws IncorrectTimeException{
-        for (int i = 0; i < times.length; i++) { // iterate through the times
+        for (int hour=0; hour<times.length; hour++) { // iterate through the times
             HashMap<String, Integer> mapForString = new HashMap<String, Integer>();
             HashMap<Integer, Schedule> mapForSchedule = new HashMap<Integer, Schedule>();
             int count =  0;
-            times[i][1] = 60;
-            
+            times[hour][1] = 60;
+
             for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { //iterate through the schedule arrayList
-                if (schedule.get(scheduleIndex).getStartTime() == times[i][0]) {
+                if (schedule.get(scheduleIndex).getStartTime() == times[hour][0]) {
                     String key = schedule.get(scheduleIndex).getTask();
                     if (mapForString.containsKey(key)){ // if the task exists in the list
                         Schedule tempSchedule = mapForSchedule.get(mapForString.get(key));
@@ -555,9 +382,10 @@ public class ScheduleBuilder {
             }
             for (int mapIndex = 0; mapIndex < mapForSchedule.size(); mapIndex++){ //iterate through the HashMap containing the schedules
                 // update the remaining time in the times array along with the timeRemaining data member of the object
-                times[i][1] -= mapForSchedule.get(mapIndex).getTimeSpent();
-                mapForSchedule.get(mapIndex).setTimeRemaining(times[i][1]);
+                times[hour][1] -= mapForSchedule.get(mapIndex).getTimeSpent();
+                mapForSchedule.get(mapIndex).setTimeRemaining(times[hour][1]);
             }
+
         }
     }
 
@@ -575,17 +403,18 @@ public class ScheduleBuilder {
      * @return   void
     */
     public void addBackupVolunteer() throws IncorrectTimeException{
-        for (int i = 0; i < times.length; i++) { //iterate through the times
+        for (int hour=0; hour<times.length; hour++) { // iterate through the times
             int count = 0;
             for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { //iterate through the schedule arrayList
-                if ((times[i][1] < 0) || count != 0) { // if the timeRemaining for any time slot is negative...
-                    if (times[i][0] == schedule.get(scheduleIndex).getStartTime()) { // find the time slots in the schedule arrayList
-                    schedule.get(scheduleIndex).setBackupRequired(true); // make those objects have backup volunteer
+                if ((times[hour][1] < 0) || count != 0) { // if the timeRemaining for any time slot is negative...
+                    if (times[hour][0] == schedule.get(scheduleIndex).getStartTime()) { // find the time slots in the schedule arrayList
+                        schedule.get(scheduleIndex).setBackupRequired(true); // make those objects have backup volunteer
                     if (count == 0 ) { // get the original time remaining (which is not negative)
-                        times[i][1] = schedule.get(scheduleIndex).getTimeRemaining() * 2; // double the TimeRemaining attribute for initial remaining time
+                        times[hour][1] = 120;
+                        times[hour][1] -= schedule.get(scheduleIndex).getTimeRemaining(); // double the TimeRemaining attribute for initial remaining time
                         count++; }
-                    else { times[i][1] -= schedule.get(scheduleIndex).getTimeSpent(); }
-                    schedule.get(scheduleIndex).setTimeRemaining(times[i][1]);
+                    else { times[hour][1] -= schedule.get(scheduleIndex).getTimeSpent(); }
+                    schedule.get(scheduleIndex).setTimeRemaining(times[hour][1]);
                     }
                 }
             }
@@ -595,7 +424,8 @@ public class ScheduleBuilder {
         // for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) {
         //     if (schedule.get(scheduleIndex).getTask() != null){
         //         System.out.println("Task: " + schedule.get(scheduleIndex).getTask() + "\n    Start Time: " + schedule.get(scheduleIndex).getStartTime() + "\n    Time spent: " 
-        //         + schedule.get(scheduleIndex).getTimeSpent() + "\n    Time remaining: " + schedule.get(scheduleIndex).getTimeRemaining() + "\n    Backup: " + schedule.get(scheduleIndex).getBackupRequired());
+        //         + schedule.get(scheduleIndex).getTimeSpent() + "\n    Time remaining: " + schedule.get(scheduleIndex).getTimeRemaining() + "\n    Backup: " + schedule.get(scheduleIndex).getBackupRequired()
+        //         + "\n    Quantity: " + schedule.get(scheduleIndex).getQuantity());
         //         System.out.println();
         //     }
         // }
@@ -628,84 +458,92 @@ public class ScheduleBuilder {
             
             for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { // iterate through the schedule arrayList
                 if (schedule.get(scheduleIndex).getTimeRemaining() < 0) { 
-                    //how do i know which animal contrubited to this...?
-                    // getthe AnimalID and the TaskID and pass it to the user so they know where, but also store that 
-                    String animal; 
-                    if(schedule.get(scheduleIndex).getAnimalList().size() == 1){
-                        ArrayList<String> x = (schedule.get(scheduleIndex).getAnimalList());
-                        animal = x.get(0);  
-                    }
-                    //HELLOOOOOOO ISHA IDK HOW TO DO THIS PART TO FIND THE ONE PET WHERE IT IS MAKING THAT MISTAKE......!!!! CALL ME PLS 
-                    else{
-                        animal = "print"; 
-                    }
-                    errorGUI error = new errorGUI("negative", schedule.get(scheduleIndex).getStartTime(), schedule.get(scheduleIndex).getTask(), animal); 
+                    System.out.println(schedule.get(scheduleIndex).getAnimalList().get(0));
+                    System.out.println(schedule.get(scheduleIndex).getTask());
+                    System.out.println(schedule.get(scheduleIndex).getBackupRequired());
+                    throw new ScheduleFailException("The schedule cannot be built as the remaining time is negative. " +
+                    "You can rearrange some tasks and adjust their start hours in order to fit them correctly in the schedule.");
+                    
+                    // //how do i know which animal contrubited to this...?
+                    // // getthe AnimalID and the TaskID and pass it to the user so they know where, but also store that 
+                    // String animal; 
+                    // if(schedule.get(scheduleIndex).getAnimalList().size() == 1){
+                    //     ArrayList<String> x = (schedule.get(scheduleIndex).getAnimalList());
+                    //     animal = x.get(0);  
+                    // }
+                    // //HELLOOOOOOO ISHA IDK HOW TO DO THIS PART TO FIND THE ONE PET WHERE IT IS MAKING THAT MISTAKE......!!!! CALL ME PLS 
+                    // else{
+                    //     animal = "print"; 
+                    // }
+                    // errorGUI error = new errorGUI("negative", schedule.get(scheduleIndex).getStartTime(), schedule.get(scheduleIndex).getTask(), animal); 
                    
-                    while(error.getStates()){ 
-                       continue; 
+                    // while(error.getStates()){ 
+                    //    continue; 
                    
-                    } 
-                    //retriving the values
-                    int newHour = error.getSelectedHour(); 
-                    int petID = 0; 
-                    int taskID = 0 ;
+                    // } 
+                    // //retriving the values
+                    // int newHour = error.getSelectedHour(); 
+                    // int petID = 0; 
+                    // int taskID = 0 ;
 
-                    for(Animal x : this.animals){
-                        if(x.getNickname() == animal){
-                            petID = x.getID();
-                        }
-                    }
+                    // for(Animal x : this.animals){
+                    //     if(x.getNickname() == animal){
+                    //         petID = x.getID();
+                    //     }
+                    // }
 
-                    for(Task y: this.tasks){
-                        if(y.getDescription() == schedule.get(scheduleIndex).getTask()){
-                            taskID = y.getID(); 
-                        }
-                    }
+                    // for(Task y: this.tasks){
+                    //     if(y.getDescription() == schedule.get(scheduleIndex).getTask()){
+                    //         taskID = y.getID(); 
+                    //     }
+                    // }
 
-                    //changing the database.. we want to change treatments
-                    this.db.changes(petID, newHour, taskID, schedule.get(scheduleIndex).getStartTime());
+                    // //changing the database.. we want to change treatments
+                    // this.db.changes(petID, newHour, taskID, schedule.get(scheduleIndex).getStartTime());
                 }
                 else if (schedule.get(scheduleIndex).getBackupRequired() && (schedule.get(scheduleIndex).getTimeRemaining() + schedule.get(scheduleIndex).getTimeSpent()) > 120) {
-                    String animal; 
-                    if(schedule.get(scheduleIndex).getAnimalList().size() == 1){
-                        ArrayList<String> x = (schedule.get(scheduleIndex).getAnimalList());
-                        animal = x.get(0);  
-                    }
-                    //HELLOOOOOOO ISHA IDK HOW TO DO THIS PART TO FIND THE ONE PET WHERE IT IS MAKING THAT MISTAKE......!!!! CALL ME PLS 
-                    else{
-                        animal = "print"; 
-                    }
-                    errorGUI error = new errorGUI("over", schedule.get(scheduleIndex).getStartTime(), schedule.get(scheduleIndex).getTask(), animal); 
-                    while(error.getStates()){
-                        continue; 
-                    } int newHour = error.getSelectedHour(); 
-                    int petID = 0;
-                    int taskID = 0;
+                    throw new ScheduleFailException("The schedule cannot be built as the total time exceeds the allowed time." +
+                    "You can rearrange some tasks and adjust their start hours in order to fit them correctly in the schedule.");
+                    // String animal; 
+                    // if(schedule.get(scheduleIndex).getAnimalList().size() == 1){
+                    //     ArrayList<String> x = (schedule.get(scheduleIndex).getAnimalList());
+                    //     animal = x.get(0);  
+                    // }
+                    // //HELLOOOOOOO ISHA IDK HOW TO DO THIS PART TO FIND THE ONE PET WHERE IT IS MAKING THAT MISTAKE......!!!! CALL ME PLS 
+                    // else{
+                    //     animal = "print"; 
+                    // }
+                    // errorGUI error = new errorGUI("over", schedule.get(scheduleIndex).getStartTime(), schedule.get(scheduleIndex).getTask(), animal); 
+                    // while(error.getStates()){
+                    //     continue; 
+                    // } int newHour = error.getSelectedHour(); 
+                    // int petID = 0;
+                    // int taskID = 0;
                     
-                    for(Animal x : this.animals){
-                        if(x.getNickname() == animal){
-                            petID = x.getID();
-                        }
-                    }
+                    // for(Animal x : this.animals){
+                    //     if(x.getNickname() == animal){
+                    //         petID = x.getID();
+                    //     }
+                    // }
 
-                    for(Task y: this.tasks){
-                        if(y.getDescription() == schedule.get(scheduleIndex).getTask()){
-                            taskID = y.getID(); 
-                        }
-                    }
+                    // for(Task y: this.tasks){
+                    //     if(y.getDescription() == schedule.get(scheduleIndex).getTask()){
+                    //         taskID = y.getID(); 
+                    //     }
+                    // }
 
-                    //changing the database....we want to change treatments
-                    this.db.changes(petID, newHour, taskID, schedule.get(scheduleIndex).getStartTime()); 
+                    // //changing the database....we want to change treatments
+                    // this.db.changes(petID, newHour, taskID, schedule.get(scheduleIndex).getStartTime()); 
                 }
                 
                 if (times[i][0] == schedule.get(scheduleIndex).getStartTime()) { // find the time slots in the schedule arrayList
                     if (count == 0 ) { // if it is first task under this time slot, check for backup volunteer
                         if (schedule.get(scheduleIndex).getBackupRequired() == true) { 
                             textForHour += " [+ backup volunteer] \n"; 
-                            VolunteerGUI volunteer = new VolunteerGUI(Integer.toString(times[i][0]));
-                            while(volunteer.getState()){
-                                continue; 
-                            }
+                            // VolunteerGUI volunteer = new VolunteerGUI(Integer.toString(times[i][0]));
+                            // while(volunteer.getState()){
+                            //     continue; 
+                            // }
                         }
                         
                         else { textForHour += "\n"; }
@@ -728,8 +566,8 @@ public class ScheduleBuilder {
             System.out.println("I/O exception when trying to close file");
             e.printStackTrace(); }
 
-        displaysch displas = new displaysch("start"); 
-        this.db.close(); 
+        // displaysch displas = new displaysch("start"); 
+        // this.db.close(); 
     
     }
 
@@ -743,14 +581,7 @@ public class ScheduleBuilder {
      * @return   void
     */
     public static void main(String[] args) throws IOException, IncorrectTimeException, SpeciesNotFoundException, ScheduleFailException{
-        LoadData database = new LoadData();
-        database.createConnection();
-        database.selectAnimals();
-        database.selectTasks();
-        database.selectTreatments();
-
-        ScheduleBuilder schedule = new ScheduleBuilder(database);
+        ScheduleBuilder schedule = new ScheduleBuilder();
         schedule.createSchedule();
-        //database.close();
     }
 }
