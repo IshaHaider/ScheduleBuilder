@@ -7,7 +7,7 @@ import java.io.*;
 import java.util.*; 
 
 public class DisplaySch {
-    String total_display;
+    public String total_display;
 
     public DisplaySch(String string) throws IOException {
         JFrame frame = new JFrame("Schedule for the day");
