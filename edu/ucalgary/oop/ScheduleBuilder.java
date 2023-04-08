@@ -19,10 +19,8 @@ import java.time.format.DateTimeFormatter;
  * the following commands can be used for...
  * code compilation: javac -cp .:lib/mysql-connector-java-8.0.23.jar edu/ucalgary/oop/ScheduleBuilder.java
  * code execution: java -cp .:lib/mysql-connector-java-8.0.23.jar edu.ucalgary.oop.ScheduleBuilder
- * test compilation: javac -cp .:lib/junit-4.13.2.jar:lib/hamcrest-core-1.3.jar
- * edu/ucalgary/oop/ScheduleBuilderTest.java
- * test execution: java -cp .:lib/junit-4.13.2.jar:lib/hamcrest-core-1.3.jar
- * org.junit.runner.JUnitCore edu.ucalgary.oop.ScheduleBuilderTest
+ * test compilation: javac -cp .:lib/junit-4.13.2.jar:lib/hamcrest-core-1.3.jar edu/ucalgary/oop/ScheduleBuilderTest.java
+ * test execution: java -cp .:lib/junit-4.13.2.jar:lib/hamcrest-core-1.3.jar org.junit.runner.JUnitCore edu.ucalgary.oop.ScheduleBuilderTest
  */
 
 public class ScheduleBuilder {
@@ -33,9 +31,7 @@ public class ScheduleBuilder {
             { 12, 60 }, { 13, 60 }, { 14, 60 }, { 15, 60 }, { 16, 60 }, { 17, 60 }, { 18, 60 }, { 19, 60 }, { 20, 60 },
             { 21, 60 }, { 22, 60 }, { 23, 60 } };
 
-    /**
-     * Default Constructor
-     * 
+    /** Default Constructor
      * @return
      */
     public ScheduleBuilder() throws SpeciesNotFoundException, IllegalArgumentException {
@@ -48,18 +44,15 @@ public class ScheduleBuilder {
         }
     }
 
-    /**
-     * Setters
+    /** Setters
      * setter methods assigning the parameter value to the stored object
-     * 
      * @return void
      */
     public void setAllTreatments(HashMap<Integer, Treatment> newTreatments) { this.allTreatments = newTreatments; }
     public void setSchedule(ArrayList<Schedule> schedule) { this.schedule = schedule;}
     public static void setTimes(int[][] newTimes) { times = newTimes;}
 
-    /**
-     * Getters
+    /** Getters
      * getter methods returning the stored object requested
      */
     public HashMap<Integer, Treatment> getAllTreatments() { return this.allTreatments; }
@@ -67,28 +60,27 @@ public class ScheduleBuilder {
     public static int[][] getTimes() { return times;
 }
 
-    /**
-     * createSchedule()
+    /** createSchedule()
      * Calls on all required methods to create the schedule.
      * First check for all treatments with MaxWindow ranging from 1 to 5
-     * add them to the schedule ArrayList in that respective order of priority.
+     * add them to the schedule HashMap in that respective order of priority.
      * Once all treatments are added, check for available space in schedule
      * add the cage cleaning tasks to those spaces, as they don't have any priority
-     * scheduling
-     * Once all treatments have been added, call the remaining methods to clean up
-     * the schedule,
-     * check for backup volunteer need, and then finally print the schedule.
+     * scheduling. Once all treatments have been added, call the remaining methods to 
+     * clean up the schedule, check for backup volunteer need, and then finally print the schedule.
+     * This method returns true if the schedule prints properly, else false.
      * 
      * @throws IOException
-     * @return void
+     * @throws IllegalArgumentException
+     * @return boolean
      */
     public boolean createSchedule() throws IOException, IllegalArgumentException {
         createScheduleMaxWindow1();
 
         // add cage cleaning tasks to schedule...
         // iterate through treatments, if treatmentID == taskID where taskDescr == "cage
-        // cleaning - species",
-        // iterate through times and find a place where timeremaining >= taskTotalTime
+        // cleaning - species", iterate through times and find a place where timeremaining >= taskTotalTime
+        
         String[] searchStrings = { "Cage cleaning - coyote", "Cage cleaning - fox", "Cage cleaning - porcupine",
                 "Cage cleaning - raccoon", "Cage cleaning - beaver" };
         for (int treatmentKey : allTreatments.keySet()) {
@@ -116,25 +108,23 @@ public class ScheduleBuilder {
                 }
             }
         }
+        
         combineSimilarTasks();
         addBackupVolunteer();
         return printToText();
     }
 
-    /**
-     * createScheduleMaxWindow1()
-     * Iterates through treatments ArrayList and finds the treatment
+    /** createScheduleMaxWindow1()
+     * Iterates through treatments HashMap and finds the treatment
      * that has MaxWindow == 1. This means that this object is first priority
      * and must be set in its preferred start hour first.
-     * Creates Schedule object and sets the startTime, timeSpent, task, and
-     * animalList
-     * data members. Then sets the timeRemaining data member according to the time
-     * remaining in the times 2D array. Finally, adds this object to schedule
-     * ArrayList
+     * Creates Schedule object and sets the treatmentID, startTime, timeSpent, task, and
+     * animalList data members. Then sets the timeRemaining data member according to the time
+     * remaining in the times 2D array. Finally, adds this object to schedule ArrayList
+     * @throws IllegalArgumentException
      * @return void
      */
     public void createScheduleMaxWindow1() throws IllegalArgumentException{
-
         // iterate through treatments for maxWindow = 1...
         for (int treatmentKey : allTreatments.keySet()) {
             Task currentTask = allTreatments.get(treatmentKey).getTask();
@@ -157,15 +147,14 @@ public class ScheduleBuilder {
         createScheduleMaxWindow2();
     }
 
-    /**
-     * createScheduleMaxWindow2()
-     * Iterates through treatments ArrayList and finds the treatment
+    /** createScheduleMaxWindow2()
+     * Iterates through treatments HashMap and finds the treatment
      * that has MaxWindow == 2. This means that this object is second priority
      * and can be set in its preferred start hour or the next one.
-     * Creates Schedule object and sets the startTime, timeSpent, task, and
+     * Creates Schedule object and sets the treatmentID, startTime, timeSpent, task, and
      * animalList data members. Then sets the timeRemaining data member according to the time
      * remaining in the times 2D array. Finally, adds this object to schedule ArrayList
-     * @throws IncorrectTimeException
+     * @throws IllegalArgumentException
      * @return void
      */
     public void createScheduleMaxWindow2() throws IllegalArgumentException{
@@ -200,19 +189,14 @@ public class ScheduleBuilder {
         createScheduleMaxWindow3();
     }
 
-    /**
-     * createScheduleMaxWindow3()
-     * Iterates through treatments ArrayList and finds the treatment
+    /** createScheduleMaxWindow3()
+     * Iterates through treatments HashMap and finds the treatment
      * that has MaxWindow == 3. This means that this object is third priority
      * and can be set in its preferred start hour or a maximum of 2 hours after
-     * that.
-     * Creates Schedule object and sets the startTime, timeSpent, task, and
-     * animalList
-     * data members. Then sets the timeRemaining data member according to the time
-     * remaining in the times 2D array. Finally, adds this object to schedule
-     * ArrayList
-     * 
-     * @throws IncorrectTimeException
+     * that. Creates Schedule object and sets the treatmentID, startTime, timeSpent, task, and
+     * animalList data members. Then sets the timeRemaining data member according to the time
+     * remaining in the times 2D array. Finally, adds this object to schedule ArrayList
+     * @throws IllegalArgumentException
      * @return void
      */
     public void createScheduleMaxWindow3() throws IllegalArgumentException{
@@ -279,17 +263,14 @@ public class ScheduleBuilder {
         createScheduleMaxWindow4();
     }
 
-    /**
-     * createScheduleMaxWindow4()
-     * Iterates through treatments ArrayList and finds the treatment
+    /** createScheduleMaxWindow4()
+     * Iterates through treatments HashMap and finds the treatment
      * that has MaxWindow == 4. This means that this object is fourth priority
      * and can be set in its preferred start hour or a maximum of 3 hours after
-     * that.
-     * Creates Schedule object and sets the startTime, timeSpent, task, and
-     * animalList
-     * data members. Then sets the timeRemaining data member according to the time
-     * remaining in the times 2D array. Finally, adds this object to schedule
-     * ArrayList
+     * that. Creates Schedule object and sets the treatmentID, startTime, timeSpent, task, and
+     * animalList data members. Then sets the timeRemaining data member according to the time
+     * remaining in the times 2D array. Finally, adds this object to schedule ArrayList
+     * @throws IllegalArgumentException
      * @return void
      */
     public void createScheduleMaxWindow4() throws IllegalArgumentException {
@@ -311,8 +292,7 @@ public class ScheduleBuilder {
                 int startHourPlus3 = currentTreatment.getStartHour() + 3;
                 if (startHourPlus3 > 23) { startHourPlus3 -= 24; }
 
-                // if there is no equal or additional time remaining in the original time
-                // slot...
+                // if there is no equal or additional time remaining in the original time slot...
                 if (!(times[newSchedule.getStartTime()][1] >= currentTask.getTotalTime())) {
                     newSchedule.setStartTime(startHourPlus1); // set the startHour to + 1 of original
                     // if there is no equal or additional time remaining in the new time slot...
@@ -336,17 +316,14 @@ public class ScheduleBuilder {
         createScheduleMaxWindow5();
     }
 
-    /**
-     * createScheduleMaxWindow5()
-     * Iterates through treatments ArrayList and finds the treatment
+    /** createScheduleMaxWindow5()
+     * Iterates through treatments HashMap and finds the treatment
      * that has MaxWindow == 5. This means that this object is fifth priority
      * and can be set in its preferred start hour or a maximum of 4 hours after
-     * that.
-     * Creates Schedule object and sets the startTime, timeSpent, task, and
-     * animalList
-     * data members. Then sets the timeRemaining data member according to the time
-     * remaining in the times 2D array. Finally, adds this object to schedule
-     * ArrayList
+     * that. Creates Schedule object and sets the treatmentID, startTime, timeSpent, task, and
+     * animalList data members. Then sets the timeRemaining data member according to the time
+     * remaining in the times 2D array. Finally, adds this object to schedule ArrayList
+     * @throws IllegalArgumentException
      * @return void
      */
     public void createScheduleMaxWindow5() throws IllegalArgumentException {
@@ -370,8 +347,7 @@ public class ScheduleBuilder {
                 int startHourPlus4 = currentTreatment.getStartHour() + 4;
                 if (startHourPlus4 > 23) { startHourPlus4 -= 24; }
 
-                // if there is no equal or additional time remaining in the original time
-                // slot...
+                // if there is no equal or additional time remaining in the original time  slot...
                 if (!(times[newSchedule.getStartTime()][1] >= currentTask.getTotalTime())) {
                     newSchedule.setStartTime(startHourPlus1); // set the startHour to + 1 of original
                     // if there is no equal or additional time remaining in the new time slot...
@@ -397,26 +373,16 @@ public class ScheduleBuilder {
         }
     }
 
-    /**
-     * combineSimilarTasks()
+    /** combineSimilarTasks()
      * iterates over the times array and checks all of the scheduled tasks per hour,
      * storing only the first occurrence of each task. A temporary HashMap stores
-     * these tasks
-     * Strings as keys with temporary "ID" values. These ID values are used as the
-     * keys for a
-     * second temporary HashMap that stores the Schedule objects.
+     * these tasks Strings as keys with temporary "ID" values. These ID values are used as the
+     * keys for a second temporary HashMap that stores the Schedule objects.
      * 1st nested for-loop: iterates over the schedule ArrayList. If the task is
-     * new, it
-     * is added to the two HashMaps. If the task re-occurs, the pre-existing task
-     * and Schedule object are
-     * found in the HashMaps and updated accordingly. Finally, the repeated task is
-     * removed
-     * from the schedule ArrayList.
-     * 2nd nested for-loop: iterates over the HashMap containing the non-duplicate
-     * Schedule
-     * objects of that hour. Re-calculates the remaining time after each task is
-     * performed.
-     * 
+     * new, it is added to the two HashMaps. If the task re-occurs, the pre-existing task
+     * and Schedule object are found in the HashMaps and updated accordingly. Finally, the repeated task is
+     * removed from the schedule ArrayList. 2nd nested for-loop: iterates over the HashMap containing the non-duplicate
+     * Schedule objects of that hour. Re-calculates the remaining time after each task is performed.
      * @return void
      */
     public void combineSimilarTasks() {
@@ -426,8 +392,8 @@ public class ScheduleBuilder {
             int count = 0;
             times[hour][1] = 60;
 
-            for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { // iterate through the
-                                                                                            // schedule arrayList
+            for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { 
+                // iterate through the schedule arrayList
                 if (schedule.get(scheduleIndex).getStartTime() == times[hour][0]) {
                     String key = schedule.get(scheduleIndex).getTask();
                     if (mapForString.containsKey(key)) { // if the task exists in the list
@@ -448,19 +414,17 @@ public class ScheduleBuilder {
                     }
                 }
             }
-            for (int mapIndex = 0; mapIndex < mapForSchedule.size(); mapIndex++) { // iterate through the HashMap
-                                                                                   // containing the schedules
+            for (int mapIndex = 0; mapIndex < mapForSchedule.size(); mapIndex++) { 
+                // iterate through the HashMap containing the schedules
                 // update the remaining time in the times array along with the timeRemaining
                 // data member of the object
                 times[hour][1] -= mapForSchedule.get(mapIndex).getTimeSpent();
                 mapForSchedule.get(mapIndex).setTimeRemaining(times[hour][1]);
             }
-
         }
     }
 
-    /**
-     * addBackupVolunteer()
+    /** addBackupVolunteer()
      * This method is called after the schedule is roughly created because
      * it is the last resort if no other options of combining or moving
      * tasks around is possible. It checks if the second value of each array of
@@ -468,20 +432,18 @@ public class ScheduleBuilder {
      * negative, if it is, then it finds all Schedule objects associated with that
      * hour and updates them to have a backup volunteer. Additionally, it doubles
      * the time remaining as now there are two volunteers for that hour. To calls on
-     * a GUI class
-     * to inform the user that there is a need and will not continue the program
-     * untill the user
-     * confirms that they have gotten the backup volunteer
+     * a GUI class to inform the user that there is a need and will not continue the 
+     * program until the user confirms that they have gotten the backup volunteer
      * @return void
      */
     public void addBackupVolunteer() {
         for (int hour = 0; hour < times.length; hour++) { // iterate through the times
             int count = 0;
-            for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { // iterate through the
-                                                                                            // schedule arrayList
+            for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { 
+                // iterate through the schedule arrayList
                 if ((times[hour][1] < 0) || count != 0) { // if the timeRemaining for any time slot is negative...
-                    if (times[hour][0] == schedule.get(scheduleIndex).getStartTime()) { // find the time slots in the
-                                                                                        // schedule arrayList
+                    if (times[hour][0] == schedule.get(scheduleIndex).getStartTime()) { 
+                        // find the time slots in the schedule arrayList
                         schedule.get(scheduleIndex).setBackupRequired(true); // make those objects have backup volunteer
                         if (count == 0) { // get the original time remaining (which is not negative)
                             times[hour][1] = 120;
@@ -497,29 +459,31 @@ public class ScheduleBuilder {
             }
         }
 
-        // THIS IS TEMPORARY COMMENT TO SEE THE OUTPUT, DO NOT DELETE THANK YOU!
-        for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) {
-            if (schedule.get(scheduleIndex).getTask() != null){
-            System.out.println("Task: " + schedule.get(scheduleIndex).getTask() + "\n Start Time: " 
-            + schedule.get(scheduleIndex).getStartTime() + "\n Time spent:" 
-            + schedule.get(scheduleIndex).getTimeSpent() + "\n Time remaining: " +
-            schedule.get(scheduleIndex).getTimeRemaining() + "\n Backup: " +
-            schedule.get(scheduleIndex).getBackupRequired()
-            + "\n Quantity: " + schedule.get(scheduleIndex).getQuantity());
-            System.out.println();
-            }
-        }
-
+        // // THIS IS TEMPORARY COMMENT TO SEE THE OUTPUT, DO NOT DELETE THANK YOU!
+        // for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) {
+        //     if (schedule.get(scheduleIndex).getTask() != null){
+        //     System.out.println("Task: " + schedule.get(scheduleIndex).getTask() + "\n Start Time: " 
+        //     + schedule.get(scheduleIndex).getStartTime() + "\n Time spent:" 
+        //     + schedule.get(scheduleIndex).getTimeSpent() + "\n Time remaining: " +
+        //     schedule.get(scheduleIndex).getTimeRemaining() + "\n Backup: " +
+        //     schedule.get(scheduleIndex).getBackupRequired()
+        //     + "\n Quantity: " + schedule.get(scheduleIndex).getQuantity());
+        //     System.out.println();
+        //     }
+        // }
     }
 
     /** printToText()
      * This method is called after the schedule is entirely created. After making
      * sure that it is a valid schedule, it writes the schedule to an output text 
-     * file. First it prints the current date, then iterates through the times
+     * file. The GUI retrieves this txt file and displays it on screen.
+     * First it prints the current date, then iterates through the times
      * array and prints the time and its corresponding tasks under it. 
      * This is done by iterating through each element of the schedule ArrayList. 
+     * If the schedule is not made, the method returns false, causing the program
+     * to run once again after retrieving user input for changing the start hour
      * @throws IOException
-     * @return   void
+     * @return   boolean
     */
     public boolean printToText() throws IOException {
         LocalDate dateObj = LocalDate.now();
@@ -610,11 +574,12 @@ public class ScheduleBuilder {
 
     /**
      * main()
-     * This is the main method called to create the daily schedule
-     * 
+     * This is the main method called to create the daily schedule. It runs in a 
+     * while loop until the schedule is made properly
      * @param args the String array of arguments passed from the user (unused)
      * @throws IOException
      * @throws SpeciesNotFoundException
+     * @throws IllegalArgumentException
      * @return void
      */
     public static void main(String[] args)
