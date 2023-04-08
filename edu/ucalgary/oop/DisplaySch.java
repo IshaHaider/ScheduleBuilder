@@ -1,3 +1,9 @@
+/** 
+ * @author ENSF380 Group 20
+ * DisplaySch is a java class that creates the display for the final schedule 
+ * @version     1.2
+ * @since       1.0
+*/
 package edu.ucalgary.oop;
 
 import javax.swing.*;
@@ -9,6 +15,11 @@ import java.util.*;
 public class DisplaySch {
     public String total_display;
 
+    /** Constructor
+     * Initializes the data members of the DisplaySch and creates the entire GUI
+     * @param  string the starting string parameter
+     * @return
+    */
     public DisplaySch(String string) throws IOException {
         JFrame frame = new JFrame("Schedule for the day");
         JLabel title; 
