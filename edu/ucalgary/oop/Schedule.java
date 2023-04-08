@@ -14,7 +14,6 @@ public class Schedule{
     private String task;
     private int startTime;
     private int timeSpent;
-
     private String taskString;
     private int quantity = 1;
     private int timeRemaining = 60;
@@ -27,27 +26,24 @@ public class Schedule{
 
     /** Constructor
      * Initializes the data members of the Schedule class
+     * @param  treatmentID an integer value of treatmentID
      * @param  task  a string of the task description
      * @param  animal a string of the animal nickname, added to the animaList ArrayList
      * @param  startTime an integer value of the start hour of the treatment
      * @param  timeSpent an integer value of the total time spent on treatment
-     * @throws IncorrectTimeException
      * @return   
     */
-    public Schedule(int treatmentID, String task, String animal, int startTime, int timeSpent )
-    throws IncorrectTimeException {
+    public Schedule(int treatmentID, String task, String animal, int startTime, int timeSpent) {
         this.treatmentIndices.add(treatmentID);
         this.task = task;
         this.animalList.add(animal);
         this.startTime = startTime;
         this.timeSpent = timeSpent;
-
-        // if (timeSpent > 60 && !backupRequired) 
-        // { throw new IncorrectTimeException("The time spent exceeds the allowed time in one hour: " + timeSpent ); }
     }
 
     /** Constructor
      * Initializes the data members of the Schedule class
+     * @param  treatmentID an integer value of treatmentID
      * @param  task  a string of the task description
      * @param  animal a string of the animal nickname, added to the animaList ArrayList
      * @param  startTime an integer value of the start hour of the treatment
@@ -55,11 +51,9 @@ public class Schedule{
      * @param  timeSpent an integer value of the total time spent on treatment
      * @param  timeRemaining an integer value of the time remaining after the treatment is performed
      * @param  backupRequired a boolean value of whether or not a backup volunteer is required
-     * @throws IncorrectTimeException
      * @return   
     */
-    public Schedule(int treatmentID, String task, String animal, int startTime, int quantity, int timeSpent, int timeRemaining, boolean backupRequired)
-    throws IncorrectTimeException {
+    public Schedule(int treatmentID, String task, String animal, int startTime, int quantity, int timeSpent, int timeRemaining, boolean backupRequired){
         this.treatmentIndices.add(treatmentID);
         this.task = task;
         this.animalList.add(animal);
@@ -68,13 +62,6 @@ public class Schedule{
         this.timeSpent = timeSpent;
         this.timeRemaining = timeRemaining;
         this.backupRequired = backupRequired;
-
-        // if (timeSpent > 60 && !backupRequired) 
-        // { throw new IncorrectTimeException("The time spent exceeds the allowed time in one hour: " + timeSpent ); }
-        // else if ((timeSpent + timeRemaining) > 60 && !backupRequired)
-        // { throw new IncorrectTimeException("The total time exceeds the allowed time in one hour (no backup): " + (timeSpent + timeRemaining) ); }
-        // else if ((timeSpent + timeRemaining) > 120 && backupRequired)
-        // { throw new IncorrectTimeException("The total time exceeds the allowed time in one hour (with backup): " + (timeSpent + timeRemaining) ); }
     }
     
     /** Setters 
@@ -90,12 +77,7 @@ public class Schedule{
     public void setStartTime(int startTime) { this.startTime = startTime; }
     public void setQuantity(int quantity) { this.quantity = quantity; }
     public void setTimeSpent(int timeSpent) { this.timeSpent = timeSpent; }
-    public void setTimeRemaining(int timeRemaining) throws IncorrectTimeException{ 
-        this.timeRemaining = timeRemaining; 
-        // if ((timeSpent + timeRemaining) > 60 && !backupRequired) { 
-        //     throw new IncorrectTimeException("The total time exceeds the allowed time in one hour for the task " 
-        //     + this.task + ": " + (timeSpent + timeRemaining)); }
-    }
+    public void setTimeRemaining(int timeRemaining) { this.timeRemaining = timeRemaining; }
     public void setBackupRequired(boolean backupRequired) { this.backupRequired = backupRequired; }
 
     /** Getters
@@ -121,5 +103,6 @@ public class Schedule{
         int i;
         for (i = 0; i < this.animalList.size() - 1; i++) { animals += this.animalList.get(i) + ", "; }
         animals += this.animalList.get(i); // string with all animals listed, ex: Loner, Biter, Bitter
-        this.taskString = "* " + task + " (" + quantity + ": " + animals + ")"; }
+        this.taskString = "* " + task + " (" + quantity + ": " + animals + ")"; 
+    }
 }

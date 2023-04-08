@@ -14,9 +14,8 @@ import java.util.HashMap;
 import java.sql.*;
 
 public class Task implements LoadData {
-    private final static String QUERY = "SELECT * FROM tasks";
+    private final static String TASKQUERY = "SELECT * FROM tasks";
     private static HashMap<Integer, Task> tasks = new HashMap<Integer, Task>();
-
     private int taskID;
     private String taskDescr;
     private int[] totalTime = new int[3];
@@ -71,7 +70,7 @@ public class Task implements LoadData {
         try {
             Connection dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "oop", "password");
             Statement myStmt = dbConnect.createStatement();
-            ResultSet results = myStmt.executeQuery(QUERY);
+            ResultSet results = myStmt.executeQuery(TASKQUERY);
         
             while (results.next()) { // for each task entry, add it as a Task object to tasks ArrayList
                 this.taskID = results.getInt("TaskID");

@@ -11,11 +11,6 @@ package edu.ucalgary.oop;
 import java.io.*;
 import java.sql.*;
 import java.util.*;
-
-import edu.ucalgary.oop.Animal;
-import edu.ucalgary.oop.Schedule;
-import edu.ucalgary.oop.Task;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -83,11 +78,10 @@ public class ScheduleBuilder {
      * check for backup volunteer need, and then finally print the schedule.
      * 
      * @throws IOException
-     * @throws IncorrectTimeException
      * @throws ScheduleFailException
      * @return void
      */
-    public boolean createSchedule() throws IOException, IncorrectTimeException, ScheduleFailException {
+    public boolean createSchedule() throws IOException, ScheduleFailException {
         createScheduleMaxWindow1();
 
         // add cage cleaning tasks to schedule...
@@ -140,7 +134,7 @@ public class ScheduleBuilder {
      * @throws IncorrectTimeException
      * @return void
      */
-    public void createScheduleMaxWindow1() throws IncorrectTimeException {
+    public void createScheduleMaxWindow1() {
 
         // iterate through treatments for maxWindow = 1...
         for (int treatmentKey : allTreatments.keySet()) {
@@ -175,7 +169,7 @@ public class ScheduleBuilder {
      * @throws IncorrectTimeException
      * @return void
      */
-    public void createScheduleMaxWindow2() throws IncorrectTimeException {
+    public void createScheduleMaxWindow2() {
         // iterate through treatments for maxWindow = 2...
         for (int treatmentKey : allTreatments.keySet()) {
             Task currentTask = allTreatments.get(treatmentKey).getTask();
@@ -222,7 +216,7 @@ public class ScheduleBuilder {
      * @throws IncorrectTimeException
      * @return void
      */
-    public void createScheduleMaxWindow3() throws IncorrectTimeException {
+    public void createScheduleMaxWindow3() {
         String[] searchStrings = { "Feeding - coyote", "Feeding - fox" }; // the only two tasks that require a prepTime
         // iterate through treatments for maxWindow = 3...
         for (int treatmentKey : allTreatments.keySet()) {
@@ -302,7 +296,7 @@ public class ScheduleBuilder {
      * @throws IncorrectTimeException
      * @return void
      */
-    public void createScheduleMaxWindow4() throws IncorrectTimeException {
+    public void createScheduleMaxWindow4() {
         // iterate through treatments for maxWindow = 4...
         for (int treatmentKey : allTreatments.keySet()) {
             Task currentTask = allTreatments.get(treatmentKey).getTask();
@@ -364,7 +358,7 @@ public class ScheduleBuilder {
      * @throws IncorrectTimeException
      * @return void
      */
-    public void createScheduleMaxWindow5() throws IncorrectTimeException {
+    public void createScheduleMaxWindow5() {
         // iterate through treatments for maxWindow = 5...
         for (int treatmentKey : allTreatments.keySet()) {
             Task currentTask = allTreatments.get(treatmentKey).getTask();
@@ -439,7 +433,7 @@ public class ScheduleBuilder {
      * 
      * @return void
      */
-    public void combineSimilarTasks() throws IncorrectTimeException {
+    public void combineSimilarTasks() {
         for (int hour = 0; hour < times.length; hour++) { // iterate through the times
             HashMap<String, Integer> mapForString = new HashMap<String, Integer>();
             HashMap<Integer, Schedule> mapForSchedule = new HashMap<Integer, Schedule>();
@@ -496,7 +490,7 @@ public class ScheduleBuilder {
      * @throws IncorrectTimeException
      * @return void
      */
-    public void addBackupVolunteer() throws IncorrectTimeException {
+    public void addBackupVolunteer() {
         for (int hour = 0; hour < times.length; hour++) { // iterate through the times
             int count = 0;
             for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { // iterate through the
@@ -544,7 +538,7 @@ public class ScheduleBuilder {
      * @throws ScheduleFailException
      * @return   void
     */
-    public boolean printToText() throws IOException, ScheduleFailException{
+    public boolean printToText() throws IOException{
         LocalDate dateObj = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String date = dateObj.format(formatter);
@@ -638,13 +632,11 @@ public class ScheduleBuilder {
      * 
      * @param args the String array of arguments passed from the user (unused)
      * @throws IOException
-     * @throws IncorrectTimeException
      * @throws SpeciesNotFoundException
-     * @throws ScheduleFailException
      * @return void
      */
     public static void main(String[] args)
-            throws IOException, IncorrectTimeException, SpeciesNotFoundException, ScheduleFailException {
+            throws IOException, SpeciesNotFoundException {
         ScheduleBuilder schedule = new ScheduleBuilder();
         boolean n = schedule.createSchedule();
 

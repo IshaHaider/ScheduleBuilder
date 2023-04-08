@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.sql.*;
 
 public class Animal implements LoadData {
-    private final static String QUERY = "SELECT * FROM animals";
+    private final static String ANIMALQUERY = "SELECT * FROM animals";
     private static HashMap<Integer, Animal> animals = new HashMap<Integer, Animal>();
 
     private int animalID;
@@ -47,7 +47,7 @@ public class Animal implements LoadData {
         try {
             Connection dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "oop", "password");
             Statement myStmt = dbConnect.createStatement();
-            ResultSet results = myStmt.executeQuery(QUERY);
+            ResultSet results = myStmt.executeQuery(ANIMALQUERY);
             while (results.next()) { // for each animal entry, add it as an Animal object to animals ArrayList
                 this.animalID = results.getInt("AnimalID");
                 this.animalName = results.getString("AnimalNickname");

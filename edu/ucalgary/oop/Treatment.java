@@ -11,10 +11,8 @@ import java.util.HashMap;
 import java.util.ArrayList;
 
 public class Treatment implements LoadData {
-    private final static String QUERY = "SELECT * FROM treatments";
-
+    private final static String TRTMTQUERY = "SELECT * FROM treatments";
     private static HashMap<Integer, Treatment> treatments = new HashMap<Integer, Treatment>();
-
     private Animal animal;
     private Task task;
     private int startHour = 0;
@@ -65,7 +63,7 @@ public class Treatment implements LoadData {
         try {
             Connection dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "oop", "password");
             Statement myStmt = dbConnect.createStatement();
-            ResultSet results = myStmt.executeQuery(QUERY);
+            ResultSet results = myStmt.executeQuery(TRTMTQUERY);
             while (results.next()) { // for each treatment entry, add it as a Treatment object to treatments ArrayList
                 latestTreatmentID = results.getInt("TreatmentID");
                 animalObject = allAnimals.get(results.getInt("AnimalID"));

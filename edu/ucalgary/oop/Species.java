@@ -35,6 +35,5 @@ public enum Species {
      * @return   String
     */
     public abstract String toString() ;
-
     public abstract String mostActivePeriod();
 }
