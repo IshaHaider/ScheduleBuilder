@@ -1,3 +1,10 @@
+/** 
+ * @author ENSF380 Group 20
+ * VolunteerGUI is a java class that creates the GUI when a volunteer is needed 
+ * @version     1.2
+ * @since       1.0
+*/
+
 package edu.ucalgary.oop; 
 
 import javax.swing.*;
@@ -13,12 +20,22 @@ public class VolunteerGUI implements ActionListener {
     public String reason;
     public JFrame frame; 
 
+    /** Constructor
+     * Initializes the data members of the VolunteerGUI and calls on createGUI() 
+     * @param  string  an instance of the treatment that needs a volunteer
+     * @return
+    */
     public VolunteerGUI(String string) {
         this.reason = string; 
         this.exists = true; 
         createGUI();
     }
 
+    /** createGUI() 
+     * creates the GUI that asks the user to confirm that they have gotten an additonal 
+     * volunteer, it lets the user know which times and tasks are needed 
+     * @return   void
+    */
     public void createGUI(){
         frame = new JFrame("Volunteer Portal"); 
         frame.setSize(400,400);
@@ -66,11 +83,18 @@ public class VolunteerGUI implements ActionListener {
         frame.setVisible(true);
     }
 
+    /** actionPerformed() 
+     * recognizes that the enter statement has occured and the frame is no longer visible
+     * @return   void
+    */
     public void actionPerformed(ActionEvent event){
         this.exists = false; 
         this.frame.setVisible(false); 
     }
 
+    /**Getters
+     * getter methods returning the stored objected requested 
+     */
     public boolean getState(){
         return this.exists; 
     }
