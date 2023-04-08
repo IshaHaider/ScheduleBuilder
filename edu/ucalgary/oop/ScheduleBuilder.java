@@ -26,7 +26,7 @@ import java.time.format.DateTimeFormatter;
 public class ScheduleBuilder {
     private HashMap<Integer, Treatment> allTreatments = new HashMap<Integer, Treatment>();
     private ArrayList<Schedule> schedule = new ArrayList<Schedule>();
-    private static int[][] times = { { 0, 60 }, { 1, 60 }, { 2, 60 }, { 3, 60 }, { 4, 60 }, { 5, 60 }, { 6, 60 },
+    private int[][] times = { { 0, 60 }, { 1, 60 }, { 2, 60 }, { 3, 60 }, { 4, 60 }, { 5, 60 }, { 6, 60 },
             { 7, 60 }, { 8, 60 }, { 9, 60 }, { 10, 60 }, { 11, 60 },
             { 12, 60 }, { 13, 60 }, { 14, 60 }, { 15, 60 }, { 16, 60 }, { 17, 60 }, { 18, 60 }, { 19, 60 }, { 20, 60 },
             { 21, 60 }, { 22, 60 }, { 23, 60 } };
@@ -36,6 +36,7 @@ public class ScheduleBuilder {
      */
     public ScheduleBuilder() throws SpeciesNotFoundException, IllegalArgumentException {
         try {
+            if (allTreatments != null) { allTreatments.clear(); }
             Treatment treatment = new Treatment();
             treatment.storeHashMap();
             allTreatments = Treatment.getTreatments();
@@ -50,15 +51,14 @@ public class ScheduleBuilder {
      */
     public void setAllTreatments(HashMap<Integer, Treatment> newTreatments) { this.allTreatments = newTreatments; }
     public void setSchedule(ArrayList<Schedule> schedule) { this.schedule = schedule;}
-    public static void setTimes(int[][] newTimes) { times = newTimes;}
+    public  void setTimes(int[][] newTimes) { times = newTimes;}
 
     /** Getters
      * getter methods returning the stored object requested
      */
     public HashMap<Integer, Treatment> getAllTreatments() { return this.allTreatments; }
     public ArrayList<Schedule> getSchedule() { return this.schedule; }
-    public static int[][] getTimes() { return times;
-}
+    public  int[][] getTimes() { return times; }
 
     /** createSchedule()
      * Calls on all required methods to create the schedule.
@@ -498,7 +498,7 @@ public class ScheduleBuilder {
             String textForHour = String.valueOf(times[i][0]) + ":00";
             int count = 0;
             for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { // iterate through the schedule arrayList
-                if (schedule.get(scheduleIndex).getTimeRemaining() < 0) { 
+                if (schedule.get(scheduleIndex).getTimeRemaining() < 0 ) { 
                     
                     int maxSize = schedule.get(scheduleIndex).getTreatmentIndices().size()-1;
                     int treatmentToChange = schedule.get(scheduleIndex).getTreatmentIndices().get(maxSize);

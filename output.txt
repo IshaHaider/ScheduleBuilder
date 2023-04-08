@@ -1,88 +1,94 @@
 Schedule for 2023-04-08:
 
 0:00
-no tasks 
+* Kit feeding (1: Annie, Oliver and Mowgli)
+* Feeding - fox (1: Slinky)
+* Cage cleaning - coyote (4: Loner, Biter, Bitter, Pencil)
 
 1:00
-* Kit feeding (1: Annie, Oliver and Mowgli)
+* Cage cleaning - coyote (2: Eraser, Boots)
+* Cage cleaning - fox (2: Annie, Oliver and Mowgli, Slinky)
+* Cage cleaning - porcupine (4: Spike, Javelin, Gatekeeper, Sunshine)
 
 2:00
-* Feeding - fox (1: Slinky)
-* Mange treatment (1: Sunshine)
+* Kit feeding (1: Annie, Oliver and Mowgli)
+* Cage cleaning - porcupine (1: Shadow)
+* Cage cleaning - coyote (2: Spin, Spot)
 
 3:00
-* Kit feeding (1: Annie, Oliver and Mowgli)
-* Cage cleaning - coyote (5: Loner, Biter, Bitter, Pencil, Eraser)
-* Cage cleaning - fox (1: Annie, Oliver and Mowgli)
+no tasks 
 
 4:00
 * Kit feeding (1: Annie, Oliver and Mowgli)
 
 5:00
-* Eyedrops (2: Javelin, Annie, Oliver and Mowgli)
+* Eyedrops (1: Annie, Oliver and Mowgli)
 
 6:00
 * Flush neck wound (1: Spike)
 * Administer antibiotics (1: Spike)
+* Kit feeding (1: Annie, Oliver and Mowgli)
 
 7:00
-* Kit feeding (1: Annie, Oliver and Mowgli)
+no tasks 
 
 8:00
 * Kit feeding (1: Annie, Oliver and Mowgli)
 
 9:00
-* Cage cleaning - fox (1: Slinky)
-* Cage cleaning - porcupine (1: Spike)
+no tasks 
 
 10:00
 * Kit feeding (1: Annie, Oliver and Mowgli)
 
 11:00
-* Cage cleaning - porcupine (4: Javelin, Gatekeeper, Sunshine, Shadow)
-* Cage cleaning - coyote (3: Boots, Spin, Spot)
+no tasks 
 
 12:00
 * Kit feeding (1: Annie, Oliver and Mowgli)
 
 13:00
 * Eyedrops (1: Biter)
+* Inspect broken leg (2: Biter, Spin)
+* Mange treatment (1: Spin)
+* Give vitamin injection (2: Bitter, Pencil)
 
 14:00
-* Inspect broken leg (2: Biter, Spin)
+* Kit feeding (1: Annie, Oliver and Mowgli)
+* Mange treatment (1: Spot)
+* Give vitamin injection (1: Eraser)
 
 15:00
-* Kit feeding (1: Annie, Oliver and Mowgli)
 * Apply burn ointment back (1: Shadow)
-* Give vitamin injection (2: Bitter, Pencil)
 
 16:00
 * Kit feeding (1: Annie, Oliver and Mowgli)
-* Mange treatment (2: Spin, Spot)
 
 17:00
-* Give vitamin injection (1: Eraser)
+no tasks 
 
 18:00
 * Administer antibiotics (1: Spike)
+* Kit feeding (1: Annie, Oliver and Mowgli)
 
 19:00
 * Rebandage leg wound (1: Slinky)
-* Kit feeding (1: Annie, Oliver and Mowgli)
+* Feeding - coyote (5: Loner, Biter, Bitter, Pencil, Eraser)
+* Feeding - porcupine (1: Spike)
 
 20:00
-* Feeding - porcupine (2: Spike, Javelin)
-
-21:00 [+ backup volunteer] 
 * Kit feeding (1: Annie, Oliver and Mowgli)
-* Feeding - coyote (8: Loner, Biter, Bitter, Pencil, Eraser, Boots, Spin, Spot)
-* Feeding - porcupine (3: Gatekeeper, Sunshine, Shadow)
+* Feeding - porcupine (4: Javelin, Gatekeeper, Sunshine, Shadow)
+
+21:00
+* Feeding - coyote (3: Boots, Spin, Spot)
 
 22:00
-* Eyedrops (1: Loner)
+* Eyedrops (2: Loner, Javelin)
 * Give fluid injection (1: Boots)
 
 23:00
 * Kit feeding (1: Annie, Oliver and Mowgli)
+* Mange treatment (1: Sunshine)
 * Give vitamin injection (1: Gatekeeper)
 
