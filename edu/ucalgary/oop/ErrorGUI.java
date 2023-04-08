@@ -1,10 +1,17 @@
+/** 
+ * @author ENSF380 Group 20
+ * ErrorGUI is a java class that creates the GUI to get a userinput that changes the hour 
+ * that is causing the schedule issue
+ * @version     1.2
+ * @since       1.0
+*/
+
 package edu.ucalgary.oop; 
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*; 
-//modify the start hour of one
-//changing the database 
+ 
 
 public class ErrorGUI {
     public int startingHour;
@@ -14,6 +21,16 @@ public class ErrorGUI {
     public boolean states;
     public String given_animal; 
 
+
+    /** Constructor
+     * Initializes the data members of the ErrorGUI and calling on the respective GUI
+     * that needs to be created 
+     * @param  cases  the reason for the error
+     * @param  startingHour  the starting hour for the error
+     * @param  given_task  the task making the error
+     * @param  animal  the animal causing the error
+     * @return
+    */
     public ErrorGUI(String cases, int startingHour, String given_task, String animal){
         this.startingHour = startingHour;
         this.reason = cases;
@@ -28,6 +45,12 @@ public class ErrorGUI {
         }
     }
 
+    /** negativeFixingGui() 
+     * when there is negative time for an instance in the schedule we create a GUI 
+     * that displays the reasons for the inability to create the schedule and gets a user
+     * input for the new hour needed for that task
+     * @return   void
+    */
     public void negativeFixingGui() {
         JFrame frame = new JFrame("Fixing Schedule");
         frame.setSize(900, 500);
@@ -66,7 +89,12 @@ public class ErrorGUI {
         frame.setVisible(true);
     }
     
-
+    /** overhoursFixingGui() 
+     * when there are too many tasks in the delgated instance in the schedule we create a GUI 
+     * that displays the reasons for the inability to create the schedule and gets a user
+     * input for the new hour needed for that task
+     * @return   void
+    */
     public void overhoursFixingGui(){
         JFrame frame = new JFrame("Fixing Schedule");
         frame.setSize(900, 500);
@@ -108,6 +136,9 @@ public class ErrorGUI {
         frame.setVisible(true);
     }
 
+    /**Getters
+     * getter methods returning the stored objected requested 
+     */
     public int getSelectedHour(){return Integer.parseInt(this.user_change);}
     public boolean getStates(){return this.states;}
 
