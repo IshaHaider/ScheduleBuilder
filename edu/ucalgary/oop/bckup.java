@@ -1,3 +1,6 @@
+public class bckup {
+    
+}
 /** 
  * @author ENSF380 Group 20
  * ScheduleBuilder is the java class containing the main() method
@@ -552,105 +555,153 @@ public class ScheduleBuilder {
         BufferedWriter outputStream = new BufferedWriter(new FileWriter("output.txt"));
         outputStream.write("Schedule for " + date + ":\n\n");
         //(7, 2, 19)
-        // Connection bismallah = null;
-        // System.out.println(schedule.get(2).getStartTime()); 
+        Connection bismallah = null;
+        System.out.println(schedule.get(2).getStartTime()); 
 
-        // if(schedule.get(2).getStartTime() == 19){
-        //     try{
-        //         bismallah = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "oop", "password");
-        //         System.out.println("testing this");  
-        //     } catch (SQLException e){
-        //         e.printStackTrace();
-        //     }
-        //     System.out.println("first"); 
-        //     System.out.println(schedule.get(2).getStartTime()); 
-        //     try{
-        //         String changing_statement = "UPDATE TREATMENTS SET StartHour = ? WHERE AnimalID = ? and TaskID = ? and StartHour = ?"; 
-        //         PreparedStatement ps = bismallah.prepareStatement(changing_statement);
-        //         int ok = 19;
-        //         int hour = 10;
-        //         ps.setInt(1,hour);
-        //         ps.setInt(2,7);
-        //         ps.setInt(3,2);
-        //         ps.setInt(4,19); 
-        //         int x = ps.executeUpdate();
-        //         System.out.println(x); 
-        //         System.out.println("it has been done"); 
-        //         ps.close(); 
-        //         bismallah.close(); 
+        if(schedule.get(2).getStartTime() == 19){
+            try{
+                bismallah = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "oop", "password");
+                System.out.println("testing this");  
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+            System.out.println("first"); 
+            System.out.println(schedule.get(2).getStartTime()); 
+            try{
+                String changing_statement = "UPDATE TREATMENTS SET StartHour = ? WHERE AnimalID = ? and TaskID = ? and StartHour = ?"; 
+                PreparedStatement ps = bismallah.prepareStatement(changing_statement);
+                int ok = 19;
+                int hour = 10;
+                ps.setInt(1,hour);
+                ps.setInt(2,7);
+                ps.setInt(3,2);
+                ps.setInt(4,19); 
+                int x = ps.executeUpdate();
+                System.out.println(x); 
+                System.out.println("it has been done"); 
+                ps.close(); 
+                bismallah.close(); 
     
-        //     } catch(Exception e){
-        //         e.printStackTrace();
-        //     } 
-        //     //return false; 
+            } catch(Exception e){
+                e.printStackTrace();
+            } return false; 
 
 
-        // }
+        }
     
-        // Connection bismallahh = null;
-        // try{
-        //     bismallahh = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "oop", "password");
-        //     System.out.println("testing this");  
-        // } 
-        // catch (SQLException e){
-        // e.printStackTrace();
-        // }
-        // System.out.println(schedule.get(2).getStartTime()); 
+        Connection bismallahh = null;
+        try{
+            bismallahh = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "oop", "password");
+            System.out.println("testing this");  
+        } 
+        catch (SQLException e){
+        e.printStackTrace();
+        }
+        System.out.println(schedule.get(2).getStartTime()); 
 
-        
         //A big string of all of the values previous to it all
         for (int i = 0; i < times.length; i++) { // iterate through the times
             String textForHour = String.valueOf(times[i][0]) + ":00";
-            int count = 0;
+            int count = 0;        
             for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { // iterate through the schedule arrayList
                 if (schedule.get(scheduleIndex).getTimeRemaining() < 0) { 
-                    int TreatmentIDD = schedule.get(scheduleIndex).getTreatmentIndices().get(0);
-                    errorGUI error = new errorGUI("negative", schedule.get(scheduleIndex).getStartTime(), schedule.get(scheduleIndex).getTask(), "animal"); 
-                    while(error.getStates()){
-                        System.out.println(error.getStates()); 
-                    }int newHour = error.getSelectedHour();
-                    Connection bismallah = null;
-                        try{
-                            bismallah = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "oop", "password"); 
-                            String changing_statement = "UPDATE TREATMENTS SET StartHour = ? WHERE TreatmentID = ?"; 
-                            PreparedStatement ps = bismallah.prepareStatement(changing_statement);
-                            ps.setInt(1,newHour);
-                            ps.setInt(2,TreatmentIDD); 
-                            int x = ps.executeUpdate(); 
-                            ps.close();
-                            bismallah.close(); 
-    
-    
-                        }
-                        catch(SQLException e){
-                            e.printStackTrace(); 
-                        }
-
+                    System.out.println("ok tere is somethign wrong"); 
                     return false;
+
+                //     //how do i know which animal contrubited to this...?
+                //     // getthe AnimalID and the TaskID and pass it to the user so they know where, but also store that 
+                //     String animal; 
+                //     animal = x.get(0);  
+
+                //     errorGUI error = new errorGUI("negative", schedule.get(scheduleIndex).getStartTime(), schedule.get(scheduleIndex).getTask(), animal); 
+                   
+                //     while(error.getStates()){ 
+                //         System.out.println(error.getStates()); 
+                //     } 
+                //     //retriving the values
+                //     int newHour = error.getSelectedHour(); 
+                //     int petID = 0; 
+                //     int taskID = 0 ;
+                //     int starthour = schedule.get(scheduleIndex).getStartHour(); 
+
+                //     for(Animal x : this.animals){
+                //         if(x.getNickname() == animal){
+                //             petID = x.getID();
+                //         }
+                //     }
+
+                //     for(Task y: this.tasks){
+                //         if(y.getDescription() == schedule.get(scheduleIndex).getTask()){
+                //             taskID = y.getID(); 
+                //         }
+                //     }
+
+                //     Connection bismallah = null;
+                //     try{
+                //         bismallah = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "oop", "password"); 
+                //         String changing_statement = "UPDATE TREATMENTS SET StartHour = ? WHERE AnimalID = ? and TaskID = ? and StartHour = ?"; 
+                //         PreparedStatement ps = bismallah.prepareStatement(changing_statement);
+                //         ps.setInt(1,newHour);
+                //         ps.setInt(2,petID);
+                //         ps.setInt(3,taskID);
+                //         ps.setInt(4,starthour); 
+                //         int x = ps.executeUpdate(); 
+                //         ps.close();
+                //         bismallah.close(); 
+
+
+                //     }
+                //     catch(SQLException e){
+                //         e.printStackTrace(); 
+                //     }
                 }
                 else if (schedule.get(scheduleIndex).getBackupRequired() && (schedule.get(scheduleIndex).getTimeRemaining() + schedule.get(scheduleIndex).getTimeSpent()) > 120) {
-                    int TreatmentIDD = schedule.get(scheduleIndex).getTreatmentIndices().get(0);
-                    errorGUI error = new errorGUI("over", schedule.get(scheduleIndex).getStartTime(), schedule.get(scheduleIndex).getTask(), "animal"); 
-                    while(error.getStates()){
-                        System.out.println(error.getStates()); 
-                    }int newHour = error.getSelectedHour();
-                    Connection bismallah = null;
-                        try{
-                            bismallah = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "oop", "password"); 
-                            String changing_statement = "UPDATE TREATMENTS SET StartHour = ? WHERE TreatmentID = ?"; 
-                            PreparedStatement ps = bismallah.prepareStatement(changing_statement);
-                            ps.setInt(1,newHour);
-                            ps.setInt(2,TreatmentIDD); 
-                            int x = ps.executeUpdate(); 
-                            ps.close();
-                            bismallah.close(); 
-    
-    
-                        }
-                        catch(SQLException e){
-                            e.printStackTrace(); 
-                        }
+                    System.out.println("okay"); 
                     return false; 
+                    // String animal; 
+                    // animal = x.get(0); 
+
+                    // errorGUI error = new errorGUI("over", schedule.get(scheduleIndex).getStartTime(), schedule.get(scheduleIndex).getTask(), animal); 
+                    // while(error.getStates()){
+                    //     System.out.println(error.getStates()); 
+                    // } 
+                    // //retriving the values
+                    // int newHour = error.getSelectedHour(); 
+                    // int petID = 0; 
+                    // int taskID = 0 ;
+                    // int starthour = schedule.get(scheduleIndex).getStartHour(); 
+
+                    // for(Animal x : this.animals){
+                    //     if(x.getNickname() == animal){
+                    //         petID = x.getID();
+                    //     }
+                    // }
+
+                    // for(Task y: this.tasks){
+                    //     if(y.getDescription() == schedule.get(scheduleIndex).getTask()){
+                    //         taskID = y.getID(); 
+                    //     }
+                    // }
+                    // Connection bismallah = null;
+                    // try{
+                    //     bismallah = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "oop", "password"); 
+                    //     String changing_statement = "UPDATE TREATMENTS SET StartHour = ? WHERE AnimalID = ? and TaskID = ? and StartHour = ?"; 
+                    //     PreparedStatement ps = bismallah.prepareStatement(changing_statement);
+                    //     ps.setInt(1,newHour);
+                    //     ps.setInt(2,petID);
+                    //     ps.setInt(3,taskID);
+                    //     ps.setInt(4,starthour); 
+                    //     int x = ps.executeUpdate(); 
+                    //     ps.close();
+                    //     bismallah.close(); 
+                    //     return false; 
+
+                    // }
+                    // catch(SQLException e){
+                    //     e.printStackTrace(); 
+                    // }
+                    return false;
+
                 }
                 
                 if (times[i][0] == schedule.get(scheduleIndex).getStartTime()) { // find the time slots in the schedule arrayList
@@ -684,10 +735,9 @@ public class ScheduleBuilder {
             e.printStackTrace(); }
 
         displaysch displas = new displaysch("start"); 
-        return  true;
-
-    
-    }
+        return true;
+        // this.db.close(); 
+        }
 
     /**
      * main()
