@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.sql.*;
 import java.io.*;
 
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
@@ -50,71 +51,84 @@ public class SabaTest {
 
         }
 
-    @Test //test case checks if the storeHashMap() method can successfully retrieve animal 
-          //records from the database and store them in a HashMap, as well as if the HashMap contains the expected values
-          //also accounts for the exception
-    public void testAnimalStoreHashMap() throws Exception {
-        Connection dbConnect = null;
-        Statement myStmt = null;
-        ResultSet results = null;
-    
-        try {
-            // Connect to the database
-            dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "oop", "password");
-            myStmt = dbConnect.createStatement();
-    
-            // Insert test data into the animals table
-            myStmt.executeUpdate("INSERT INTO animals (AnimalID, AnimalNickname, AnimalSpecies) VALUES (50, 'Fido', 'coyote')");
-            myStmt.executeUpdate("INSERT INTO animals (AnimalID, AnimalNickname, AnimalSpecies) VALUES (51, 'Mittens', 'beaver')");
-    
-            // Get the number of rows in the animals table
-            results = myStmt.executeQuery("SELECT COUNT(*) FROM animals");
-            results.next();
-            int expectedSize = results.getInt(1);
-    
-            // Create an Animal object and call storeHashMap() method
-            Animal animal = new Animal();
-            animal.storeHashMap();
-    
-            // Get the HashMap of animals and verify the size and contents
-            HashMap<Integer, Animal> animalsMap = Animal.getAnimals();
-            assertNotNull(animalsMap);
-            assertEquals(expectedSize, animalsMap.size());
-    
-            Animal retrievedAnimal1 = animalsMap.get(50);
-            assertNotNull(retrievedAnimal1);
-            assertEquals(50, retrievedAnimal1.getAnimalID());
-            assertEquals("Fido", retrievedAnimal1.getNickname());
-            assertEquals("coyote", retrievedAnimal1.getSpecies());
-            assertNotNull(retrievedAnimal1.getMostActive());
-    
-            Animal retrievedAnimal2 = animalsMap.get(51);
-            assertNotNull(retrievedAnimal2);
-            assertEquals(51, retrievedAnimal2.getAnimalID());
-            assertEquals("Mittens", retrievedAnimal2.getNickname());
-            assertEquals("beaver", retrievedAnimal2.getSpecies());
-            assertNotNull(retrievedAnimal2.getMostActive());
-        } catch (SQLException | NullPointerException | IllegalArgumentException e) {
-            fail("Exception thrown: " + e.getMessage()); 
-    
-        } finally {
-            // Close database resources
-            if (results != null) {
-                results.close();
+    @Test 
+        /** test case checks if the storeHashMap() method can successfully retrieve animal 
+          *  records from the database and store them in a HashMap, as well as if the HashMap contains the expected values
+          *  also accounts for the exception
+          */
+          public void testAnimalStoreHashMap() throws Exception {
+            Connection dbConnect = null;
+            Statement myStmt = null;
+            ResultSet results = null;
+        
+            try {
+                // Connect to the database
+                dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "oop", "password");
+                myStmt = dbConnect.createStatement();
+        
+                // Insert test data into the animals table
+                myStmt.executeUpdate("INSERT INTO animals (AnimalID, AnimalNickname, AnimalSpecies) VALUES (50, 'Fido', 'coyote')");
+                myStmt.executeUpdate("INSERT INTO animals (AnimalID, AnimalNickname, AnimalSpecies) VALUES (51, 'Mittens', 'beaver')");
+        
+                // Get the number of rows in the animals table
+                results = myStmt.executeQuery("SELECT COUNT(*) FROM animals");
+                results.next();
+                int expectedSize = results.getInt(1);
+        
+                // Create an Animal object and call storeHashMap() method
+                Animal animal = new Animal();
+                animal.storeHashMap();
+        
+                // Get the HashMap of animals and verify the size and contents
+                HashMap<Integer, Animal> animalsMap = Animal.getAnimals();
+                assertNotNull("HashMap is null", animalsMap);
+                assertEquals("HashMap size is not as expected", expectedSize, animalsMap.size());
+        
+                Animal retrievedAnimal1 = animalsMap.get(50);
+                assertNotNull("Retrieved animal1 is null", retrievedAnimal1);
+                assertEquals("Animal ID for animal1 is not as expected", 50, retrievedAnimal1.getAnimalID());
+                assertEquals("Animal nickname for animal1 is not as expected", "Fido", retrievedAnimal1.getNickname());
+                assertEquals("Animal species for animal1 is not as expected", "coyote", retrievedAnimal1.getSpecies());
+                assertNotNull("Most active period for animal1 is null", retrievedAnimal1.getMostActive());
+        
+                Animal retrievedAnimal2 = animalsMap.get(51);
+                assertNotNull("Retrieved animal2 is null", retrievedAnimal2);
+                assertEquals("Animal ID for animal2 is not as expected", 51, retrievedAnimal2.getAnimalID());
+                assertEquals("Animal nickname for animal2 is not as expected", "Mittens", retrievedAnimal2.getNickname());
+                assertEquals("Animal species for animal2 is not as expected", "beaver", retrievedAnimal2.getSpecies());
+                assertNotNull("Most active period for animal2 is null", retrievedAnimal2.getMostActive());
+            } catch (SQLException | NullPointerException | IllegalArgumentException e) {
+                fail("Exception thrown: " + e.getMessage()); 
+        
+            } finally {
+                // Close database resources
+                if (results != null) {
+                    results.close();
+                }
+                if (myStmt != null) {
+                    myStmt.close();
+                }
+                if (dbConnect != null) {
+                    dbConnect.close();
+                }
+        
             }
-            if (myStmt != null) {
-                myStmt.close();
-            }
-            if (dbConnect != null) {
-                dbConnect.close();
-            }
-
         }
-    } 
+        
+        
+        
+        
+         
 
 
     //TREATMENT FILE TESTS  
-    //PROBLEM IN testTreatmentStoreHashMap BELLOW
+
+    private Animal animal;
+    private Task task;
+    private int startHour;
+
+    //PROBLEM IN testTreatmentStoreHashMap BELLOW //PROBLEM PROBLEM PROBLEM PROBLEM PROBLEM PROBLEM PROBLEM PROBLEM PROBLEM
+
     @Test
     public void testTreatmentStoreHashMap() throws SQLException {
         // Create test data
@@ -188,141 +202,74 @@ public class SabaTest {
         }
     }
 
-    @Test //if the setAnimal() method correctly assigns an Animal object to a Treatment object.
-    public void testSetAnimal() {
-        Animal animal = new Animal();
-        animal.setAnimalID(50);
-        Task task = new Task();
-        task.setTaskID(100);
-        Treatment treatment = new Treatment();
-        treatment.setAnimal(animal);
-        assertEquals("Expected Animal object to be set correctly using setAnimal method", animal, treatment.getAnimal());
+
+    
+    @Before
+    public void TreatmentsetUp() {
+        animal = new Animal(1, "lolol", "coyote", "Crepuscular");
+        task = new Task(0, "Feed", 30, 3);;
+        startHour = 8;
     }
     
-    @Test 
-    public void testSetTask() {
-        Animal animal = new Animal();
-        animal.setAnimalID(50);
-        Task task = new Task();
-        task.setTaskID(100);
-        Treatment treatment = new Treatment();
-        treatment.setTask(task);
-        assertEquals("Expected Task object to be set correctly using setTask method", task, treatment.getTask());
-    }
-    
+    /**
+     * Tests the constructor with start hour
+     * It creates a Treatment object and verifies if the values passed as arguments are correctly set.
+     */
     @Test
-    public void testSetStartHour() {
-        Animal animal = new Animal();
-        animal.setAnimalID(50);
-        Task task = new Task();
-        task.setTaskID(100);
-        Treatment treatment = new Treatment();
-        treatment.setStartHour(8);
-        assertEquals("Expected start hour to be set correctly using setStartHour method", 8, treatment.getStartHour());
+    public void testTreatmentConstructorWithStartHour() {
+        Treatment t = new Treatment(animal, task, startHour);
+        assertEquals("Animal object was not set correctly", animal, t.getAnimal());
+        assertEquals("Task object was not set correctly", task, t.getTask());
+        assertEquals("Start hour was not set correctly", startHour, t.getStartHour());
     }
     
+    /**
+     * Tests the constructor without start hour
+     * It creates a Treatment object and verifies if the values passed as arguments are correctly set. 
+     * The start hour should be set to 0.
+     */
+    @Test
+    public void testTreatmentConstructorWithoutStartHour() {
+        Treatment t = new Treatment(animal, task);
+        assertEquals("Animal object was not set correctly", animal, t.getAnimal());
+        assertEquals("Task object was not set correctly", task, t.getTask());
+        assertEquals("Start hour was not set to 0", 0, t.getStartHour());
+    }
+    
+    /**
+     * Tests the getters and setters of the Treatment class
+     * It creates a Treatment object, sets new values using the setter methods and verifies if the values were correctly set. 
+     */
+    @Test
+    public void testTreatmentGettersAndSetters() {
+        Treatment t = new Treatment(animal, task, startHour);
+        Animal newAnimal = new Animal(1, "Ali", Species.BEAVER.toString(), Species.BEAVER.mostActivePeriod());
+        Task newTask = new Task(1, "Walk", 60, 0, 4);
+        int newStartHour = 12;
+        t.setAnimal(newAnimal);
+        t.setTask(newTask);
+        t.setStartHour(newStartHour);
+        assertEquals("Animal object was not set correctly", newAnimal, t.getAnimal());
+        assertEquals("Task object was not set correctly", newTask, t.getTask());
+        assertEquals("Start hour was not set correctly", newStartHour, t.getStartHour());
+    }
+    
+    /**
+     * Tests the static setTreatments method of the Treatment class
+     * It creates a new HashMap, puts a Treatment object in it and sets it using the setTreatments method. 
+     * It then verifies if the HashMap was correctly set by comparing it with the one obtained using the getTreatments method. 
+     */
     @Test
     public void testSetTreatments() {
-        Animal animal1 = new Animal();
-        animal1.setAnimalID(50);
-        Task task1 = new Task();
-        task1.setTaskID(100);
-        Treatment treatment1 = new Treatment( animal1, task1, 8);
-    
-        Animal animal2 = new Animal();
-        animal2.setAnimalID(51);
-        Task task2 = new Task();
-        task2.setTaskID(101);
-        Treatment treatment2 = new Treatment(animal2, task2, 9);
-    
-        HashMap<Integer, Treatment> treatmentsMap = new HashMap<>();
-        treatmentsMap.put(1, treatment1);
-        treatmentsMap.put(2, treatment2);
-    
-        Treatment.setTreatments(treatmentsMap);
-    
-        assertEquals("Expected treatments map to be set correctly using setTreatments method", treatmentsMap, Treatment.getTreatments());
+        HashMap<Integer, Treatment> newTreatments = new HashMap<>();
+        newTreatments.put(1, new Treatment(animal, task, startHour));
+        Treatment.setTreatments(newTreatments);
+        assertEquals("Treatments HashMap was not set correctly", newTreatments, Treatment.getTreatments());
     }
-    
-    @Test
-    public void testGetAnimal() {
-        Animal animal = new Animal();
-        animal.setAnimalID(50);
-        Task task = new Task();
-        task.setTaskID(100);
-        Treatment treatment = new Treatment(animal, task, 8);
-        assertEquals("Expected getAnimal method to return the correct Animal object", animal, treatment.getAnimal());
-    }
-    
-    @Test
-    public void testGetTask() {
-        Animal animal = new Animal();
-        animal.setAnimalID(50);
-        Task task = new Task();
-        task.setTaskID(100);
-        Treatment treatment = new Treatment(animal, task, 8);
-        assertEquals("Expected getTask method to return the correct Task object", task, treatment.getTask());
-    }
-    
-    @Test
-    public void testGetStartHour() {
-        Animal animal = new Animal();
-        animal.setAnimalID(50);
-        Task task = new Task();
-        task.setTaskID(100);
-        Treatment treatment = new Treatment(animal, task, 8);
-        assertEquals("Expected getStartHour method to return the correct start hour", 8, treatment.getStartHour());
-    }
-    
-    @Test
-    public void testGetTreatments() {
-        Animal animal1 = new Animal();
-        animal1.setAnimalID(50);
-        Task task1 = new Task();
-        task1.setTaskID(100);
-        Treatment treatment1 = new Treatment(animal1, task1, 8);
-    
-        Animal animal2 = new Animal();
-        animal2.setAnimalID(51);
-        Task task2 = new Task();
-        task2.setTaskID(101);
-        Treatment treatment2 = new Treatment(animal2, task2, 9);
-    
-        HashMap<Integer, Treatment> treatmentsMap = new HashMap<>();
-        treatmentsMap.put(1, treatment1);
-        treatmentsMap.put(2, treatment2);
-    
-        Treatment.setTreatments(treatmentsMap);
-    
-        assertEquals("Expected getTreatments method to return the correct treatments map", treatmentsMap, Treatment.getTreatments());
-    }
-    @Test //Test Treatment(animal, task, startHour) constructor
-    public void testTreatmentConstructorWithAllParams() {
-        Animal animal = new Animal("Lion", 5);
-        Task task = new Task("Feed", 2, 3);
-        Treatment treatment = new Treatment(animal, task, 9);
-        assertEquals("Expected Animal object to be set correctly using constructor", animal, treatment.getAnimal());
-        assertEquals("Expected Task object to be set correctly using constructor", task, treatment.getTask());
-        assertEquals("Expected start hour to be set correctly using constructor", 9, treatment.getStartHour());
-    }
-    
-    @Test //Test Treatment(animal, task) constructor\\\
-    public void testTreatmentConstructorWithTwoParams() {
-        Animal animal = new Animal("Giraffe", 10);
-        Task task = new Task("Clean", 1, 1);
-        Treatment treatment = new Treatment(animal, task);
-        assertEquals("Expected Animal object to be set correctly using constructor", animal, treatment.getAnimal());
-        assertEquals("Expected Task object to be set correctly using constructor", task, treatment.getTask());
-        assertEquals("Expected start hour to be set to default value 0 using constructor", 0, treatment.getStartHour());
-    }
-    
-    @Test //Test Treatment() constructor:
-    public void testEmptyTreatmentConstructor() {
-        Treatment treatment = new Treatment();
-        assertNull("Expected Animal object to be null using empty constructor", treatment.getAnimal());
-        assertNull("Expected Task object to be null using empty constructor", treatment.getTask());
-        assertEquals("Expected start hour to be set to default value 0 using empty constructor", 0, treatment.getStartHour());
-    }
+}
+
+
+
     
     
    //SCHEDULEBUILDER FILE TESTS     
@@ -364,7 +311,7 @@ public class SabaTest {
     //         assertEquals("IllegalArgumentException exception when creating schedule object", e.getMessage());
     //     }
     // }  
-}    
+
    
     
     
