@@ -10,7 +10,7 @@ import java.io.*;
 import java.sql.*;
 import java.util.*;
 
-public class scheduleBuilderTest{ 
+public class ScheduleBuilderTest{ 
 
     //////Start of Animal.java testing:
     
