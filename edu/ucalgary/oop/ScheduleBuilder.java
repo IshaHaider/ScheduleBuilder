@@ -561,7 +561,7 @@ public class ScheduleBuilder {
             textForHour += "\n";
             outputStream.write(textForHour);
         }
-        
+
         try { outputStream.close(); } 
         catch (IOException e) { 
             System.out.println("I/O exception when trying to close file");
@@ -571,8 +571,7 @@ public class ScheduleBuilder {
         return true;
     }
 
-    /**
-     * main()
+    /** main()
      * This is the main method called to create the daily schedule. It runs in a 
      * while loop until the schedule is made properly
      * @param args the String array of arguments passed from the user (unused)
@@ -581,12 +580,12 @@ public class ScheduleBuilder {
      * @throws IllegalArgumentException
      * @return void
      */
-    public static void main(String[] args)
-            throws IOException, SpeciesNotFoundException, IllegalArgumentException {
+    public static void main(String[] args) throws IOException, SpeciesNotFoundException, IllegalArgumentException {
         ScheduleBuilder schedule = new ScheduleBuilder();
         boolean scheduleWorks = schedule.createSchedule();
-
+        
         while (!scheduleWorks){
+            schedule.allTreatments.clear();
             schedule = new ScheduleBuilder();
             scheduleWorks = schedule.createSchedule();
         }
