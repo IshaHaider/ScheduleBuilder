@@ -79,8 +79,13 @@ public class SabaTest {
             myStmt = dbConnect.createStatement();
     
             // Insert test data into the animals table
-            myStmt.executeUpdate("INSERT INTO animals (AnimalID, AnimalNickname, AnimalSpecies) VALUES (1, 'Fido', 'coyote')");
-            myStmt.executeUpdate("INSERT INTO animals (AnimalID, AnimalNickname, AnimalSpecies) VALUES (3, 'Buddy', 'puma')");
+            myStmt.executeUpdate("INSERT INTO animals (AnimalID, AnimalNickname, AnimalSpecies) VALUES (50, 'Fido', 'coyote')");
+            myStmt.executeUpdate("INSERT INTO animals (AnimalID, AnimalNickname, AnimalSpecies) VALUES (51, 'Mittens', 'beaver')");
+    
+            // Get the number of rows in the animals table
+            results = myStmt.executeQuery("SELECT COUNT(*) FROM animals");
+            results.next();
+            int expectedSize = results.getInt(1);
     
             // Create an Animal object and call storeHashMap() method
             Animal animal = new Animal();
@@ -89,7 +94,7 @@ public class SabaTest {
             // Get the HashMap of animals and verify the size and contents
             HashMap<Integer, Animal> animalsMap = Animal.getAnimals();
             assertNotNull(animalsMap);
-            assertEquals(2, animalsMap.size());
+            assertEquals(expectedSize, animalsMap.size());
     
             Animal retrievedAnimal1 = animalsMap.get(1);
             assertNotNull(retrievedAnimal1);
@@ -98,10 +103,10 @@ public class SabaTest {
             assertEquals("Dog", retrievedAnimal1.getSpecies());
             assertNotNull(retrievedAnimal1.getMostActive());
     
-            Animal retrievedAnimal2 = animalsMap.get(3);
+            Animal retrievedAnimal2 = animalsMap.get(2);
             assertNotNull(retrievedAnimal2);
-            assertEquals(3, retrievedAnimal2.getAnimalID());
-            assertEquals("Buddy", retrievedAnimal2.getNickname());
+            assertEquals(2, retrievedAnimal2.getAnimalID());
+            assertEquals("Mittens", retrievedAnimal2.getNickname());
             assertEquals("Cat", retrievedAnimal2.getSpecies());
             assertNotNull(retrievedAnimal2.getMostActive());
     
@@ -118,6 +123,8 @@ public class SabaTest {
             }
         }
     }
+    
+    
 }
     
 
