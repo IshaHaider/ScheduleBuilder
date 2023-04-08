@@ -625,7 +625,6 @@ public class ScheduleBuilder {
                         catch(SQLException e){
                             e.printStackTrace(); 
                         }
-
                     return false;
                 }
                 else if (schedule.get(scheduleIndex).getBackupRequired() && (schedule.get(scheduleIndex).getTimeRemaining() + schedule.get(scheduleIndex).getTimeSpent()) > 120) {

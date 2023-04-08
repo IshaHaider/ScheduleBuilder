@@ -3,26 +3,27 @@ Schedule for 2023-04-07:
 0:00
 * Kit feeding (1: Annie, Oliver and Mowgli)
 * Feeding - fox (1: Slinky)
-* Cage cleaning - coyote (4: Loner, Biter, Bitter, Pencil)
+* Cage cleaning - coyote (5: Loner, Biter, Bitter, Pencil, Eraser)
+* Cage cleaning - fox (1: Annie, Oliver and Mowgli)
 
 1:00
-* Cage cleaning - coyote (2: Eraser, Boots)
-* Cage cleaning - fox (2: Annie, Oliver and Mowgli, Slinky)
-* Cage cleaning - porcupine (4: Spike, Javelin, Gatekeeper, Sunshine)
+* Cage cleaning - fox (1: Slinky)
+* Cage cleaning - porcupine (5: Spike, Javelin, Gatekeeper, Sunshine, Shadow)
+* Cage cleaning - coyote (1: Boots)
 
 2:00
 * Kit feeding (1: Annie, Oliver and Mowgli)
-* Cage cleaning - porcupine (1: Shadow)
-* Cage cleaning - coyote (2: Spin, Spot)
 
 3:00
 no tasks 
 
 4:00
 * Kit feeding (1: Annie, Oliver and Mowgli)
+* Cage cleaning - coyote (2: Spin, Spot)
 
 5:00
-no tasks 
+* Rebandage leg wound (1: Slinky)
+* Flush neck wound (1: Spike)
 
 6:00
 * Kit feeding (1: Annie, Oliver and Mowgli)
@@ -46,21 +47,16 @@ no tasks
 * Kit feeding (1: Annie, Oliver and Mowgli)
 
 13:00 [+ backup volunteer] 
-* Eyedrops (1: Biter)
-* Rebandage leg wound (1: Slinky)
-* Flush neck wound (1: Spike)
-* Administer antibiotics (2: Spike, Spike)
+* Inspect broken leg (2: Biter, Spin)
+* Eyedrops (3: Biter, Spike, Bitter)
+* Give vitamin injection (2: Bitter, Eraser)
+* Mange treatment (3: Pencil, Spin, Spot)
 
 14:00
 * Kit feeding (1: Annie, Oliver and Mowgli)
-* Inspect broken leg (2: Biter, Spin)
-* Mange treatment (1: Spin)
-* Give vitamin injection (1: Bitter)
 
 15:00
 * Apply burn ointment back (1: Shadow)
-* Mange treatment (1: Spot)
-* Give vitamin injection (2: Pencil, Eraser)
 
 16:00
 * Kit feeding (1: Annie, Oliver and Mowgli)
@@ -83,11 +79,11 @@ no tasks
 no tasks 
 
 22:00
+* Apply burn ointment back (1: Annie, Oliver and Mowgli)
 * Eyedrops (2: Loner, Javelin)
 * Give fluid injection (1: Boots)
 
 23:00
-* Kit feeding (1: Annie, Oliver and Mowgli)
-* Mange treatment (1: Sunshine)
 * Give vitamin injection (1: Gatekeeper)
+* Mange treatment (1: Sunshine)
 
