@@ -1,7 +1,7 @@
 /** 
  * @author ENSF380 Group 20
  * Animal is a java class representing one row of data from the Animal table of the EWR database. 
- * @version     1.3
+ * @version     1.4
  * @since       1.0
 */
 package edu.ucalgary.oop;
@@ -41,8 +41,10 @@ public class Animal implements LoadData {
 
     /** storeHashMap() interface method 
      * loads data from the SQL database into a animals HashMap
-     * @return 
+     * @throws SpeciesNotFoundException
+     * @return   void
     */
+    @Override
     public void storeHashMap() throws SpeciesNotFoundException{
         try {
             Connection dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "oop", "password");
@@ -94,5 +96,4 @@ public class Animal implements LoadData {
     public String getSpecies() { return this.animalSpecies; }
     public String getMostActive() { return this.mostActive; }
     public static HashMap<Integer, Animal> getAnimals() { return animals; }
-
 }

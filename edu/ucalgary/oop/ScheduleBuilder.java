@@ -51,14 +51,14 @@ public class ScheduleBuilder {
      */
     public void setAllTreatments(HashMap<Integer, Treatment> newTreatments) { this.allTreatments = newTreatments; }
     public void setSchedule(ArrayList<Schedule> schedule) { this.schedule = schedule;}
-    public  void setTimes(int[][] newTimes) { times = newTimes;}
+    public void setTimes(int[][] newTimes) { this.times = newTimes;}
 
     /** Getters
      * getter methods returning the stored object requested
      */
     public HashMap<Integer, Treatment> getAllTreatments() { return this.allTreatments; }
     public ArrayList<Schedule> getSchedule() { return this.schedule; }
-    public  int[][] getTimes() { return times; }
+    public int[][] getTimes() { return times; }
 
     /** createSchedule()
      * Calls on all required methods to create the schedule.
@@ -108,7 +108,6 @@ public class ScheduleBuilder {
                 }
             }
         }
-        
         combineSimilarTasks();
         addBackupVolunteer();
         return printToText();

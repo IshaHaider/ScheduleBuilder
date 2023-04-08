@@ -1,7 +1,7 @@
 /** 
  * @author ENSF380 Group 20
  * Treatment is a java class representing one row of data from the Treatment table of the EWR database. 
- * @version     1.2
+ * @version     1.4
  * @since       1.0
 */
 
@@ -47,6 +47,12 @@ public class Treatment implements LoadData {
         this.task = task;
     }
 
+    /** storeHashMap() interface method 
+     * loads data from the SQL database into a treatments HashMap
+     * then adds all cage cleaning and feeding treatments to the database along with to the HashMap
+     * @return 
+    */
+    @Override
     public void storeHashMap() throws SpeciesNotFoundException{
         int latestTreatmentID = 1;
         

@@ -2,7 +2,7 @@
  * @author ENSF380 Group 20
  * Species is a java enum representing the five animal species for the EWR database. 
  * The EWR database is permitted to contain only these five animal species
- * @version     1.0
+ * @version     1.1
  * @since       1.0
 */
 
@@ -35,5 +35,10 @@ public enum Species {
      * @return   String
     */
     public abstract String toString() ;
+
+    /** mostActivePeriod() method 
+     * returnes the corresponding most active period of the species
+     * @return   String
+    */
     public abstract String mostActivePeriod();
 }

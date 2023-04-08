@@ -1,7 +1,7 @@
 /** 
  * @author ENSF380 Group 20
  * Schedule is a java class containing a treatment from teh SQL database with proper scheduling applied
- * @version     1.5
+ * @version     1.7
  * @since       1.0
 */
 
@@ -43,7 +43,7 @@ public class Schedule{
 
     /** Constructor
      * Initializes the data members of the Schedule class
-     * @param  treatmentID an integer value of treatmentID
+     * @param  treatmentID an integer value of treatmentID, to be added to the treatmentIndices array
      * @param  task  a string of the task description
      * @param  animal a string of the animal nickname, added to the animaList ArrayList
      * @param  startTime an integer value of the start hour of the treatment
@@ -53,7 +53,7 @@ public class Schedule{
      * @param  backupRequired a boolean value of whether or not a backup volunteer is required
      * @return   
     */
-    public Schedule(int treatmentID, String task, String animal, int startTime, int quantity, int timeSpent, int timeRemaining, boolean backupRequired){
+    public Schedule(int treatmentID, String task, String animal, int startTime, int quantity, int timeSpent, int timeRemaining, boolean backupRequired) {
         this.treatmentIndices.add(treatmentID);
         this.task = task;
         this.animalList.add(animal);
