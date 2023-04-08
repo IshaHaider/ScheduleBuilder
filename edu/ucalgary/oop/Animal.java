@@ -63,7 +63,7 @@ public class Animal implements LoadData {
                     this.mostActive = Species.BEAVER.mostActivePeriod();
                 else { 
                     throw new SpeciesNotFoundException("the animal " + animalName + " is not of a permitted species: " 
-                    + animalSpecies + "please only enter animals of the following species: coyote, porcupine, fox, raccoon, or beaver"); } 
+                    + animalSpecies + " please only enter animals of the following species: coyote, porcupine, fox, raccoon, or beaver"); } 
                 
                 Animal newAnimal = new Animal(animalID, animalName, animalSpecies, mostActive);
                 animals.put(animalID, newAnimal);
