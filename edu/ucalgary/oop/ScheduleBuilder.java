@@ -17,10 +17,8 @@ import java.time.format.DateTimeFormatter;
 /**
  * Terminal Commands
  * the following commands can be used for...
- * code compilation: javac -cp .:lib/mysql-connector-java-8.0.23.jar
- * edu/ucalgary/oop/ScheduleBuilder.java
- * code execution: java -cp .:lib/mysql-connector-java-8.0.23.jar
- * edu.ucalgary.oop.ScheduleBuilder
+ * code compilation: javac -cp .:lib/mysql-connector-java-8.0.23.jar edu/ucalgary/oop/ScheduleBuilder.java
+ * code execution: java -cp .:lib/mysql-connector-java-8.0.23.jar edu.ucalgary.oop.ScheduleBuilder
  * test compilation: javac -cp .:lib/junit-4.13.2.jar:lib/hamcrest-core-1.3.jar
  * edu/ucalgary/oop/ScheduleBuilderTest.java
  * test execution: java -cp .:lib/junit-4.13.2.jar:lib/hamcrest-core-1.3.jar
@@ -40,10 +38,14 @@ public class ScheduleBuilder {
      * 
      * @return
      */
-    public ScheduleBuilder() throws SpeciesNotFoundException {
-        Treatment treatment = new Treatment();
-        treatment.storeHashMap();
-        allTreatments = Treatment.getTreatments();
+    public ScheduleBuilder() throws SpeciesNotFoundException, IllegalArgumentException {
+        try {
+            Treatment treatment = new Treatment();
+            treatment.storeHashMap();
+            allTreatments = Treatment.getTreatments();
+        } catch (IllegalArgumentException e) {
+            System.out.println("IllegalArgumentException exception when creating treatment object");
+        }
     }
 
     /**
@@ -78,10 +80,9 @@ public class ScheduleBuilder {
      * check for backup volunteer need, and then finally print the schedule.
      * 
      * @throws IOException
-     * @throws ScheduleFailException
      * @return void
      */
-    public boolean createSchedule() throws IOException, ScheduleFailException {
+    public boolean createSchedule() throws IOException, IllegalArgumentException {
         createScheduleMaxWindow1();
 
         // add cage cleaning tasks to schedule...
@@ -100,7 +101,7 @@ public class ScheduleBuilder {
                     for (int timeIndex = 0; timeIndex < times.length; timeIndex++) {
                         if (times[timeIndex][1] >= currentTask.getTotalTime()) { // if timeRemaining of that hour >=
                                                                                  // taskTotalTime
-                            Schedule newSchedule = new Schedule(treatmentKey, currentTask.getDescription(), currentAnimal.getNickname(),
+                            try { Schedule newSchedule = new Schedule(treatmentKey, currentTask.getDescription(), currentAnimal.getNickname(),
                             times[timeIndex][0], currentTask.getTotalTime());
 
                             times[timeIndex][1] -= newSchedule.getTimeSpent();
@@ -108,13 +109,13 @@ public class ScheduleBuilder {
 
                             this.schedule.add(newSchedule);
                             break;
+                            } catch (IllegalArgumentException e) {
+                                System.out.println("IllegalArgumentException exception when creating schedule object");}
                         }
                     }
                 }
-
             }
         }
-
         combineSimilarTasks();
         addBackupVolunteer();
         return printToText();
@@ -130,11 +131,9 @@ public class ScheduleBuilder {
      * data members. Then sets the timeRemaining data member according to the time
      * remaining in the times 2D array. Finally, adds this object to schedule
      * ArrayList
-     * 
-     * @throws IncorrectTimeException
      * @return void
      */
-    public void createScheduleMaxWindow1() {
+    public void createScheduleMaxWindow1() throws IllegalArgumentException{
 
         // iterate through treatments for maxWindow = 1...
         for (int treatmentKey : allTreatments.keySet()) {
@@ -143,6 +142,7 @@ public class ScheduleBuilder {
             Treatment currentTreatment = allTreatments.get(treatmentKey);
 
             if (currentTask.getMaxWindow() == 1) {
+                try {
                 Schedule newSchedule = new Schedule(treatmentKey, currentTask.getDescription(), currentAnimal.getNickname(),
                         currentTreatment.getStartHour(), currentTask.getTotalTime());
 
@@ -150,6 +150,8 @@ public class ScheduleBuilder {
                 newSchedule.setTimeRemaining(times[newSchedule.getStartTime()][1]);
 
                 this.schedule.add(newSchedule);
+                } catch (IllegalArgumentException e) {
+                    System.out.println("IllegalArgumentException exception when creating schedule object");}
             }
         }
         createScheduleMaxWindow2();
@@ -161,15 +163,12 @@ public class ScheduleBuilder {
      * that has MaxWindow == 2. This means that this object is second priority
      * and can be set in its preferred start hour or the next one.
      * Creates Schedule object and sets the startTime, timeSpent, task, and
-     * animalList
-     * data members. Then sets the timeRemaining data member according to the time
-     * remaining in the times 2D array. Finally, adds this object to schedule
-     * ArrayList
-     * 
+     * animalList data members. Then sets the timeRemaining data member according to the time
+     * remaining in the times 2D array. Finally, adds this object to schedule ArrayList
      * @throws IncorrectTimeException
      * @return void
      */
-    public void createScheduleMaxWindow2() {
+    public void createScheduleMaxWindow2() throws IllegalArgumentException{
         // iterate through treatments for maxWindow = 2...
         for (int treatmentKey : allTreatments.keySet()) {
             Task currentTask = allTreatments.get(treatmentKey).getTask();
@@ -177,16 +176,14 @@ public class ScheduleBuilder {
             Treatment currentTreatment = allTreatments.get(treatmentKey);
 
             if (currentTask.getMaxWindow() == 2) {
+                try {
                 Schedule newSchedule = new Schedule(treatmentKey, currentTask.getDescription(), currentAnimal.getNickname(),
                         currentTreatment.getStartHour(), currentTask.getTotalTime());
 
                 int startHourPlus1 = currentTreatment.getStartHour() + 1;
-                if (startHourPlus1 > 23) {
-                    startHourPlus1 -= 24;
-                }
+                if (startHourPlus1 > 23) { startHourPlus1 -= 24; }
 
-                // if there is no equal or additional time remaining in the original time
-                // slot...
+                // if there is no equal or additional time remaining in the original time slot...
                 if (!(times[newSchedule.getStartTime()][1] >= currentTask.getTotalTime())) {
                     newSchedule.setStartTime(startHourPlus1);
                 }
@@ -195,6 +192,8 @@ public class ScheduleBuilder {
                 newSchedule.setTimeRemaining(times[newSchedule.getStartTime()][1]);
 
                 this.schedule.add(newSchedule);
+                } catch (IllegalArgumentException e) {
+                    System.out.println("IllegalArgumentException exception when creating schedule object");}
             }
 
         }
@@ -216,7 +215,7 @@ public class ScheduleBuilder {
      * @throws IncorrectTimeException
      * @return void
      */
-    public void createScheduleMaxWindow3() {
+    public void createScheduleMaxWindow3() throws IllegalArgumentException{
         String[] searchStrings = { "Feeding - coyote", "Feeding - fox" }; // the only two tasks that require a prepTime
         // iterate through treatments for maxWindow = 3...
         for (int treatmentKey : allTreatments.keySet()) {
@@ -249,17 +248,14 @@ public class ScheduleBuilder {
                     }
                 }
                 if (!alreadyExists) {
+                    try {
                     Schedule newSchedule = new Schedule(treatmentKey, currentTask.getDescription(), currentAnimal.getNickname(),
                             currentTreatment.getStartHour(), currentTask.getTotalTime());
 
                     int startHourPlus1 = currentTreatment.getStartHour() + 1;
-                    if (startHourPlus1 > 23) {
-                        startHourPlus1 -= 24;
-                    }
+                    if (startHourPlus1 > 23) { startHourPlus1 -= 24; }
                     int startHourPlus2 = currentTreatment.getStartHour() + 2;
-                    if (startHourPlus2 > 23) {
-                        startHourPlus2 -= 24;
-                    }
+                    if (startHourPlus2 > 23) { startHourPlus2 -= 24; }
 
                     // if there is no equal or additional time remaining in the original time
                     // slot...
@@ -275,6 +271,8 @@ public class ScheduleBuilder {
                     newSchedule.setTimeRemaining(times[newSchedule.getStartTime()][1]);
 
                     this.schedule.add(newSchedule);
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("IllegalArgumentException exception when creating schedule object");}
                 }
             }
         }
@@ -292,11 +290,9 @@ public class ScheduleBuilder {
      * data members. Then sets the timeRemaining data member according to the time
      * remaining in the times 2D array. Finally, adds this object to schedule
      * ArrayList
-     * 
-     * @throws IncorrectTimeException
      * @return void
      */
-    public void createScheduleMaxWindow4() {
+    public void createScheduleMaxWindow4() throws IllegalArgumentException {
         // iterate through treatments for maxWindow = 4...
         for (int treatmentKey : allTreatments.keySet()) {
             Task currentTask = allTreatments.get(treatmentKey).getTask();
@@ -304,21 +300,16 @@ public class ScheduleBuilder {
             Treatment currentTreatment = allTreatments.get(treatmentKey);
 
             if (currentTask.getMaxWindow() == 4) {
+                try {
                 Schedule newSchedule = new Schedule(treatmentKey, currentTask.getDescription(), currentAnimal.getNickname(),
                         currentTreatment.getStartHour(), currentTask.getTotalTime());
 
                 int startHourPlus1 = currentTreatment.getStartHour() + 1;
-                if (startHourPlus1 > 23) {
-                    startHourPlus1 -= 24;
-                }
+                if (startHourPlus1 > 23) { startHourPlus1 -= 24; }
                 int startHourPlus2 = currentTreatment.getStartHour() + 2;
-                if (startHourPlus2 > 23) {
-                    startHourPlus2 -= 24;
-                }
+                if (startHourPlus2 > 23) { startHourPlus2 -= 24; }
                 int startHourPlus3 = currentTreatment.getStartHour() + 3;
-                if (startHourPlus3 > 23) {
-                    startHourPlus3 -= 24;
-                }
+                if (startHourPlus3 > 23) { startHourPlus3 -= 24; }
 
                 // if there is no equal or additional time remaining in the original time
                 // slot...
@@ -338,6 +329,8 @@ public class ScheduleBuilder {
                 newSchedule.setTimeRemaining(times[newSchedule.getStartTime()][1]);
 
                 this.schedule.add(newSchedule);
+                } catch (IllegalArgumentException e) {
+                    System.out.println("IllegalArgumentException exception when creating schedule object");}
             }
         }
         createScheduleMaxWindow5();
@@ -354,11 +347,9 @@ public class ScheduleBuilder {
      * data members. Then sets the timeRemaining data member according to the time
      * remaining in the times 2D array. Finally, adds this object to schedule
      * ArrayList
-     * 
-     * @throws IncorrectTimeException
      * @return void
      */
-    public void createScheduleMaxWindow5() {
+    public void createScheduleMaxWindow5() throws IllegalArgumentException {
         // iterate through treatments for maxWindow = 5...
         for (int treatmentKey : allTreatments.keySet()) {
             Task currentTask = allTreatments.get(treatmentKey).getTask();
@@ -366,25 +357,18 @@ public class ScheduleBuilder {
             Treatment currentTreatment = allTreatments.get(treatmentKey);
 
             if (currentTask.getMaxWindow() == 5) {
+                try {
                 Schedule newSchedule = new Schedule(treatmentKey, currentTask.getDescription(), currentAnimal.getNickname(),
                         currentTreatment.getStartHour(), currentTask.getTotalTime());
 
                 int startHourPlus1 = currentTreatment.getStartHour() + 1;
-                if (startHourPlus1 > 23) {
-                    startHourPlus1 -= 24;
-                }
+                if (startHourPlus1 > 23) { startHourPlus1 -= 24; }
                 int startHourPlus2 = currentTreatment.getStartHour() + 2;
-                if (startHourPlus2 > 23) {
-                    startHourPlus2 -= 24;
-                }
+                if (startHourPlus2 > 23) { startHourPlus2 -= 24; }
                 int startHourPlus3 = currentTreatment.getStartHour() + 3;
-                if (startHourPlus3 > 23) {
-                    startHourPlus3 -= 24;
-                }
+                if (startHourPlus3 > 23) { startHourPlus3 -= 24; }
                 int startHourPlus4 = currentTreatment.getStartHour() + 4;
-                if (startHourPlus4 > 23) {
-                    startHourPlus4 -= 24;
-                }
+                if (startHourPlus4 > 23) { startHourPlus4 -= 24; }
 
                 // if there is no equal or additional time remaining in the original time
                 // slot...
@@ -407,6 +391,8 @@ public class ScheduleBuilder {
                 newSchedule.setTimeRemaining(times[newSchedule.getStartTime()][1]);
 
                 this.schedule.add(newSchedule);
+                } catch (IllegalArgumentException e) {
+                    System.out.println("IllegalArgumentException exception when creating schedule object");}
             }
         }
     }
@@ -486,8 +472,6 @@ public class ScheduleBuilder {
      * to inform the user that there is a need and will not continue the program
      * untill the user
      * confirms that they have gotten the backup volunteer
-     * 
-     * @throws IncorrectTimeException
      * @return void
      */
     public void addBackupVolunteer() {
@@ -535,95 +519,93 @@ public class ScheduleBuilder {
      * array and prints the time and its corresponding tasks under it. 
      * This is done by iterating through each element of the schedule ArrayList. 
      * @throws IOException
-     * @throws ScheduleFailException
      * @return   void
     */
-    public boolean printToText() throws IOException{
+    public boolean printToText() throws IOException {
         LocalDate dateObj = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String date = dateObj.format(formatter);
+        BufferedWriter outputStream;
 
-        BufferedWriter outputStream = new BufferedWriter(new FileWriter("output.txt"));
-        outputStream.write("Schedule for " + date + ":\n\n");
-        
-        //A big string of all of the values previous to it all
-        for (int i = 0; i < times.length; i++) { // iterate through the times
-            String textForHour = String.valueOf(times[i][0]) + ":00";
-            int count = 0;
-            for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { // iterate through the schedule arrayList
-                if (schedule.get(scheduleIndex).getTimeRemaining() < 0) { 
-                    
-                    int maxSize = schedule.get(scheduleIndex).getTreatmentIndices().size()-1;
-                    int treatmentToChange = schedule.get(scheduleIndex).getTreatmentIndices().get(maxSize);
-                    
-                    ErrorGUI error = new ErrorGUI("negative", schedule.get(scheduleIndex).getStartTime(), schedule.get(scheduleIndex).getTask(), allTreatments.get(treatmentToChange).getAnimal().getNickname()); 
-                    while(error.getStates()){ System.out.println(error.getStates()); }
-                    int newHour = error.getSelectedHour();
-                        try {
-                            Connection bismallah = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "oop", "password"); 
-                            String changing_statement = "UPDATE TREATMENTS SET StartHour = ? WHERE TreatmentID = ?"; 
-                            PreparedStatement ps = bismallah.prepareStatement(changing_statement);
-                            ps.setInt(1,newHour);
-                            ps.setInt(2,treatmentToChange); 
-                            int x = ps.executeUpdate(); 
-                            ps.close();
-                            bismallah.close(); 
-                        }
-                        catch(SQLException e) { e.printStackTrace(); }
-                    return false;
-                }
-                else if (schedule.get(scheduleIndex).getBackupRequired() && (schedule.get(scheduleIndex).getTimeRemaining() + schedule.get(scheduleIndex).getTimeSpent()) > 120) {
-                    int maxSize = schedule.get(scheduleIndex).getTreatmentIndices().size()-1;
-                    int treatmentToChange = schedule.get(scheduleIndex).getTreatmentIndices().get(maxSize);
-                    ErrorGUI error = new ErrorGUI("over", schedule.get(scheduleIndex).getStartTime(), schedule.get(scheduleIndex).getTask(), allTreatments.get(treatmentToChange).getAnimal().getNickname()); 
-                    while(error.getStates()){ System.out.println(error.getStates()) ; }
-                    int newHour = error.getSelectedHour();
-                    Connection bismallah = null;
-                        try{
-                            bismallah = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "oop", "password"); 
-                            String changing_statement = "UPDATE TREATMENTS SET StartHour = ? WHERE TreatmentID = ?"; 
-                            PreparedStatement ps = bismallah.prepareStatement(changing_statement);
-                            ps.setInt(1,newHour);
-                            ps.setInt(2,treatmentToChange); 
-                            int x = ps.executeUpdate(); 
-                            ps.close();
-                            bismallah.close(); 
-                        }
-                        catch(SQLException e) { e.printStackTrace(); }
-                    return false; 
-                }
-                
-                if (times[i][0] == schedule.get(scheduleIndex).getStartTime()) { // find the time slots in the schedule arrayList
-                    if (count == 0 ) { // if it is first task under this time slot, check for backup volunteer
-                        if (schedule.get(scheduleIndex).getBackupRequired() == true) { 
-                            VolunteerGUI volunteer = new VolunteerGUI(Integer.toString(times[i][0]));
-                            while(volunteer.getState()){
-                                System.out.println(volunteer.getState()); 
-                            }
-                            textForHour += " [+ backup volunteer] \n"; 
-                        }
-                        else { textForHour += "\n"; }
-                        count++;
-                    }
-                    schedule.get(scheduleIndex).createTaskString();
-                    textForHour += schedule.get(scheduleIndex).getTaskString();
-                    textForHour += "\n";
-                } 
-            }
-            if (count == 0 ) { textForHour += "\nno tasks \n"; }
-            textForHour += "\n";
-            outputStream.write(textForHour);
-        } 
-    
-        // try/catch for closing file
         try { 
-            outputStream.close();
-        } catch (IOException e) { 
+            outputStream = new BufferedWriter(new FileWriter("output.txt"));
+            outputStream.write("Schedule for " + date + ":\n\n");
+            //A big string of all of the values previous to it all
+            for (int i = 0; i < times.length; i++) { // iterate through the times
+                String textForHour = String.valueOf(times[i][0]) + ":00";
+                int count = 0;
+                for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { // iterate through the schedule arrayList
+                    if (schedule.get(scheduleIndex).getTimeRemaining() < 0) { 
+                        
+                        int maxSize = schedule.get(scheduleIndex).getTreatmentIndices().size()-1;
+                        int treatmentToChange = schedule.get(scheduleIndex).getTreatmentIndices().get(maxSize);
+                        
+                        ErrorGUI error = new ErrorGUI("negative", schedule.get(scheduleIndex).getStartTime(), schedule.get(scheduleIndex).getTask(), allTreatments.get(treatmentToChange).getAnimal().getNickname()); 
+                        while(error.getStates()){ System.out.println(error.getStates()); }
+                        int newHour = error.getSelectedHour();
+                            try {
+                                Connection bismallah = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "oop", "password"); 
+                                String changing_statement = "UPDATE TREATMENTS SET StartHour = ? WHERE TreatmentID = ?"; 
+                                PreparedStatement ps = bismallah.prepareStatement(changing_statement);
+                                ps.setInt(1,newHour);
+                                ps.setInt(2,treatmentToChange); 
+                                int x = ps.executeUpdate(); 
+                                ps.close();
+                                bismallah.close(); 
+                            }
+                            catch(SQLException e) { e.printStackTrace(); }
+                        return false;
+                    }
+                    else if (schedule.get(scheduleIndex).getBackupRequired() && (schedule.get(scheduleIndex).getTimeRemaining() + schedule.get(scheduleIndex).getTimeSpent()) > 120) {
+                        int maxSize = schedule.get(scheduleIndex).getTreatmentIndices().size()-1;
+                        int treatmentToChange = schedule.get(scheduleIndex).getTreatmentIndices().get(maxSize);
+                        ErrorGUI error = new ErrorGUI("over", schedule.get(scheduleIndex).getStartTime(), schedule.get(scheduleIndex).getTask(), allTreatments.get(treatmentToChange).getAnimal().getNickname()); 
+                        while(error.getStates()){ System.out.println(error.getStates()) ; }
+                        int newHour = error.getSelectedHour();
+                        Connection bismallah = null;
+                            try{
+                                bismallah = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "oop", "password"); 
+                                String changing_statement = "UPDATE TREATMENTS SET StartHour = ? WHERE TreatmentID = ?"; 
+                                PreparedStatement ps = bismallah.prepareStatement(changing_statement);
+                                ps.setInt(1,newHour);
+                                ps.setInt(2,treatmentToChange); 
+                                int x = ps.executeUpdate(); 
+                                ps.close();
+                                bismallah.close(); 
+                            }
+                            catch(SQLException e) { e.printStackTrace(); }
+                        return false; 
+                    }
+                    
+                    if (times[i][0] == schedule.get(scheduleIndex).getStartTime()) { // find the time slots in the schedule arrayList
+                        if (count == 0 ) { // if it is first task under this time slot, check for backup volunteer
+                            if (schedule.get(scheduleIndex).getBackupRequired() == true) { 
+                                VolunteerGUI volunteer = new VolunteerGUI(Integer.toString(times[i][0]));
+                                while(volunteer.getState()){
+                                    System.out.println(volunteer.getState()); 
+                                }
+                                textForHour += " [+ backup volunteer] \n"; 
+                            }
+                            else { textForHour += "\n"; }
+                            count++;
+                        }
+                        schedule.get(scheduleIndex).createTaskString();
+                        textForHour += schedule.get(scheduleIndex).getTaskString();
+                        textForHour += "\n";
+                    } 
+                }
+                if (count == 0 ) { textForHour += "\nno tasks \n"; }
+                textForHour += "\n";
+                outputStream.write(textForHour);
+                outputStream.close();
+            } 
+        }
+        catch (IOException e) { 
             System.out.println("I/O exception when trying to close file");
             e.printStackTrace(); }
 
         DisplaySch display = new DisplaySch("start"); 
-        return  true;
+        return true;
     }
 
     /**
@@ -636,13 +618,13 @@ public class ScheduleBuilder {
      * @return void
      */
     public static void main(String[] args)
-            throws IOException, SpeciesNotFoundException {
+            throws IOException, SpeciesNotFoundException, IllegalArgumentException {
         ScheduleBuilder schedule = new ScheduleBuilder();
-        boolean n = schedule.createSchedule();
+        boolean scheduleWorks = schedule.createSchedule();
 
-        while (!n){
+        while (!scheduleWorks){
             schedule = new ScheduleBuilder();
-            n = schedule.createSchedule();
+            scheduleWorks = schedule.createSchedule();
         }
     }
 }
