@@ -6,10 +6,10 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.*; 
 
-public class displaysch {
+public class DisplaySch {
     String total_display;
 
-    public displaysch(String string) throws IOException {
+    public DisplaySch(String string) throws IOException {
         JFrame frame = new JFrame("Schedule for the day");
         JLabel title; 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -23,8 +23,9 @@ public class displaysch {
             String st;
             st = br.readLine();
             title = new JLabel(st);
-            title.setBackground(Color.RED); 
+            title.setBackground(Color.YELLOW); 
             title.setOpaque(true);  // make sure to set opaque to true to see the background color
+            title.setFont(title.getFont().deriveFont(title.getFont().getStyle() | Font.BOLD, 20));
             title.setAlignmentX(Component.CENTER_ALIGNMENT);
             sch.add(Box.createRigidArea(new Dimension(0, 10)));
             sch.add(title);

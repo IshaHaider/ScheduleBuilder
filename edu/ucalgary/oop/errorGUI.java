@@ -6,7 +6,7 @@ import java.awt.event.*;
 //modify the start hour of one
 //changing the database 
 
-public class errorGUI {
+public class ErrorGUI {
     public int startingHour;
     public String reason;
     public String task;
@@ -14,8 +14,8 @@ public class errorGUI {
     public boolean states;
     public String given_animal; 
 
-    public errorGUI(String cases, int StartingHour, String given_task, String animal){
-        this.startingHour = StartingHour;
+    public ErrorGUI(String cases, int startingHour, String given_task, String animal){
+        this.startingHour = startingHour;
         this.reason = cases;
         this.task = given_task;
         this.states = true;
@@ -28,7 +28,6 @@ public class errorGUI {
         }
     }
 
-
     public void negativeFixingGui() {
         JFrame frame = new JFrame("Fixing Schedule");
         frame.setSize(900, 500);
@@ -37,7 +36,8 @@ public class errorGUI {
 
         JPanel panel = new JPanel(new BorderLayout(10, 10)); 
 
-        String display = "There are not enough workers available for this task: " + this.task + "with pet: " + this.given_animal;
+        String display = "There are not enough workers available for the task: '" + this.task + "\n for: " + this.given_animal + 
+        "'\nat the hour: " + this.startingHour;
         JLabel titleLabel = new JLabel(display);
         titleLabel.setFont(new Font("Arial", Font.PLAIN, 16)); 
 
@@ -58,14 +58,11 @@ public class errorGUI {
                 user_change = inputField.getText();
                 states = false; //is this setting the entire thing or?
                 frame.dispose();
-                
             }
         });
 
         panel.add(submitButton, BorderLayout.SOUTH);
-    
         frame.add(panel);
-
         frame.setVisible(true);
     }
     
@@ -78,7 +75,8 @@ public class errorGUI {
         
         JPanel panel = new JPanel(new BorderLayout(10, 10)); 
 
-        String display = "There are too many tasks in this delgated hour: " + this.task + "with pet: " + this.given_animal;
+        String display = "There are too many tasks in this delegated hour: " + this.startingHour + ". Please readjust the task: '" +
+        this.task +  " for: " + this.given_animal + "'";
         JLabel titleLabel = new JLabel(display);
         titleLabel.setFont(new Font("Arial", Font.PLAIN, 16)); 
 

@@ -42,8 +42,8 @@ public class Schedule{
         this.startTime = startTime;
         this.timeSpent = timeSpent;
 
-        if (timeSpent > 60 && !backupRequired) 
-        { throw new IncorrectTimeException("The time spent exceeds the allowed time in one hour: " + timeSpent ); }
+        // if (timeSpent > 60 && !backupRequired) 
+        // { throw new IncorrectTimeException("The time spent exceeds the allowed time in one hour: " + timeSpent ); }
     }
 
     /** Constructor
@@ -69,12 +69,12 @@ public class Schedule{
         this.timeRemaining = timeRemaining;
         this.backupRequired = backupRequired;
 
-        if (timeSpent > 60 && !backupRequired) 
-        { throw new IncorrectTimeException("The time spent exceeds the allowed time in one hour: " + timeSpent ); }
-        else if ((timeSpent + timeRemaining) > 60 && !backupRequired)
-        { throw new IncorrectTimeException("The total time exceeds the allowed time in one hour (no backup): " + (timeSpent + timeRemaining) ); }
-        else if ((timeSpent + timeRemaining) > 120 && backupRequired)
-        { throw new IncorrectTimeException("The total time exceeds the allowed time in one hour (with backup): " + (timeSpent + timeRemaining) ); }
+        // if (timeSpent > 60 && !backupRequired) 
+        // { throw new IncorrectTimeException("The time spent exceeds the allowed time in one hour: " + timeSpent ); }
+        // else if ((timeSpent + timeRemaining) > 60 && !backupRequired)
+        // { throw new IncorrectTimeException("The total time exceeds the allowed time in one hour (no backup): " + (timeSpent + timeRemaining) ); }
+        // else if ((timeSpent + timeRemaining) > 120 && backupRequired)
+        // { throw new IncorrectTimeException("The total time exceeds the allowed time in one hour (with backup): " + (timeSpent + timeRemaining) ); }
     }
     
     /** Setters 
@@ -92,9 +92,9 @@ public class Schedule{
     public void setTimeSpent(int timeSpent) { this.timeSpent = timeSpent; }
     public void setTimeRemaining(int timeRemaining) throws IncorrectTimeException{ 
         this.timeRemaining = timeRemaining; 
-        if ((timeSpent + timeRemaining) > 60 && !backupRequired) { 
-            throw new IncorrectTimeException("The total time exceeds the allowed time in one hour for the task " 
-            + this.task + ": " + (timeSpent + timeRemaining)); }
+        // if ((timeSpent + timeRemaining) > 60 && !backupRequired) { 
+        //     throw new IncorrectTimeException("The total time exceeds the allowed time in one hour for the task " 
+        //     + this.task + ": " + (timeSpent + timeRemaining)); }
     }
     public void setBackupRequired(boolean backupRequired) { this.backupRequired = backupRequired; }
 

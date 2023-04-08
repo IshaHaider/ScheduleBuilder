@@ -3,29 +3,30 @@ Schedule for 2023-04-07:
 0:00
 * Kit feeding (1: Annie, Oliver and Mowgli)
 * Feeding - fox (1: Slinky)
-* Cage cleaning - coyote (5: Loner, Biter, Bitter, Pencil, Eraser)
-* Cage cleaning - fox (1: Annie, Oliver and Mowgli)
+* Cage cleaning - coyote (4: Loner, Biter, Bitter, Pencil)
 
 1:00
-* Cage cleaning - fox (1: Slinky)
-* Cage cleaning - porcupine (5: Spike, Javelin, Gatekeeper, Sunshine, Shadow)
-* Cage cleaning - coyote (1: Boots)
+* Cage cleaning - coyote (2: Eraser, Boots)
+* Cage cleaning - fox (2: Annie, Oliver and Mowgli, Slinky)
+* Cage cleaning - porcupine (4: Spike, Javelin, Gatekeeper, Sunshine)
 
 2:00
 * Kit feeding (1: Annie, Oliver and Mowgli)
+* Cage cleaning - porcupine (1: Shadow)
+* Cage cleaning - coyote (2: Spin, Spot)
 
 3:00
 no tasks 
 
 4:00
 * Kit feeding (1: Annie, Oliver and Mowgli)
-* Cage cleaning - coyote (2: Spin, Spot)
 
 5:00
-* Rebandage leg wound (1: Slinky)
-* Flush neck wound (1: Spike)
+* Eyedrops (2: Javelin, Eraser)
 
 6:00
+* Flush neck wound (1: Spike)
+* Administer antibiotics (1: Spike)
 * Kit feeding (1: Annie, Oliver and Mowgli)
 
 7:00
@@ -46,14 +47,16 @@ no tasks
 12:00
 * Kit feeding (1: Annie, Oliver and Mowgli)
 
-13:00 [+ backup volunteer] 
+13:00
+* Eyedrops (1: Biter)
 * Inspect broken leg (2: Biter, Spin)
-* Eyedrops (3: Biter, Spike, Bitter)
-* Give vitamin injection (2: Bitter, Eraser)
-* Mange treatment (3: Pencil, Spin, Spot)
+* Mange treatment (1: Spin)
+* Give vitamin injection (2: Bitter, Pencil)
 
 14:00
 * Kit feeding (1: Annie, Oliver and Mowgli)
+* Mange treatment (1: Spot)
+* Give vitamin injection (1: Eraser)
 
 15:00
 * Apply burn ointment back (1: Shadow)
@@ -65,25 +68,27 @@ no tasks
 no tasks 
 
 18:00
+* Administer antibiotics (1: Spike)
 * Kit feeding (1: Annie, Oliver and Mowgli)
 
 19:00
+* Rebandage leg wound (1: Slinky)
 * Feeding - coyote (5: Loner, Biter, Bitter, Pencil, Eraser)
-* Feeding - porcupine (5: Spike, Javelin, Gatekeeper, Sunshine, Shadow)
+* Feeding - porcupine (1: Spike)
 
 20:00
 * Kit feeding (1: Annie, Oliver and Mowgli)
-* Feeding - coyote (3: Boots, Spin, Spot)
+* Feeding - porcupine (4: Javelin, Gatekeeper, Sunshine, Shadow)
 
 21:00
-no tasks 
+* Feeding - coyote (3: Boots, Spin, Spot)
 
 22:00
-* Apply burn ointment back (1: Annie, Oliver and Mowgli)
-* Eyedrops (2: Loner, Javelin)
+* Eyedrops (1: Loner)
 * Give fluid injection (1: Boots)
 
 23:00
-* Give vitamin injection (1: Gatekeeper)
+* Kit feeding (1: Annie, Oliver and Mowgli)
 * Mange treatment (1: Sunshine)
+* Give vitamin injection (1: Gatekeeper)
 

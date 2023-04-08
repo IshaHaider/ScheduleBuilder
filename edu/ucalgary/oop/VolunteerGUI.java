@@ -25,6 +25,7 @@ public class VolunteerGUI implements ActionListener {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     
         JButton confirmButton = new JButton("Confirm");
+        confirmButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         confirmButton.addActionListener(this); 
     
         JPanel mainPanel = new JPanel();

@@ -519,18 +519,18 @@ public class ScheduleBuilder {
             }
         }
 
-        // // THIS IS TEMPORARY COMMENT TO SEE THE OUTPUT, DO NOT DELETE THANK YOU!
-        // for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) {
-        //     if (schedule.get(scheduleIndex).getTask() != null){
-        //     System.out.println("Task: " + schedule.get(scheduleIndex).getTask() + "\n Start Time: " 
-        //     + schedule.get(scheduleIndex).getStartTime() + "\n Time spent:" 
-        //     + schedule.get(scheduleIndex).getTimeSpent() + "\n Time remaining: " +
-        //     schedule.get(scheduleIndex).getTimeRemaining() + "\n Backup: " +
-        //     schedule.get(scheduleIndex).getBackupRequired()
-        //     + "\n Quantity: " + schedule.get(scheduleIndex).getQuantity());
-        //     System.out.println();
-        //     }
-        // }
+        // THIS IS TEMPORARY COMMENT TO SEE THE OUTPUT, DO NOT DELETE THANK YOU!
+        for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) {
+            if (schedule.get(scheduleIndex).getTask() != null){
+            System.out.println("Task: " + schedule.get(scheduleIndex).getTask() + "\n Start Time: " 
+            + schedule.get(scheduleIndex).getStartTime() + "\n Time spent:" 
+            + schedule.get(scheduleIndex).getTimeSpent() + "\n Time remaining: " +
+            schedule.get(scheduleIndex).getTimeRemaining() + "\n Backup: " +
+            schedule.get(scheduleIndex).getBackupRequired()
+            + "\n Quantity: " + schedule.get(scheduleIndex).getQuantity());
+            System.out.println();
+            }
+        }
 
     }
 
@@ -551,52 +551,6 @@ public class ScheduleBuilder {
 
         BufferedWriter outputStream = new BufferedWriter(new FileWriter("output.txt"));
         outputStream.write("Schedule for " + date + ":\n\n");
-        //(7, 2, 19)
-        // Connection bismallah = null;
-        // System.out.println(schedule.get(2).getStartTime()); 
-
-        // if(schedule.get(2).getStartTime() == 19){
-        //     try{
-        //         bismallah = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "oop", "password");
-        //         System.out.println("testing this");  
-        //     } catch (SQLException e){
-        //         e.printStackTrace();
-        //     }
-        //     System.out.println("first"); 
-        //     System.out.println(schedule.get(2).getStartTime()); 
-        //     try{
-        //         String changing_statement = "UPDATE TREATMENTS SET StartHour = ? WHERE AnimalID = ? and TaskID = ? and StartHour = ?"; 
-        //         PreparedStatement ps = bismallah.prepareStatement(changing_statement);
-        //         int ok = 19;
-        //         int hour = 10;
-        //         ps.setInt(1,hour);
-        //         ps.setInt(2,7);
-        //         ps.setInt(3,2);
-        //         ps.setInt(4,19); 
-        //         int x = ps.executeUpdate();
-        //         System.out.println(x); 
-        //         System.out.println("it has been done"); 
-        //         ps.close(); 
-        //         bismallah.close(); 
-    
-        //     } catch(Exception e){
-        //         e.printStackTrace();
-        //     } 
-        //     //return false; 
-
-
-        // }
-    
-        // Connection bismallahh = null;
-        // try{
-        //     bismallahh = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "oop", "password");
-        //     System.out.println("testing this");  
-        // } 
-        // catch (SQLException e){
-        // e.printStackTrace();
-        // }
-        // System.out.println(schedule.get(2).getStartTime()); 
-
         
         //A big string of all of the values previous to it all
         for (int i = 0; i < times.length; i++) { // iterate through the times
@@ -604,64 +558,56 @@ public class ScheduleBuilder {
             int count = 0;
             for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { // iterate through the schedule arrayList
                 if (schedule.get(scheduleIndex).getTimeRemaining() < 0) { 
-                    int TreatmentIDD = schedule.get(scheduleIndex).getTreatmentIndices().get(0);
-                    errorGUI error = new errorGUI("negative", schedule.get(scheduleIndex).getStartTime(), schedule.get(scheduleIndex).getTask(), "animal"); 
-                    while(error.getStates()){
-                        System.out.println(error.getStates()); 
-                    }int newHour = error.getSelectedHour();
-                    Connection bismallah = null;
-                        try{
-                            bismallah = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "oop", "password"); 
+                    
+                    int maxSize = schedule.get(scheduleIndex).getTreatmentIndices().size()-1;
+                    int treatmentToChange = schedule.get(scheduleIndex).getTreatmentIndices().get(maxSize);
+                    
+                    ErrorGUI error = new ErrorGUI("negative", schedule.get(scheduleIndex).getStartTime(), schedule.get(scheduleIndex).getTask(), allTreatments.get(treatmentToChange).getAnimal().getNickname()); 
+                    while(error.getStates()){ System.out.println(error.getStates()); }
+                    int newHour = error.getSelectedHour();
+                        try {
+                            Connection bismallah = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "oop", "password"); 
                             String changing_statement = "UPDATE TREATMENTS SET StartHour = ? WHERE TreatmentID = ?"; 
                             PreparedStatement ps = bismallah.prepareStatement(changing_statement);
                             ps.setInt(1,newHour);
-                            ps.setInt(2,TreatmentIDD); 
+                            ps.setInt(2,treatmentToChange); 
                             int x = ps.executeUpdate(); 
                             ps.close();
                             bismallah.close(); 
-    
-    
                         }
-                        catch(SQLException e){
-                            e.printStackTrace(); 
-                        }
+                        catch(SQLException e) { e.printStackTrace(); }
                     return false;
                 }
                 else if (schedule.get(scheduleIndex).getBackupRequired() && (schedule.get(scheduleIndex).getTimeRemaining() + schedule.get(scheduleIndex).getTimeSpent()) > 120) {
-                    int TreatmentIDD = schedule.get(scheduleIndex).getTreatmentIndices().get(0);
-                    errorGUI error = new errorGUI("over", schedule.get(scheduleIndex).getStartTime(), schedule.get(scheduleIndex).getTask(), "animal"); 
-                    while(error.getStates()){
-                        System.out.println(error.getStates()); 
-                    }int newHour = error.getSelectedHour();
+                    int maxSize = schedule.get(scheduleIndex).getTreatmentIndices().size()-1;
+                    int treatmentToChange = schedule.get(scheduleIndex).getTreatmentIndices().get(maxSize);
+                    ErrorGUI error = new ErrorGUI("over", schedule.get(scheduleIndex).getStartTime(), schedule.get(scheduleIndex).getTask(), allTreatments.get(treatmentToChange).getAnimal().getNickname()); 
+                    while(error.getStates()){ System.out.println(error.getStates()) ; }
+                    int newHour = error.getSelectedHour();
                     Connection bismallah = null;
                         try{
                             bismallah = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "oop", "password"); 
                             String changing_statement = "UPDATE TREATMENTS SET StartHour = ? WHERE TreatmentID = ?"; 
                             PreparedStatement ps = bismallah.prepareStatement(changing_statement);
                             ps.setInt(1,newHour);
-                            ps.setInt(2,TreatmentIDD); 
+                            ps.setInt(2,treatmentToChange); 
                             int x = ps.executeUpdate(); 
                             ps.close();
                             bismallah.close(); 
-    
-    
                         }
-                        catch(SQLException e){
-                            e.printStackTrace(); 
-                        }
+                        catch(SQLException e) { e.printStackTrace(); }
                     return false; 
                 }
                 
                 if (times[i][0] == schedule.get(scheduleIndex).getStartTime()) { // find the time slots in the schedule arrayList
                     if (count == 0 ) { // if it is first task under this time slot, check for backup volunteer
                         if (schedule.get(scheduleIndex).getBackupRequired() == true) { 
-                            textForHour += " [+ backup volunteer] \n"; 
                             VolunteerGUI volunteer = new VolunteerGUI(Integer.toString(times[i][0]));
                             while(volunteer.getState()){
                                 System.out.println(volunteer.getState()); 
                             }
+                            textForHour += " [+ backup volunteer] \n"; 
                         }
-                        
                         else { textForHour += "\n"; }
                         count++;
                     }
@@ -682,10 +628,8 @@ public class ScheduleBuilder {
             System.out.println("I/O exception when trying to close file");
             e.printStackTrace(); }
 
-        displaysch displas = new displaysch("start"); 
+        DisplaySch display = new DisplaySch("start"); 
         return  true;
-
-    
     }
 
     /**
@@ -702,7 +646,6 @@ public class ScheduleBuilder {
     public static void main(String[] args)
             throws IOException, IncorrectTimeException, SpeciesNotFoundException, ScheduleFailException {
         ScheduleBuilder schedule = new ScheduleBuilder();
-        //schedule.createSchedule();
         boolean n = schedule.createSchedule();
 
         while (!n){
