@@ -67,7 +67,8 @@ public class SabaTest {
     //     Animal.removeAnimalFromHashMap(animal.getId());
     //     assertFalse(Animal.getAnimals().containsValue(animal));
     // }
-    @Test
+    @Test //test case checks if the storeHashMap() method can successfully retrieve animal 
+          //records from the database and store them in a HashMap, as well as if the HashMap contains the expected values
     public void testStoreHashMap() throws Exception {
         Connection dbConnect = null;
         Statement myStmt = null;
@@ -96,18 +97,18 @@ public class SabaTest {
             assertNotNull(animalsMap);
             assertEquals(expectedSize, animalsMap.size());
     
-            Animal retrievedAnimal1 = animalsMap.get(1);
+            Animal retrievedAnimal1 = animalsMap.get(50);
             assertNotNull(retrievedAnimal1);
-            assertEquals(1, retrievedAnimal1.getAnimalID());
+            assertEquals(50, retrievedAnimal1.getAnimalID());
             assertEquals("Fido", retrievedAnimal1.getNickname());
-            assertEquals("Dog", retrievedAnimal1.getSpecies());
+            assertEquals("coyote", retrievedAnimal1.getSpecies());
             assertNotNull(retrievedAnimal1.getMostActive());
     
-            Animal retrievedAnimal2 = animalsMap.get(2);
+            Animal retrievedAnimal2 = animalsMap.get(51);
             assertNotNull(retrievedAnimal2);
-            assertEquals(2, retrievedAnimal2.getAnimalID());
+            assertEquals(51, retrievedAnimal2.getAnimalID());
             assertEquals("Mittens", retrievedAnimal2.getNickname());
-            assertEquals("Cat", retrievedAnimal2.getSpecies());
+            assertEquals("beaver", retrievedAnimal2.getSpecies());
             assertNotNull(retrievedAnimal2.getMostActive());
     
         } finally {
