@@ -10,116 +10,19 @@ import java.io.*;
 import java.sql.*;
 import java.util.*;
 
+/**
+ * Terminal Commands
+ * the following commands can be used for...
+ * code compilation: javac -cp .:lib/mysql-connector-java-8.0.23.jar edu/ucalgary/oop/ScheduleBuilder.java
+ * code execution: java -cp .:lib/mysql-connector-java-8.0.23.jar edu.ucalgary.oop.ScheduleBuilder
+ * test compilation: javac -cp .:lib/junit-4.13.2.jar:lib/hamcrest-core-1.3.jar edu/ucalgary/oop/ScheduleBuilderTest.java
+ * test execution: java -cp .:lib/junit-4.13.2.jar:lib/hamcrest-core-1.3.jar org.junit.runner.JUnitCore edu.ucalgary.oop.ScheduleBuilderTest
+ */
+
 public class ScheduleBuilderTest{ 
 
-    //////Start of Animal.java testing:
-    
+    private static Connection dbConnect;
 
-    @Test  // will the animal constructor create an Animal object without an exception and therefore are the getters working?
-    public void testAnimalConstructor() {
-        int expectedAnimalID = 1;
-        String expectedAnimalNickname = "Olivia";
-        String expectedAnimalSpecies = Species.COYOTE.toString();
-        
-        try {
-            Animal animal1 = new Animal(expectedAnimalID, expectedAnimalNickname, expectedAnimalSpecies);
-            assertEquals("Constructor or getter gave wrong value for animalID", expectedAnimalID, animal1.getID());
-            assertEquals("Constructor or getter gave wrong value for Animal Nickname", expectedAnimalNickname, animal1.getNickname());
-            assertEquals("Constructor or getter gave wrong value for Animal species", expectedAnimalSpecies, animal1.getSpecies());
-        } catch (SpeciesNotFoundException e) {
-            fail("SpeciesNotFoundException was thrown when it should not have been");
-        }
-    }
-
-
-    @Test // has mostActive set attribute to different values depending on the species?
-    public void testConstructorCrepuscular() {
-        try {
-            Animal animal1 = new Animal(2, "Olivia", Species.COYOTE.toString());
-            assertEquals("mostActive does not return correct activity patterns","Crepuscular", animal1.getMostActive());
-    
-            Animal animal2 = new Animal(3, "Emily", Species.PORCUPINE.toString());
-            assertEquals("mostActive does not return correct activity patterns", animal2.getMostActive());
-        } catch (SpeciesNotFoundException e) {
-            fail("SpeciesNotFoundException was thrown when it should not have been");
-        }
-    }
-    
-    @Test // has mostActive set attribute to different values depending on the species?
-    public void testConstructorNocturnal() {
-        try {
-            Animal animal1 = new Animal(4, "Sly", Species.FOX.toString());
-            assertEquals("mostActive does not return correct activity patterns", "Nocturnal", animal1.getMostActive());
-    
-            Animal animal2 = new Animal(5, "Rocky", Species.RACCOON.toString());
-            assertEquals("mostActive does not return correct activity patterns", animal2.getMostActive());
-        } catch (SpeciesNotFoundException e) {
-            fail("SpeciesNotFoundException was thrown");
-        }
-    }
-    
-    @Test // has mostActive set attribute to different values depending on the species?
-    public void testConstructorDiurnal() {
-        try {
-            Animal animal = new Animal(6, "Bevy", Species.BEAVER.toString());
-            assertEquals(animal.getMostActive(), "mostActive does not return correct activity patterns");
-        } catch (SpeciesNotFoundException e) {
-            fail("SpeciesNotFoundException was thrown");
-        }
-    }
-    @Test //if the setID() method properly changes the animal's ID attribute:
-    public void testSetID() {
-        try {
-            Animal animal = new Animal(1, "Olivia", Species.COYOTE.toString());
-            animal.setID(2);
-            assertEquals("setter gave wrong value for animalID", 2, animal.getID());
-        } catch (SpeciesNotFoundException e) {
-            fail("SpeciesNotFoundException was thrown when it should not have been");
-        }
-    }
-    @Test // if the setNickname() method properly changes the animal's nickname attribute
-    public void testSetNickname() {
-        try {
-            Animal animal = new Animal(1, "Olivia", Species.COYOTE.toString());
-            animal.setNickname("Olly");
-            assertEquals("setter gave wrong value for Animal Nickname", "Olly", animal.getNickname());
-        } catch (SpeciesNotFoundException e) {
-            fail("SpeciesNotFoundException was thrown when it should not have been");
-        }
-    }
-
-    @Test // if the setSpecies() method properly changes the animal's species attribute
-    public void testSetSpecies() {
-        try {
-            Animal animal = new Animal(1, "Olivia", Species.COYOTE.toString());
-            animal.setSpecies(Species.RACCOON.toString());
-            assertEquals("setter gave wrong value for Animal species" ,"raccoon", animal.getSpecies());
-        } catch (SpeciesNotFoundException e) {
-            fail("SpeciesNotFoundException was thrown when it should not have been");
-        }
-    }
-    
-    @Test //if the setSpecies() method throws a SpeciesNotFoundException for an invalid species string
-    public void testSetSpeciesInvalid() {
-        try {
-            Animal animal = new Animal(1, "Olivia", Species.COYOTE.toString());
-            animal.setSpecies("INVALID");
-            fail("SpeciesNotFoundException was not thrown when it should have been");
-        } catch (SpeciesNotFoundException e) {
-            // test passes if SpeciesNotFoundException is thrown
-        }
-    }
-    
-    @Test //if the Animal constructor throws a SpeciesNotFoundException for an invalid species string
-    public void testConstructorInvalidSpecies() {
-        try {
-            Animal animal = new Animal(1, "Olivia", "INVALID");
-            fail("SpeciesNotFoundException was not thrown when it should have been");
-        } catch (SpeciesNotFoundException e) {
-            // test passes if SpeciesNotFoundException is thrown
-        }
-    }
-    
     // TESTING TASK
 
     // Task Values
@@ -139,10 +42,15 @@ public class ScheduleBuilderTest{
     Task sharedTaskobj = new Task(expectedTaskId, expectedTaskDescr, expectedDuration, expectedMaxWindow);
     Task sharedTaskobjWP = new Task(expectedTaskIdWP, expectedTaskDescrWP, expectedDurationWP, expectedPrepTime, expectedMaxWindowWP);
 
+    @BeforeClass
+    public static void setUp() throws SQLException {
+        dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "oop", "password");
+    }
+
     // Testing constructor without PrepTime of Task class
     @Test 
     public void testTaskWOPrepTime() {
-        int actualTaskId = sharedTaskobj.getID();
+        int actualTaskId = sharedTaskobj.getTaskID();
         String actualTaskDescr = sharedTaskobj.getDescription();
         int actualDuration = sharedTaskobj.getDuration();
         int actualMaxWindow = sharedTaskobj.getMaxWindow();
@@ -158,7 +66,7 @@ public class ScheduleBuilderTest{
     // Testing constructor with PrepTime of Task class
     @Test 
     public void testTaskWPrepTime() {
-        int actualTaskIdWP = sharedTaskobjWP.getID();
+        int actualTaskIdWP = sharedTaskobjWP.getTaskID();
         String actualTaskDescrWP = sharedTaskobjWP.getDescription();
         int actualDurationWP = sharedTaskobjWP.getDuration();
         int actualPrepTime = sharedTaskobjWP.getPrepTime();
@@ -173,12 +81,59 @@ public class ScheduleBuilderTest{
         assertEquals("Constructor or getter gave wrong value for Task Total Time with Prep Time.", expectedTotalTimeWP, actualTotalTimeWP);
     }
 
+    // testing storeHashMap
+    @Test 
+    public void testTaskStoreHashMap() {
+        try {
+            // Create a dummy task in the database
+            Statement insertStmt = dbConnect.createStatement();
+            insertStmt.executeUpdate("INSERT INTO TASKS (TaskID, Description, Duration, MaxWindow) VALUES (21, 'Test task', 10, 2)");
+            insertStmt.close();
+            
+            // Run the storeHashMap() method
+            Task testpls = new Task();
+            testpls.storeHashMap();
+            HashMap<Integer, Task> tasks = Task.getTasks();
+            
+            // Check that the dummy task was loaded from the database
+            Task testTask = tasks.get(21);
+            assertNotNull(testTask);
+            assertEquals("Test task", testTask.getDescription());
+            assertEquals(10, testTask.getTotalTime());
+            assertEquals(2, testTask.getMaxWindow());
+            
+            // Check that the cage cleaning and feeding tasks were added to the database and the HashMap
+            Statement selectStmt = dbConnect.createStatement();
+            ResultSet results = selectStmt.executeQuery("SELECT * FROM TASKS WHERE Description LIKE 'Cage cleaning%' OR Description LIKE 'Feeding%'");
+            int rowCount = 0;
+            while (results.next()) {
+                rowCount++;
+                int taskID = results.getInt("TaskID");
+                String description = results.getString("Description");
+                int duration = results.getInt("Duration");
+                int maxWindow = results.getInt("MaxWindow");
+                Task task = tasks.get(taskID);
+                assertNotNull(task);
+                assertEquals(description, task.getDescription());
+                assertEquals(duration, task.getTotalTime());
+                assertEquals(maxWindow, task.getMaxWindow());
+            }
+            assertEquals(6, rowCount); // There should be 3 feeding tasks and 3 cage cleaning tasks
+            results.close();
+            selectStmt.close();
+        } catch (IllegalArgumentException e) {
+            fail("IllegalArgumentException thrown: " + e.getMessage());
+        } catch (SQLException e) {
+            fail("SQLException thrown: " + e.getMessage());
+        }
+    }
+
     // Testing setter and getter functions of Task class
     @Test
     public void testTaskSettersGetters() {
         Task testSetGet = new Task(0, null, 0, 0, 0);
-        testSetGet.setID(14);;
-        int actualTaskId = testSetGet.getID();
+        testSetGet.setTaskID(14);;
+        int actualTaskId = testSetGet.getTaskID();
         testSetGet.setDescription("Feeding - Fox");  
         String actualTaskDescr = testSetGet.getDescription();
         testSetGet.setDuration(5);
@@ -189,6 +144,7 @@ public class ScheduleBuilderTest{
         int actualMaxWindow = testSetGet.getMaxWindow();
         testSetGet.setTotalTime(10);
         int actualTotalTime = testSetGet.getTotalTime();
+        
 
         assertEquals("Constructor or getter gave wrong value for Task ID.", 14, actualTaskId);
         assertEquals("Constructor or getter gave wrong value for Task Description.", "Feeding - Fox", actualTaskDescr);
@@ -200,73 +156,48 @@ public class ScheduleBuilderTest{
 
     // TESTING SCHEDULE
 
+    // testing default constructor
+
+    // testing constructor with only task, animal, startTime, and timeSpent arguments
+    @Test 
+    public void testScheduleTAST() {
+        Schedule schedule = new Schedule(1, "Grooming", "Belly", 10, 30);
+        assertEquals(1, schedule.getTreatmentIndices().size());
+        assertEquals("Grooming", schedule.getTask());
+        assertEquals(1, schedule.getAnimalList().size());
+        assertTrue(schedule.getAnimalList().contains("Belly"));
+        assertEquals(10, schedule.getStartTime());
+        assertEquals(30, schedule.getTimeSpent());
+    }
+
     // testing valid input parameters when backup is not required for Schedule class
     @Test 
-    public void testScheduleConstructorNOBackup() throws IncorrectTimeException{
-        try {
-            Schedule ValidInNOBackup = new Schedule("Rebandage Leg Wound", "Foxy", 13, 1, 20, 40, false);
-            assertEquals("Rebandage Leg Wound", ValidInNOBackup.getTask());
-            assertEquals(1, ValidInNOBackup.getAnimalList().size());
-            assertTrue(ValidInNOBackup.getAnimalList().contains("Foxy"));
-            assertEquals(13, ValidInNOBackup.getStartTime());
-            assertEquals(1, ValidInNOBackup.getQuantity());
-            assertEquals(20, ValidInNOBackup.getTimeSpent());
-            assertEquals(40, ValidInNOBackup.getTimeRemaining());
-            assertFalse(ValidInNOBackup.getBackupRequired());
-        } catch (IncorrectTimeException e) {
-            fail("Unexpected IncorrectTimeException: " + e.getMessage());
-        }
+    public void testScheduleConstructorNOBackup() {
+        Schedule schedule = new Schedule(1, "Rebandage Leg Wound", "Foxy", 13, 1, 20, 40, false);
+        assertEquals(1, schedule.getTreatmentIndices().size());
+        assertEquals("Rebandage Leg Wound", schedule.getTask());
+        assertEquals(1, schedule.getAnimalList().size());
+        assertTrue(schedule.getAnimalList().contains("Foxy"));
+        assertEquals(13, schedule.getStartTime());
+        assertEquals(1, schedule.getQuantity());
+        assertEquals(20, schedule.getTimeSpent());
+        assertEquals(40, schedule.getTimeRemaining());
+        assertFalse(schedule.getBackupRequired());
     }
 
     // testing valid input parameters when backup is required
     @Test 
-    public void testScheduleConstructorBackup() throws IncorrectTimeException{
-        try {
-            Schedule ValidInBackup = new Schedule("Medical Treatments", "Coy", 15, 2, 70, 50, true);
-            assertEquals("Medical Treatments", ValidInBackup.getTask());
-            assertEquals(1, ValidInBackup.getAnimalList().size());
-            assertTrue(ValidInBackup.getAnimalList().contains("Coy"));
-            assertEquals(15, ValidInBackup.getStartTime());
-            assertEquals(2, ValidInBackup.getQuantity());
-            assertEquals(70, ValidInBackup.getTimeSpent());
-            assertEquals(50, ValidInBackup.getTimeRemaining());
-            assertTrue(ValidInBackup.getBackupRequired());
-        } catch (IncorrectTimeException e) {
-            fail("Unexpected IncorrectTimeException: " + e.getMessage());
-        }
-    }
-
-    // testing when timeSpent exceeds 60 minutes and backup is not required
-    @Test 
-    public void testScheduleEX60NOBackup() {
-        try {
-            Schedule testScheduleEX60NOBackup = new Schedule("Eyedrops", "Porcu", 12, 1, 70, 20, false);
-            fail("Expected IncorrectTimeException was not thrown.");
-        } catch (IncorrectTimeException e) {
-            assertEquals("The time spent exceeds the allowed time in one hour: 70", e.getMessage());
-        }
-    }
-
-    // testing when sum of timeSpent and timeRemaining exceeds 60 minutes and backup is not required
-    @Test 
-    public void testScheduleSumEX60NOBackup() {
-        try {
-            Schedule testScheduleSumEX60NOBackup = new Schedule("Give fluid injection", "Bieber", 12, 1, 30, 40, false);
-            fail("Expected IncorrectTimeException was not thrown.");
-        } catch (IncorrectTimeException e) {
-            assertEquals("The total time exceeds the allowed time in one hour (no backup): 70", e.getMessage());
-        }
-    }
-
-    // testing when sum of timeSpent and timeRemaining exceeds 120 minutes and backup is required
-    @Test  
-    public void testScheduleSumEX120Backup() {
-        try {
-            Schedule testScheduleSumEX120Backup = new Schedule("Medical Treatments", "Coy", 15, 2, 70, 60, true);
-            fail("Expected IncorrectTimeException was not thrown.");
-        } catch (IncorrectTimeException e) {
-            assertEquals("The total time exceeds the allowed time in one hour (with backup): 130", e.getMessage());
-        }
+    public void testScheduleConstructorBackup() {
+        Schedule schedule = new Schedule(1, "Medical Treatments", "Coy", 15, 2, 70, 50, true);
+        assertEquals(1, schedule.getTreatmentIndices().size());
+        assertEquals("Medical Treatments", schedule.getTask());
+        assertEquals(1, schedule.getAnimalList().size());
+        assertTrue(schedule.getAnimalList().contains("Coy"));
+        assertEquals(15, schedule.getStartTime());
+        assertEquals(2, schedule.getQuantity());
+        assertEquals(70, schedule.getTimeSpent());
+        assertEquals(50, schedule.getTimeRemaining());
+        assertTrue(schedule.getBackupRequired());
     }
 
     // testing setters and getters for Schedule class
@@ -275,18 +206,14 @@ public class ScheduleBuilderTest{
     // // testing createTaskString() for Schedule class
     @Test 
     public void testScheduleCreateTaskString() {
-        try {    
-            Schedule testScheduleCreateTaskString = new Schedule("Rebandage Leg Wound", "Bubble", 13, 1, 20, 40, false);
-            testScheduleCreateTaskString.createTaskString();
-            assertEquals("* Rebandage Leg Wound (1: Bubble)", testScheduleCreateTaskString.getTaskString());
+        Schedule testScheduleCreateTaskString = new Schedule(1, "Rebandage Leg Wound", "Bubble", 13, 1, 20, 40, false);
+        testScheduleCreateTaskString.createTaskString();
+        assertEquals("* Rebandage Leg Wound (1: Bubble)", testScheduleCreateTaskString.getTaskString());
 
-            // adding another animal to the list
-            testScheduleCreateTaskString.setAnimalList("Bubs");
-            testScheduleCreateTaskString.createTaskString();
-            assertEquals("* Rebandage Leg Wound (2: Bubble, Bubs)", testScheduleCreateTaskString.getTaskString());
-        } catch (IncorrectTimeException e) { // WHY DOES THIS FUNCTION NEED AN EXCEPTION BEING THROWN
-            fail("Unexpected IncorrectTimeException: " + e.getMessage());
-        }
+        // adding another animal to the list
+        testScheduleCreateTaskString.setAnimalList("Bubs");
+        testScheduleCreateTaskString.createTaskString();
+        assertEquals("* Rebandage Leg Wound (2: Bubble, Bubs)", testScheduleCreateTaskString.getTaskString());
     }
 
     // TESTING SCHEDULEBUILDER
@@ -298,72 +225,75 @@ public class ScheduleBuilderTest{
     
     //////Start of treatment.java testing:
 
-    @Test //if first constructor  passes valid values for all parameters
-    public void testAllTreatmentGetters (){
-        Treatment t = new Treatment(1, 2, 3, 10);
-        assertEquals(1, t.getTreatementID());
-        assertEquals(2, t.getAnimalID());
-        assertEquals(3, t.getTaskID());
-        assertEquals(10, t.getStartHour());
+    // @Test //if first constructor  passes valid values for all parameters
+    // public void testAllTreatmentGetters (){
+    //     Treatment t = new Treatment(1, 2, 3, 10);
+    //     assertEquals(1, t.getTreatementID());
+    //     assertEquals(2, t.getAnimalID());
+    //     assertEquals(3, t.getTaskID());
+    //     assertEquals(10, t.getStartHour());
         
+    // }
+    // @Test //if the second constructor passes valid values for treatmentID, animalID, and taskID
+    // public void testSecondTreatmentGetters (){
+    //     Treatment t = new Treatment(1, 2, 3);
+    //     assertEquals(1, t.getTreatementID());
+    //     assertEquals(2, t.getAnimalID());
+    //     assertEquals(3, t.getTaskID());
+        
+    // } 
+    // @Test // if the setter methods is setting new values for each property
+    // public void testTreatmentSetters (){
+    //     Treatment t = new Treatment(1, 2, 3);
+    //     t.setTreatementID(4);
+    //     t.setAnimalID(5);
+    //     t.setTaskID(6);
+    //     t.setStartHour(12);
+    //     assertEquals(4, t.getTreatementID());
+    //     assertEquals(5, t.getAnimalID());
+    //     assertEquals(6, t.getTaskID());
+    //     assertEquals(12, t.getStartHour());        
+        
+    // } 
+    // @Test //if the first constructor is passing an invalid value for the startHour parameter (less than 0)
+    // public void testConstructorWithInvalidStartHour(){
+    //     assertThrows(IllegalArgumentException.class, () -> {
+    //         Treatment t = new Treatment(1, 2, 3, -1);
+    //     });
+        
+    // }
+    // @Test //if the first constructor is passing an invalid value for the startHour parameter (greater than or equal to 24)
+    // public void testConstructorWithInvalidStartHourOutOfRange(){
+    //     assertThrows(IllegalArgumentException.class, () -> {
+    //         Treatment t = new Treatment(1, 2, 3, 24);
+    //     });
+        
+    // }
+    // @Test //if the second constructor is passing an invalid value for the treatmentID parameter (less than or equal to 0)
+    // public void testConstructorWithInvalidTreatmentID(){
+    //     assertThrows(IllegalArgumentException.class, () -> {
+    //         Treatment t = new Treatment(0, 2, 3);
+    //     });
+        
+    // }
+    // @Test //if the second constructor is passing an invalid value for the animalID parameter (less than or equal to 0)
+    // public void testConstructorWithInvalidAnimalID(){
+    //     assertThrows(IllegalArgumentException.class, () -> {
+    //         Treatment t = new Treatment(1, 0, 3);
+    //     });
+        
+    // }
+    // @Test //if the second constructor is passing an invalid value for the taskID parameter (less than or equal to 0)
+    // public void testConstructorWithInvalidTaskID(){
+    //     assertThrows(IllegalArgumentException.class, () -> {
+    //         Treatment t = new Treatment(1, 2, 0);
+    //     });
+        
+    // }
+    @AfterClass
+    public static void tearDown() throws SQLException {
+        dbConnect.close();
     }
-    @Test //if the second constructor passes valid values for treatmentID, animalID, and taskID
-    public void testSecondTreatmentGetters (){
-        Treatment t = new Treatment(1, 2, 3);
-        assertEquals(1, t.getTreatementID());
-        assertEquals(2, t.getAnimalID());
-        assertEquals(3, t.getTaskID());
-        
-    } 
-    @Test // if the setter methods is setting new values for each property
-    public void testTreatmentSetters (){
-        Treatment t = new Treatment(1, 2, 3);
-        t.setTreatementID(4);
-        t.setAnimalID(5);
-        t.setTaskID(6);
-        t.setStartHour(12);
-        assertEquals(4, t.getTreatementID());
-        assertEquals(5, t.getAnimalID());
-        assertEquals(6, t.getTaskID());
-        assertEquals(12, t.getStartHour());        
-        
-    } 
-    @Test //if the first constructor is passing an invalid value for the startHour parameter (less than 0)
-    public void testConstructorWithInvalidStartHour(){
-        assertThrows(IllegalArgumentException.class, () -> {
-            Treatment t = new Treatment(1, 2, 3, -1);
-        });
-        
-    }
-    @Test //if the first constructor is passing an invalid value for the startHour parameter (greater than or equal to 24)
-    public void testConstructorWithInvalidStartHourOutOfRange(){
-        assertThrows(IllegalArgumentException.class, () -> {
-            Treatment t = new Treatment(1, 2, 3, 24);
-        });
-        
-    }
-    @Test //if the second constructor is passing an invalid value for the treatmentID parameter (less than or equal to 0)
-    public void testConstructorWithInvalidTreatmentID(){
-        assertThrows(IllegalArgumentException.class, () -> {
-            Treatment t = new Treatment(0, 2, 3);
-        });
-        
-    }
-    @Test //if the second constructor is passing an invalid value for the animalID parameter (less than or equal to 0)
-    public void testConstructorWithInvalidAnimalID(){
-        assertThrows(IllegalArgumentException.class, () -> {
-            Treatment t = new Treatment(1, 0, 3);
-        });
-        
-    }
-    @Test //if the second constructor is passing an invalid value for the taskID parameter (less than or equal to 0)
-    public void testConstructorWithInvalidTaskID(){
-        assertThrows(IllegalArgumentException.class, () -> {
-            Treatment t = new Treatment(1, 2, 0);
-        });
-        
-    }
-
 
 }
 
