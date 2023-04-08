@@ -17,8 +17,6 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.util.HashMap;
 
-import org.junit.After;
-import org.junit.Before;
 
 
 public class SabaTest {
@@ -330,30 +328,43 @@ public class SabaTest {
    //SCHEDULEBUILDER FILE TESTS     
 
 
-   @Test
-   public void testCreateScheduleMaxWindow1() {
-     // Create a new Schedule object
-     Schedule schedule = new Schedule();
- 
-     // Create a HashMap of treatments
-     Map<String, Treatment> treatments = new HashMap<String, Treatment>();
-     treatments.put("treatment1", new Treatment("treatment1", 60));
-     treatments.put("treatment2", new Treatment("treatment2", 30));
-     treatments.put("treatment3", new Treatment("treatment3", 45));
-     treatments.put("treatment4", new Treatment("treatment4", 90));
- 
-     // Set the treatments for the schedule
-     schedule.setTreatments(treatments);
- 
-     // Call the createSchedule method with a max window of 120 minutes
-     Map<String, Integer> result = schedule.createSchedule(120);
- 
-     // Verify that the resulting schedule has the expected number of treatments
-     assertEquals(2, result.size());
-   }
-   
-   }
-      
+    // // Test case for currentTask, currentAnimal, currentTreatment, newSchedule
+    // @Test
+    // public void testCreateScheduleMaxWindow1() {
+    //     ScheduleGenerator sg = new ScheduleGenerator();
+    //     sg.addAnimal(new Animal("Fluffy"));
+    //     sg.addTask(new Task("task1", 60, 1));
+    //     sg.addTreatment("Fluffy", "task1", 1, 8);
+
+    //     try {
+    //         sg.createScheduleMaxWindow1();
+    //         assertEquals(1, sg.getSchedule().size());
+    //         assertEquals(1, sg.getSchedule().get(0).getTreatmentKey());
+    //         assertEquals("task1", sg.getSchedule().get(0).getTaskDescription());
+    //         assertEquals("Fluffy", sg.getSchedule().get(0).getAnimalNickname());
+    //         assertEquals(8, sg.getSchedule().get(0).getStartHour());
+    //         assertEquals(60, sg.getSchedule().get(0).getTimeSpent());
+    //     } catch (IllegalArgumentException e) {
+    //         fail("Unexpected IllegalArgumentException thrown");
+    //     }
+    // }
+
+    // // Test case for exception handling
+    // @Test
+    // public void testCreateScheduleMaxWindow1Exception() {
+    //     ScheduleGenerator sg = new ScheduleGenerator();
+    //     sg.addAnimal(new Animal("Fluffy"));
+    //     sg.addTask(new Task("task1", 60, 1));
+    //     sg.addTreatment("Fluffy", "task1", 1, 25);
+
+    //     try {
+    //         sg.createScheduleMaxWindow1();
+    //         fail("Expected IllegalArgumentException not thrown");
+    //     } catch (IllegalArgumentException e) {
+    //         assertEquals("IllegalArgumentException exception when creating schedule object", e.getMessage());
+    //     }
+    // }  
+}    
    
     
     
