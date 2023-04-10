@@ -1,5 +1,5 @@
 /** 
- * @author ENSF380 Group 20
+ * @author ENSF380 Group 20: Zahwa Fatima, Saba Yarandi, Nessma Mohdy, Isha Haider
  * DisplaySch is a java class that creates the display for the final schedule 
  * @version     1.2
  * @since       1.0

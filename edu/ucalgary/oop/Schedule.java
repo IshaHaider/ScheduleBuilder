@@ -1,5 +1,5 @@
 /** 
- * @author ENSF380 Group 20
+ * @author ENSF380 Group 20: Zahwa Fatima, Saba Yarandi, Nessma Mohdy, Isha Haider
  * Schedule is a java class containing a treatment from teh SQL database with proper scheduling applied
  * @version     1.7
  * @since       1.0

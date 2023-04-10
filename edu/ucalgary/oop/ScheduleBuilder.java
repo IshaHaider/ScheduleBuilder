@@ -1,5 +1,5 @@
 /** 
- * @author ENSF380 Group 20
+ * @author ENSF380 Group 20: Zahwa Fatima, Saba Yarandi, Nessma Mohdy, Isha Haider
  * ScheduleBuilder is the java class containing the main() method
  * it produces the daily schedule based on the data retrieved from LoadData
  * @version     2.1

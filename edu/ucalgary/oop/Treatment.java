@@ -1,5 +1,5 @@
 /** 
- * @author ENSF380 Group 20
+ * @author ENSF380 Group 20: Zahwa Fatima, Saba Yarandi, Nessma Mohdy, Isha Haider
  * Treatment is a java class representing one row of data from the Treatment table of the EWR database. 
  * @version     1.4
  * @since       1.0

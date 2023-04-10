@@ -1,5 +1,5 @@
 /** 
- * @author ENSF380 Group 20
+ * @author ENSF380 Group 20: Zahwa Fatima, Saba Yarandi, Nessma Mohdy, Isha Haider
  * Species is a java enum representing the five animal species for the EWR database. 
  * The EWR database is permitted to contain only these five animal species
  * @version     1.1

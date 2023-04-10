@@ -1,5 +1,5 @@
 /** 
- * @author ENSF380 Group 20
+ * @author ENSF380 Group 20: Zahwa Fatima, Saba Yarandi, Nessma Mohdy, Isha Haider
  * VolunteerGUI is a java class that creates the GUI when a volunteer is needed 
  * @version     1.2
  * @since       1.0

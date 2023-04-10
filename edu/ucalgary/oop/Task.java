@@ -1,5 +1,5 @@
 /** 
- * @author ENSF380 Group 20
+ * @author ENSF380 Group 20: Zahwa Fatima, Saba Yarandi, Nessma Mohdy, Isha Haider
  * Task is a java class representing  data from the Task table of the EWR database. 
  * the totalTime data member is an integer array, where:
  * totalTime[0] = the duration per animal

@@ -1,5 +1,5 @@
 /** 
- * @author ENSF380 Group 20
+ * @author ENSF380 Group 20: Zahwa Fatima, Saba Yarandi, Nessma Mohdy, Isha Haider
  * SpeciesNotFoundException is a java class extending the Exception class.
  * It is thrown whenever the animal data entered is associated to a species that this program does not support.
  * @version     1.2

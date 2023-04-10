@@ -1,5 +1,5 @@
 /** 
- * @author ENSF380 Group 20
+ * @author ENSF380 Group 20: Zahwa Fatima, Saba Yarandi, Nessma Mohdy, Isha Haider
  * ErrorGUI is a java class that creates the GUI to get a userinput that changes the hour 
  * that is causing the schedule issue
  * @version     1.2

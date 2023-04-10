@@ -1,3 +1,9 @@
+/** 
+ * @author ENSF380 Group 20: Zahwa Fatima, Saba Yarandi, Nessma Mohdy, Isha Haider
+ * ScheduleBuilderTest is the java class containing all of the tests
+ * @version     2.1
+ * @since       1.0
+*/
 package edu.ucalgary.oop;
 
 
