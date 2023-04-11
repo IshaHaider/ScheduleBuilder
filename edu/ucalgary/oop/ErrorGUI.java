@@ -21,6 +21,10 @@ public class ErrorGUI {
     public boolean states;
     public String given_animal; 
 
+    /** Default Constructor
+     * @return  
+    */
+    public ErrorGUI() {}
 
     /** Constructor
      * Initializes the data members of the ErrorGUI and calling on the respective GUI

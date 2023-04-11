@@ -1,28 +1,28 @@
-Schedule for 2023-04-08:
+Schedule for 2023-04-11:
 
 0:00
-* Kit feeding (1: Annie, Oliver and Mowgli)
 * Feeding - fox (1: Slinky)
-* Cage cleaning - coyote (4: Loner, Biter, Bitter, Pencil)
+* Cage cleaning - coyote (6: Loner, Biter, Bitter, Pencil, Eraser, Boots)
+* Cage cleaning - fox (2: Annie, Oliver and Mowgli, Slinky)
+* Cage cleaning - porcupine (1: Spike)
 
 1:00
-* Cage cleaning - coyote (2: Eraser, Boots)
-* Cage cleaning - fox (2: Annie, Oliver and Mowgli, Slinky)
-* Cage cleaning - porcupine (4: Spike, Javelin, Gatekeeper, Sunshine)
+* Rebandaging (1: Wiley)
+* Cage cleaning - porcupine (4: Javelin, Gatekeeper, Sunshine, Shadow)
 
 2:00
 * Kit feeding (1: Annie, Oliver and Mowgli)
-* Cage cleaning - porcupine (1: Shadow)
-* Cage cleaning - coyote (2: Spin, Spot)
+* Cage cleaning - coyote (3: Spin, Spot, Fido)
+* Cage cleaning - beaver (1: Mittens)
 
 3:00
-* Eyedrops (2: Annie, Oliver and Mowgli, Annie, Oliver and Mowgli)
+no tasks 
 
 4:00
 * Kit feeding (1: Annie, Oliver and Mowgli)
 
 5:00
-* Eyedrops (2: Annie, Oliver and Mowgli, Annie, Oliver and Mowgli)
+no tasks 
 
 6:00
 * Flush neck wound (1: Spike)
@@ -34,6 +34,7 @@ no tasks
 
 8:00
 * Kit feeding (1: Annie, Oliver and Mowgli)
+* Feeding - beaver (1: Mittens)
 
 9:00
 no tasks 
@@ -81,7 +82,7 @@ no tasks
 * Feeding - porcupine (4: Javelin, Gatekeeper, Sunshine, Shadow)
 
 21:00
-* Feeding - coyote (3: Boots, Spin, Spot)
+* Feeding - coyote (4: Boots, Spin, Spot, Fido)
 
 22:00
 * Eyedrops (2: Loner, Javelin)

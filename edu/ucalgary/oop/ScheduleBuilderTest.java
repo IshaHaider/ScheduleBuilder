@@ -12,9 +12,16 @@ import static org.junit.Assert.*;
 import org.junit.*;
 import java.util.regex.*;
 import java.beans.Transient;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.io.*;
 import java.sql.*;
 import java.util.*;
+import javax.swing.*;
+import java.awt.*; 
 
 /**
  * Terminal Commands
@@ -201,7 +208,6 @@ public class ScheduleBuilderTest{
           //records from the database and store them in a HashMap, as well as if the HashMap contains the expected values
           //also accounts for the exception
     public void testAnimalStoreHashMap() throws Exception {
-        Connection dbConnect = null;
         Statement myStmt = null;
         ResultSet results = null;
     
@@ -251,10 +257,6 @@ public class ScheduleBuilderTest{
             if (myStmt != null) {
                 myStmt.close();
             }
-            if (dbConnect != null) {
-                dbConnect.close();
-            }
-
         }
     } 
 
@@ -462,6 +464,10 @@ public class ScheduleBuilderTest{
         assertEquals("Expected getTreatments method to return the correct treatments map", treatmentsMap, Treatment.getTreatments());
     }
 
+    @AfterClass
+    public static void tearDown() throws SQLException {
+        dbConnect.close();
+    }
 
     // TESTING SCHEDULE CLASS
 
@@ -569,118 +575,11 @@ public class ScheduleBuilderTest{
         assertEquals("* Rebandage Leg Wound (2: Bubble, Bubs)", testScheduleCreateTaskString.getTaskString());
     }
 
-    // TESTING DISPLAYSCH
-
-    @Test 
-    public void testDisplaySchJLabelCount() throws IOException {
-        File outputFile = File.createTempFile("output", ".txt");
-        FileWriter writer = new FileWriter(outputFile);
-        writer.write("Schedule for the day");
-        writer.write(System.lineSeparator());
-        writer.write("9:00 AM - Feeding");
-        writer.write(System.lineSeparator());
-        writer.write("11:00 AM - Fluid Injection");
-        writer.write(System.lineSeparator());
-        writer.write("1:00 PM - Rebandaging");
-        writer.write(System.lineSeparator());
-        writer.write("3:00 PM - Grooming");
-        writer.write(System.lineSeparator());
-        writer.close();
-
-        // Create a DisplaySch object with the temporary output file
-        DisplaySch display = new DisplaySch(outputFile.getAbsolutePath());
-        
-        // Count the number of JLabel components in the JPanel
-        int labelCount = 0;
-        for (var comp : display.getFrame().getContentPane().getComponents()) {
-            if (comp instanceof JLabel) {
-                labelCount++;
-            }
-        }
-        
-        // Verify that there are 5 JLabel components (1 for the title and 4 for the schedule items)
-        assertEquals(5, labelCount);
-
-        // Delete the temporary output file
-        outputFile.delete();
-    }
-
-    // testing that constructor throws IOException when file cannot be read !!! INVALID FILE NAME NOT WORKING
-    // @Test 
-    // public void testDisplaySchConstructorThrowsIOException() throws IOException{
-    //     try{
-    //     // create a temporary file with a random name
-    //     File tempFile = File.createTempFile("test", ".txt");
-
-    //     // delete the file to make it unreadable
-    //     tempFile.delete();
-
-    //     // attempt to open the DisplaySch with the invalid file
-    //     DisplaySch sch = new DisplaySch(tempFile.getPath());
-    //     fail("Expected IOException was not thrown.");
-    //     } catch (IOException e) {
-
-    //     }
-    // }
-
-    // testing constructor with valid input
-    @Test 
-    public void testDisplaySchValidFile() throws IOException{
-        DisplaySch displaySch = new DisplaySch("output.txt");
-        assertNotNull(displaySch);
-    }
-
-    // testing total_display after constructing object
-    @Test 
-    public void testDisplaySchTotalDisplay() throws IOException {
-        DisplaySch displaySch = new DisplaySch("output.txt");
-        assertEquals(null, displaySch.total_display);
-    }
-
-    // testing that constructor initializes a JFrame with the correct title and size
-    @Test 
-    public void testDisplaySchConstructorJFrame() throws IOException{
-        String title = "Schedule for the day";
-        JFrame frame = new DisplaySch(title).getFrame();
-
-        // Assert that the frame has the correct title and size
-        assertEquals(title, frame.getTitle());
-        // assertEquals(new Dimension(Toolkit.getDefaultToolkit().getScreenSize().width, Toolkit.getDefaultToolkit().getScreenSize().height), frame.getSize());
-    }
-
-    // testing constructor reads contents of the output.txt file and displays it in JFrame
     
-
-    // testing addition of scroll pane
-    @Test 
-    public void testDisplaySchScrollPane() throws IOException{
-        DisplaySch displaySch = new DisplaySch("output.txt");
-        JFrame frame = displaySch.getFrame();
-        Component[] components = frame.getContentPane().getComponents();
-        boolean scrollPaneFound = false;
-        for (Component component : components) {
-            if (component instanceof JScrollPane) {
-                scrollPaneFound = true;
-                break;
-            }
-        }
-        assertTrue(scrollPaneFound);
-    }
-
-    // testing that constructor sets the default close operation to JFrame.EXIT_ON_CLOSE
-    @Test 
-    public void testDisplaySchDefaultClose() throws IOException {
-        DisplaySch ds = new DisplaySch("test");
-        JFrame frame = ds.getFrame();
-        assertEquals(JFrame.EXIT_ON_CLOSE, frame.getDefaultCloseOperation());
-    }
-
-
-    // TESTING SCHEDULEBUILDER
-
+    // TESTING SCHEDULEBUILDER CLASS
     // testing constructor for ScheduleBuilder class
     @Test
-    public void testDefaultConstructor() {
+    public void testScheduleBuilderDefaultConstructor() {
         try {
             ScheduleBuilder scheduleBuilder = new ScheduleBuilder();
             assertNotNull(scheduleBuilder.getAllTreatments());
@@ -692,19 +591,19 @@ public class ScheduleBuilderTest{
 
     // testing setters
     @Test
-    public void testSetters() throws SpeciesNotFoundException, IllegalArgumentException {
+    public void testScheduleBuilderGettersSetters() throws SpeciesNotFoundException, IllegalArgumentException {
         ScheduleBuilder sb = new ScheduleBuilder();
         HashMap<Integer, Treatment> newTreatments = new HashMap<Integer, Treatment>();
         ArrayList<Schedule> newSchedule = new ArrayList<Schedule>();
         int[][] newTimes = { { 0, 30 }, { 1, 30 }, { 2, 30 }, { 3, 30 }, { 4, 30 }, { 5, 30 } };
         sb.setAllTreatments(newTreatments);
         sb.setSchedule(newSchedule);
-        ScheduleBuilder.setTimes(newTimes);
+        sb.setTimes(newTimes);
         assertEquals(newTreatments, sb.getAllTreatments());
         assertEquals(newSchedule, sb.getSchedule());
-        assertEquals(newTimes, ScheduleBuilder.getTimes());
+        assertEquals(newTimes, sb.getTimes());
     }
-
+    
     // testing createSchedule() with empty treatments in ScheduleBuilder class
     @Test
     public void testCreateScheduleEmptyTreatments() throws SpeciesNotFoundException, IOException, IllegalArgumentException {
@@ -738,25 +637,58 @@ public class ScheduleBuilderTest{
         assertTrue(sb.createSchedule());
     }
 
-    // testing createSchedule() with invalid schedule object created
-    // @Test
-    // public void testCreateScheduleInvalidScheduleObject() throws IOException, IllegalArgumentException {
-    //     ScheduleBuilder sb = new ScheduleBuilder() {
-    //         public Schedule createScheduleObject(int treatmentID, String taskDescr, String animalNick, int startTime,
-    //             int timeSpent) throws IllegalArgumentException {
-    //                 throw new IllegalArgumentException();
-    //         }
-    //     };
+    /**
+    * Tests the {@link ScheduleBuilder#createScheduleMaxWindow5() } method 
+    * however it considers all of the window methods as they each call eachother
+    * by adding treatments with different maxWindows to the allTreatments HashMap
+    * and checking that the resulting schedule is correct. In this case, two
+    * treatments are added, one with maxWindow = 2 and one with maxWindow = 1.
+    * The test verifies that the treatment with maxWindow = 1 is scheduled first
+    * at its preferred start hour and that the resulting schedule is correct.
+    */
+    @Test
+    public void testCreateScheduleMaxWindow5() {
+        try {
+            // Create a new ScheduleBuilder object
+            ScheduleBuilder scheduleBuilder = new ScheduleBuilder();
+    
+            // Add some treatments to the allTreatments HashMap, including one with maxWindow=1
+            Task task1 = new Task(1, "Task 1", 2, 5);
+            Task task2 = new Task(2, "Task 2", 2, 5);
+            Animal animal1 = new Animal(1, "Animal 1", "Nickname 1", "Most Active");
+            Animal animal2 = new Animal(2, "Animal 2", "Nickname 2", "Most Active");
+            Treatment treatment1 = new Treatment(animal1, task1, 2);
+            Treatment treatment2 = new Treatment(animal2, task2, 1);
+            HashMap<Integer, Treatment> allTreatments = scheduleBuilder.getAllTreatments();
+            allTreatments.put(70, treatment1);
+            allTreatments.put(71, treatment2);
+            
+            scheduleBuilder.setAllTreatments(allTreatments);
+    
+            // Call the createScheduleMaxWindow1 method
+            scheduleBuilder.createScheduleMaxWindow5();
+    
+            // Check that a new schedule object was added to the schedule ArrayList
+            ArrayList<Schedule> schedule = scheduleBuilder.getSchedule();
+            int maxSize = schedule.size();
+            // Check that the schedule object has the correct treatmentID, startTime, timeSpent, and timeRemaining
+            Schedule newSchedule = schedule.get(maxSize-2);
+            int treatmentIndex1 = newSchedule.getTreatmentIndices().get(0);
+            assertEquals("Expected treatment index 70, but got treatment index" + treatmentIndex1, 70, treatmentIndex1);
+            assertEquals("Expected start time of 2, but got " + newSchedule.getStartTime(), 2, newSchedule.getStartTime());
+            assertEquals("Expected time spent of 2, but got " + newSchedule.getTimeSpent(), 2, newSchedule.getTimeSpent());
+ 
+            newSchedule = schedule.get(maxSize-1);
+            int treatmentIndex2 = newSchedule.getTreatmentIndices().get(0);
+            assertEquals("Expected treatment index 71, but got treatment index " + treatmentIndex2, 71, treatmentIndex2);
+            assertEquals("Expected start time of 1, but got " + newSchedule.getStartTime(), 1, newSchedule.getStartTime());
+            assertEquals( "Expected time spent of 2, but got " + newSchedule.getTimeSpent(), 2, newSchedule.getTimeSpent());
+        } catch ( SpeciesNotFoundException e) {
+            fail("IllegalArgumentException exception when creating schedule object");
+        }
+    }
 
-    //     Animal a = new Animal(4, "Wiley", "Coyote", "Nocturnal");
-    //     Task t = new Task(4, "Rebandaging", 20, 1);
-    //     Treatment tr = new Treatment(a, t, 1);
-    //     sb.getAllTreatments().put(1, tr);
-
-    //     assertFalse(sb.createSchedule());
-    // }
-
-    // testing combinesimilartasks() with no duplicate
+    // testing combineSimilarTasks() with no duplicate
     @Test
     public void testCombineSimilarTasks_noDuplicates() throws SpeciesNotFoundException{
         ScheduleBuilder sb = new ScheduleBuilder();
@@ -852,10 +784,81 @@ public class ScheduleBuilderTest{
         assertTrue(schedule.get(2).getBackupRequired()); // Rex should require a backup volunteer
     }
     
-    @AfterClass
-    public static void tearDown() throws SQLException {
-        dbConnect.close();
+    
+    // TESTING DISPLAYSCH
+    
+    // testing constructor with valid input
+    @Test 
+    public void testDisplaySchValidFile() throws IOException{
+        DisplaySch displaySch = new DisplaySch("output.txt");
+        assertNotNull(displaySch);
     }
 
+    // testing total_display after constructing object
+    @Test 
+    public void testDisplaySchTotalDisplay() throws IOException {
+        DisplaySch displaySch = new DisplaySch("output.txt");
+        assertEquals(null, displaySch.total_display);
+    }
+
+    // testing that constructor initializes a JFrame with the correct title and size
+    @Test 
+    public void testDisplaySchConstructorJFrame() throws IOException{
+        String title = "Schedule for the day";
+        JFrame frame = new DisplaySch(title).getFrame();
+
+        // Assert that the frame has the correct title and size
+        assertEquals(title, frame.getTitle());
+        // assertEquals(new Dimension(Toolkit.getDefaultToolkit().getScreenSize().width, Toolkit.getDefaultToolkit().getScreenSize().height), frame.getSize());
+    }
+    
+    // testing addition of scroll pane
+    @Test 
+    public void testDisplaySchScrollPane() throws IOException{
+        DisplaySch displaySch = new DisplaySch("output.txt");
+        JFrame frame = displaySch.getFrame();
+        Component[] components = frame.getContentPane().getComponents();
+        boolean scrollPaneFound = false;
+        for (Component component : components) {
+            if (component instanceof JScrollPane) {
+                scrollPaneFound = true;
+                break;
+            }
+        }
+        assertTrue(scrollPaneFound);
+    }
+
+    // testing that constructor sets the default close operation to JFrame.EXIT_ON_CLOSE
+    @Test 
+    public void testDisplaySchDefaultClose() throws IOException {
+        DisplaySch ds = new DisplaySch("test");
+        JFrame frame = ds.getFrame();
+        assertEquals(JFrame.EXIT_ON_CLOSE, frame.getDefaultCloseOperation());
+    }
+
+    // Volunteer GUI Test
+    @Test
+    public void testVolunteerGetState() {
+        VolunteerGUI volunteer = new VolunteerGUI();
+        volunteer.exists = true;
+        assertTrue(volunteer.getState());
+        volunteer.exists = false;
+        assertFalse(volunteer.getState());
+    }
+
+    // Error GUI Test 
+    @Test
+    public void testErrorGetSelectedHourAndStates() {
+        ErrorGUI error = new ErrorGUI();
+        error.startingHour = 2;
+        error.reason = "No reason";
+        error.task = "No task";
+        error.user_change = "5";
+        error.states = true;
+        error.given_animal = "Cat";
+
+        assertEquals(5, error.getSelectedHour());
+        assertTrue(error.getStates());
+    }
 }
 

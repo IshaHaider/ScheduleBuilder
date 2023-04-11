@@ -20,6 +20,11 @@ public class VolunteerGUI implements ActionListener {
     public String reason;
     public JFrame frame; 
 
+    /** Default Constructor
+     * @return  
+    */
+    public VolunteerGUI() {}
+
     /** Constructor
      * Initializes the data members of the VolunteerGUI and calls on createGUI() 
      * @param  string  an instance of the treatment that needs a volunteer
