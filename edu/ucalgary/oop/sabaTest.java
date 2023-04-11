@@ -266,51 +266,76 @@ public class SabaTest {
         Treatment.setTreatments(newTreatments);
         assertEquals("Treatments HashMap was not set correctly", newTreatments, Treatment.getTreatments());
     }
-}
 
 
 
-    
+
     
    //SCHEDULEBUILDER FILE TESTS     
 
+   @Test
+   public void testCreateScheduleMaxWindow1() {
+       try {
+           // Create a new ScheduleBuilder object
+           ScheduleBuilder scheduleBuilder = new ScheduleBuilder();
+   
+           // Add some treatments to the allTreatments HashMap, including one with maxWindow=1
+           Task task1 = new Task(1, "Task 1", 2, 3);
+           Task task2 = new Task(2, "Task 2", 2, 3);
+           Animal animal1 = new Animal(1, "Animal 1", "Nickname 1", "Most Active");
+           Animal animal2 = new Animal(2, "Animal 2", "Nickname 2", "Most Active");
+           Treatment treatment1 = new Treatment(animal1, task1, 2);
+           Treatment treatment2 = new Treatment(animal2, task2, 1);
+           scheduleBuilder.getAllTreatments().put(1, treatment1);
+           scheduleBuilder.getAllTreatments().put(2, treatment2);
+   
+           // Call the createScheduleMaxWindow1 method
+           scheduleBuilder.createScheduleMaxWindow1();
+   
+           // Check that a new schedule object was added to the schedule ArrayList
+           ArrayList<Schedule> schedule = scheduleBuilder.getSchedule();
+           assertEquals(1, schedule.size());
+   
+           // Check that the schedule object has the correct treatmentID, startTime, timeSpent, and timeRemaining
+           Schedule newSchedule = schedule.get(0);
+           assertEquals(0, newSchedule.getStartTime());
+           assertEquals(2, newSchedule.getTimeSpent());
+           assertEquals(1, newSchedule.getTimeRemaining());
+       } catch ( SpeciesNotFoundException e) {
+           fail("IllegalArgumentException exception when creating schedule object");
+       }
+    }
 
-    // // Test case for currentTask, currentAnimal, currentTreatment, newSchedule
-    // @Test
-    // public void testCreateScheduleMaxWindow1() {
-    //     ScheduleGenerator sg = new ScheduleGenerator();
-    //     sg.addAnimal(new Animal("Fluffy"));
-    //     sg.addTask(new Task("task1", 60, 1));
-    //     sg.addTreatment("Fluffy", "task1", 1, 8);
 
-    //     try {
-    //         sg.createScheduleMaxWindow1();
-    //         assertEquals(1, sg.getSchedule().size());
-    //         assertEquals(1, sg.getSchedule().get(0).getTreatmentKey());
-    //         assertEquals("task1", sg.getSchedule().get(0).getTaskDescription());
-    //         assertEquals("Fluffy", sg.getSchedule().get(0).getAnimalNickname());
-    //         assertEquals(8, sg.getSchedule().get(0).getStartHour());
-    //         assertEquals(60, sg.getSchedule().get(0).getTimeSpent());
-    //     } catch (IllegalArgumentException e) {
-    //         fail("Unexpected IllegalArgumentException thrown");
-    //     }
-    // }
+    @Test
+    public void testCreateScheduleMaxWindow2() {
+        try {
+            // Create a new ScheduleBuilder object
+            ScheduleBuilder scheduleBuilder = new ScheduleBuilder();
 
-    // // Test case for exception handling
-    // @Test
-    // public void testCreateScheduleMaxWindow1Exception() {
-    //     ScheduleGenerator sg = new ScheduleGenerator();
-    //     sg.addAnimal(new Animal("Fluffy"));
-    //     sg.addTask(new Task("task1", 60, 1));
-    //     sg.addTreatment("Fluffy", "task1", 1, 25);
+            // Add a treatment with maxWindow=2 to the allTreatments HashMap
+            Task task = new Task(3, "testTask", 2, 3);
+            Animal animal = new Animal(2, "testAnimal", "testNickname", "testMostActive");
+            Treatment treatment = new Treatment(animal, task, 4);
+            scheduleBuilder.getAllTreatments().put(2, treatment);
 
-    //     try {
-    //         sg.createScheduleMaxWindow1();
-    //         fail("Expected IllegalArgumentException not thrown");
-    //     } catch (IllegalArgumentException e) {
-    //         assertEquals("IllegalArgumentException exception when creating schedule object", e.getMessage());
-    //     }
-    // }  
+            // Call the createScheduleMaxWindow2 method
+            scheduleBuilder.createScheduleMaxWindow2();
+
+            // Check that a new schedule object was added to the schedule ArrayList
+            ArrayList<Schedule> schedule = scheduleBuilder.getSchedule();
+            //assertTrue(schedule.size() == 1);
+
+            // Check that the schedule object has the correct treatmentID, startTime, timeSpent, and timeRemaining
+            Schedule newSchedule = schedule.get(0);
+            assertEquals(newSchedule.getStartTime(), 4);
+            assertEquals(newSchedule.getTimeSpent(), 3);
+            assertEquals(newSchedule.getTimeRemaining(), 5);
+        } catch ( SpeciesNotFoundException e) {
+            fail("SpeciesNotFoundException exception when creating treatment object");
+        }
+    }
+}
 
    
     
