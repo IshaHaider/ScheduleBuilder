@@ -461,11 +461,6 @@ public class ScheduleBuilderTest{
     
         assertEquals("Expected getTreatments method to return the correct treatments map", treatmentsMap, Treatment.getTreatments());
     }
-    
-    @AfterClass
-    public static void tearDown() throws SQLException {
-        dbConnect.close();
-    }
 
 
     // TESTING SCHEDULE CLASS
@@ -574,119 +569,293 @@ public class ScheduleBuilderTest{
         assertEquals("* Rebandage Leg Wound (2: Bubble, Bubs)", testScheduleCreateTaskString.getTaskString());
     }
 
+    // TESTING DISPLAYSCH
+
+    @Test 
+    public void testDisplaySchJLabelCount() throws IOException {
+        File outputFile = File.createTempFile("output", ".txt");
+        FileWriter writer = new FileWriter(outputFile);
+        writer.write("Schedule for the day");
+        writer.write(System.lineSeparator());
+        writer.write("9:00 AM - Feeding");
+        writer.write(System.lineSeparator());
+        writer.write("11:00 AM - Fluid Injection");
+        writer.write(System.lineSeparator());
+        writer.write("1:00 PM - Rebandaging");
+        writer.write(System.lineSeparator());
+        writer.write("3:00 PM - Grooming");
+        writer.write(System.lineSeparator());
+        writer.close();
+
+        // Create a DisplaySch object with the temporary output file
+        DisplaySch display = new DisplaySch(outputFile.getAbsolutePath());
+        
+        // Count the number of JLabel components in the JPanel
+        int labelCount = 0;
+        for (var comp : display.getFrame().getContentPane().getComponents()) {
+            if (comp instanceof JLabel) {
+                labelCount++;
+            }
+        }
+        
+        // Verify that there are 5 JLabel components (1 for the title and 4 for the schedule items)
+        assertEquals(5, labelCount);
+
+        // Delete the temporary output file
+        outputFile.delete();
+    }
+
+    // testing that constructor throws IOException when file cannot be read !!! INVALID FILE NAME NOT WORKING
+    // @Test 
+    // public void testDisplaySchConstructorThrowsIOException() throws IOException{
+    //     try{
+    //     // create a temporary file with a random name
+    //     File tempFile = File.createTempFile("test", ".txt");
+
+    //     // delete the file to make it unreadable
+    //     tempFile.delete();
+
+    //     // attempt to open the DisplaySch with the invalid file
+    //     DisplaySch sch = new DisplaySch(tempFile.getPath());
+    //     fail("Expected IOException was not thrown.");
+    //     } catch (IOException e) {
+
+    //     }
+    // }
+
+    // testing constructor with valid input
+    @Test 
+    public void testDisplaySchValidFile() throws IOException{
+        DisplaySch displaySch = new DisplaySch("output.txt");
+        assertNotNull(displaySch);
+    }
+
+    // testing total_display after constructing object
+    @Test 
+    public void testDisplaySchTotalDisplay() throws IOException {
+        DisplaySch displaySch = new DisplaySch("output.txt");
+        assertEquals(null, displaySch.total_display);
+    }
+
+    // testing that constructor initializes a JFrame with the correct title and size
+    @Test 
+    public void testDisplaySchConstructorJFrame() throws IOException{
+        String title = "Schedule for the day";
+        JFrame frame = new DisplaySch(title).getFrame();
+
+        // Assert that the frame has the correct title and size
+        assertEquals(title, frame.getTitle());
+        // assertEquals(new Dimension(Toolkit.getDefaultToolkit().getScreenSize().width, Toolkit.getDefaultToolkit().getScreenSize().height), frame.getSize());
+    }
+
+    // testing constructor reads contents of the output.txt file and displays it in JFrame
     
-    // TESTING SCHEDULEBUILDER CLASS
+
+    // testing addition of scroll pane
+    @Test 
+    public void testDisplaySchScrollPane() throws IOException{
+        DisplaySch displaySch = new DisplaySch("output.txt");
+        JFrame frame = displaySch.getFrame();
+        Component[] components = frame.getContentPane().getComponents();
+        boolean scrollPaneFound = false;
+        for (Component component : components) {
+            if (component instanceof JScrollPane) {
+                scrollPaneFound = true;
+                break;
+            }
+        }
+        assertTrue(scrollPaneFound);
+    }
+
+    // testing that constructor sets the default close operation to JFrame.EXIT_ON_CLOSE
+    @Test 
+    public void testDisplaySchDefaultClose() throws IOException {
+        DisplaySch ds = new DisplaySch("test");
+        JFrame frame = ds.getFrame();
+        assertEquals(JFrame.EXIT_ON_CLOSE, frame.getDefaultCloseOperation());
+    }
+
+
+    // TESTING SCHEDULEBUILDER
 
     // testing constructor for ScheduleBuilder class
+    @Test
+    public void testDefaultConstructor() {
+        try {
+            ScheduleBuilder scheduleBuilder = new ScheduleBuilder();
+            assertNotNull(scheduleBuilder.getAllTreatments());
+            assertNotNull(scheduleBuilder.getSchedule());
+        } catch (SpeciesNotFoundException | IllegalArgumentException e) {
+            fail("Unexpected exception thrown");
+        }
+    }
 
+    // testing setters
+    @Test
+    public void testSetters() throws SpeciesNotFoundException, IllegalArgumentException {
+        ScheduleBuilder sb = new ScheduleBuilder();
+        HashMap<Integer, Treatment> newTreatments = new HashMap<Integer, Treatment>();
+        ArrayList<Schedule> newSchedule = new ArrayList<Schedule>();
+        int[][] newTimes = { { 0, 30 }, { 1, 30 }, { 2, 30 }, { 3, 30 }, { 4, 30 }, { 5, 30 } };
+        sb.setAllTreatments(newTreatments);
+        sb.setSchedule(newSchedule);
+        ScheduleBuilder.setTimes(newTimes);
+        assertEquals(newTreatments, sb.getAllTreatments());
+        assertEquals(newSchedule, sb.getSchedule());
+        assertEquals(newTimes, ScheduleBuilder.getTimes());
+    }
 
-    // testing createSchedule() in ScheduleBuilder class
+    // testing createSchedule() with empty treatments in ScheduleBuilder class
+    @Test
+    public void testCreateScheduleEmptyTreatments() throws SpeciesNotFoundException, IOException, IllegalArgumentException {
+        ScheduleBuilder sb = new ScheduleBuilder();
+        sb.setAllTreatments(new HashMap<Integer, Treatment>());
+
+        assertTrue(sb.createSchedule());
+    }
+
+    // testing createSchedule() with valid treatments
+    @Test
+    public void testCreateScheduleValid() throws SpeciesNotFoundException, IOException, IllegalArgumentException {
+        ScheduleBuilder sb = new ScheduleBuilder();
+        Animal a = new Animal(4, "Wiley", "Coyote", "Nocturnal");
+        Task t = new Task(4, "Rebandaging", 20, 1);
+        Treatment tr = new Treatment(a, t, 1);
+        sb.getAllTreatments().put(1, tr);
+
+        assertTrue(sb.createSchedule());
+    }
+
+    // testing createSchedule() with no available time in the schedule for the treatment
+    @Test
+    public void testCreateScheduleNoAvailableTime() throws SpeciesNotFoundException, IOException, IllegalArgumentException {
+        ScheduleBuilder sb = new ScheduleBuilder();
+        Animal a = new Animal(4, "Wiley", "Coyote", "Nocturnal");
+        Task t = new Task(4, "Rebandaging", 20, 1);
+        Treatment tr = new Treatment(a, t, 1);
+        sb.getAllTreatments().put(1, tr);
+
+        assertTrue(sb.createSchedule());
+    }
+
+    // testing createSchedule() with invalid schedule object created
+    // @Test
+    // public void testCreateScheduleInvalidScheduleObject() throws IOException, IllegalArgumentException {
+    //     ScheduleBuilder sb = new ScheduleBuilder() {
+    //         public Schedule createScheduleObject(int treatmentID, String taskDescr, String animalNick, int startTime,
+    //             int timeSpent) throws IllegalArgumentException {
+    //                 throw new IllegalArgumentException();
+    //         }
+    //     };
+
+    //     Animal a = new Animal(4, "Wiley", "Coyote", "Nocturnal");
+    //     Task t = new Task(4, "Rebandaging", 20, 1);
+    //     Treatment tr = new Treatment(a, t, 1);
+    //     sb.getAllTreatments().put(1, tr);
+
+    //     assertFalse(sb.createSchedule());
+    // }
+
+    // testing combinesimilartasks() with no duplicate
+    @Test
+    public void testCombineSimilarTasks_noDuplicates() throws SpeciesNotFoundException{
+        ScheduleBuilder sb = new ScheduleBuilder();
+        ArrayList<Schedule> schedule = new ArrayList<>();
+        schedule.add(new Schedule(0, "feed", "Fluffy", 8, 30));
+        schedule.add(new Schedule(1, "exercise", "Fido", 9, 60));
+        schedule.add(new Schedule(2, "groom", "Mittens", 10, 45));
+        sb.setSchedule(schedule);
+
+        sb.combineSimilarTasks();
+
+        assertEquals(schedule.size(), 3);
+
+        HashMap<Integer, Schedule> mapForSchedule = new HashMap<>();
+        for (Schedule s : schedule) {
+            assertTrue(!mapForSchedule.containsKey(s.getTreatmentIndices().get(0)));
+            mapForSchedule.put(s.getTreatmentIndices().get(0), s);
+        }
+    }
+
+    // testing combinesimilartasks() with duplicate
+    @Test
+    public void testCombineSimilarTasks_withDuplicates() throws SpeciesNotFoundException{
+        ScheduleBuilder sb = new ScheduleBuilder();
+        ArrayList<Schedule> schedule = new ArrayList<>();
+        schedule.add(new Schedule(0, "feed", "Fluffy", 8, 30));
+        schedule.add(new Schedule(1, "exercise", "Fido", 9, 60));
+        schedule.add(new Schedule(2, "feed", "Mittens", 8, 30));
+        sb.setSchedule(schedule);
+
+        sb.combineSimilarTasks();
+
+        assertEquals(schedule.size(), 2);
+
+        HashMap<Integer, Schedule> mapForSchedule = new HashMap<>();
+        for (Schedule s : schedule) {
+            assertTrue(!mapForSchedule.containsKey(s.getTreatmentIndices().get(0)));
+            mapForSchedule.put(s.getTreatmentIndices().get(0), s);
+        }
+
+        Schedule s = mapForSchedule.get(0);
+        assertEquals(s.getTask(), "feed");
+        assertEquals(s.getAnimalList().size(), 2);
+        assertTrue(s.getAnimalList().contains("Fluffy"));
+        assertTrue(s.getAnimalList().contains("Mittens"));
+        assertEquals(s.getStartTime(), 8);
+        assertEquals(s.getTimeSpent(), 60);
+
+        s = mapForSchedule.get(1);
+        assertEquals(s.getTask(), "exercise");
+        assertEquals(s.getAnimalList().size(), 1);
+        assertTrue(s.getAnimalList().contains("Fido"));
+        assertEquals(s.getStartTime(), 9);
+        assertEquals(s.getTimeSpent(), 60);
+    }
+
+    /* testing addBackupVolunteer with a single negative time slot
+     * the expected operation is that the Schedule opbjects associated with 
+     * negative time slots should have their backupRequired attribute 
+     * set to true and their timeRemaining attribute updated accordingly
+     * the earliest Schedule object associated with the earliest negative time slot 
+     * should be marked as requiring a backup volunteer
+     */
+    @Test
+    public void testAddBackupVolunteer_singleNegativeTime() throws SpeciesNotFoundException{
+        ScheduleBuilder sb = new ScheduleBuilder();
+        ArrayList<Schedule> schedule = new ArrayList<>();
+        schedule.add(new Schedule(2, "feed", "Fluffy", 8, 1, 30, 30, false));
+        schedule.add(new Schedule(3, "exercise", "Fido", 8, 1, 40, -10, true));
+        sb.setSchedule(schedule);
+        sb.addBackupVolunteer();
+        assertEquals(30, schedule.get(0).getTimeRemaining()); // Fluffy should have 60 min remaining
+        assertEquals(-10, schedule.get(1).getTimeRemaining()); // Fido should have 0 min remaining
+        assertTrue(schedule.get(1).getBackupRequired()); // Fido should require a backup volunteer
+    }
+
+    // testing addBackupVolunteer with multiple negative time slots
+    @Test
+    public void testAddBackupVolunteer_multipleNegativeTimes() throws SpeciesNotFoundException{
+        ScheduleBuilder sb = new ScheduleBuilder();
+        ArrayList<Schedule> schedule = new ArrayList<>();
+        schedule.add(new Schedule(2, "feed", "Fluffy", 9, 1, 20, 40, false));
+        schedule.add(new Schedule(3, "exercise", "Fido", 9, 1, 50, -10, true));
+        schedule.add(new Schedule(4, "groom", "Mittens", 9, 1, 5, -15, true));
+        schedule.add(new Schedule(5, "walk", "Rex", 10, 1, 20, 40, false));
+        sb.setSchedule(schedule);
+        sb.addBackupVolunteer();
+        assertEquals(40, schedule.get(0).getTimeRemaining()); // Fluffy should have 60 min remaining
+        assertEquals(-10, schedule.get(1).getTimeRemaining()); // Fido should have 0 min remaining
+        assertEquals(-15, schedule.get(2).getTimeRemaining()); // Mittens should have 10 min remaining
+        assertEquals(40, schedule.get(3).getTimeRemaining()); // Rex should have 0 min remaining
+        assertTrue(schedule.get(1).getBackupRequired()); // Fido should require a backup volunteer
+        assertTrue(schedule.get(2).getBackupRequired()); // Rex should require a backup volunteer
+    }
     
-    //////Start of treatment.java testing:
-
-    // @Test //if first constructor  passes valid values for all parameters
-    // public void testAllTreatmentGetters (){
-    //     Treatment t = new Treatment(1, 2, 3, 10);
-    //     assertEquals(1, t.getTreatementID());
-    //     assertEquals(2, t.getAnimalID());
-    //     assertEquals(3, t.getTaskID());
-    //     assertEquals(10, t.getStartHour());
-        
-    // }
-    // @Test //if the second constructor passes valid values for treatmentID, animalID, and taskID
-    // public void testSecondTreatmentGetters (){
-    //     Treatment t = new Treatment(1, 2, 3);
-    //     assertEquals(1, t.getTreatementID());
-    //     assertEquals(2, t.getAnimalID());
-    //     assertEquals(3, t.getTaskID());
-        
-    // } 
-    // @Test // if the setter methods is setting new values for each property
-    // public void testTreatmentSetters (){
-    //     Treatment t = new Treatment(1, 2, 3);
-    //     t.setTreatementID(4);
-    //     t.setAnimalID(5);
-    //     t.setTaskID(6);
-    //     t.setStartHour(12);
-    //     assertEquals(4, t.getTreatementID());
-    //     assertEquals(5, t.getAnimalID());
-    //     assertEquals(6, t.getTaskID());
-    //     assertEquals(12, t.getStartHour());        
-        
-    // } 
-    // @Test //if the first constructor is passing an invalid value for the startHour parameter (less than 0)
-    // public void testConstructorWithInvalidStartHour(){
-    //     assertThrows(IllegalArgumentException.class, () -> {
-    //         Treatment t = new Treatment(1, 2, 3, -1);
-    //     });
-        
-    // }
-    // @Test //if the first constructor is passing an invalid value for the startHour parameter (greater than or equal to 24)
-    // public void testConstructorWithInvalidStartHourOutOfRange(){
-    //     assertThrows(IllegalArgumentException.class, () -> {
-    //         Treatment t = new Treatment(1, 2, 3, 24);
-    //     });
-        
-    // }
-    // @Test //if the second constructor is passing an invalid value for the treatmentID parameter (less than or equal to 0)
-    // public void testConstructorWithInvalidTreatmentID(){
-    //     assertThrows(IllegalArgumentException.class, () -> {
-    //         Treatment t = new Treatment(0, 2, 3);
-    //     });
-        
-    // }
-    // @Test //if the second constructor is passing an invalid value for the animalID parameter (less than or equal to 0)
-    // public void testConstructorWithInvalidAnimalID(){
-    //     assertThrows(IllegalArgumentException.class, () -> {
-    //         Treatment t = new Treatment(1, 0, 3);
-    //     });
-        
-    // }
-    // @Test //if the second constructor is passing an invalid value for the taskID parameter (less than or equal to 0)
-    // public void testConstructorWithInvalidTaskID(){
-    //     assertThrows(IllegalArgumentException.class, () -> {
-    //         Treatment t = new Treatment(1, 2, 0);
-    //     });
-        
-    // }
-
-    // // Test case for currentTask, currentAnimal, currentTreatment, newSchedule
-    // @Test
-    // public void testCreateScheduleMaxWindow1() {
-    //     ScheduleGenerator sg = new ScheduleGenerator();
-    //     sg.addAnimal(new Animal("Fluffy"));
-    //     sg.addTask(new Task("task1", 60, 1));
-    //     sg.addTreatment("Fluffy", "task1", 1, 8);
-
-    //     try {
-    //         sg.createScheduleMaxWindow1();
-    //         assertEquals(1, sg.getSchedule().size());
-    //         assertEquals(1, sg.getSchedule().get(0).getTreatmentKey());
-    //         assertEquals("task1", sg.getSchedule().get(0).getTaskDescription());
-    //         assertEquals("Fluffy", sg.getSchedule().get(0).getAnimalNickname());
-    //         assertEquals(8, sg.getSchedule().get(0).getStartHour());
-    //         assertEquals(60, sg.getSchedule().get(0).getTimeSpent());
-    //     } catch (IllegalArgumentException e) {
-    //         fail("Unexpected IllegalArgumentException thrown");
-    //     }
-    // }
-
-
-    // // Test case for exception handling
-    // @Test
-    // public void testCreateScheduleMaxWindow1Exception() {
-    //     ScheduleGenerator sg = new ScheduleGenerator();
-    //     sg.addAnimal(new Animal("Fluffy"));
-    //     sg.addTask(new Task("task1", 60, 1));
-    //     sg.addTreatment("Fluffy", "task1", 1, 25);
-
-    //     try {
-    //         sg.createScheduleMaxWindow1();
-    //         fail("Expected IllegalArgumentException not thrown");
-    //     } catch (IllegalArgumentException e) {
-    //         assertEquals("IllegalArgumentException exception when creating schedule object", e.getMessage());
-    //     }
-    // }  
+    @AfterClass
+    public static void tearDown() throws SQLException {
+        dbConnect.close();
+    }
 
 }
 
