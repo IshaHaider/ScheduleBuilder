@@ -14,6 +14,8 @@ import java.util.*;
 
 public class DisplaySch {
     public String total_display;
+    public JFrame frame;
+    public JLabel title;
 
     /** Constructor
      * Initializes the data members of the DisplaySch and creates the entire GUI
@@ -21,8 +23,7 @@ public class DisplaySch {
      * @return
     */
     public DisplaySch(String string) throws IOException {
-        JFrame frame = new JFrame("Schedule for the day");
-        JLabel title; 
+        this.frame = new JFrame("Schedule for the day");
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setSize(screenSize.width, screenSize.height);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -53,6 +54,10 @@ public class DisplaySch {
         frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
         frame.getContentPane().add(scrollPane);
         frame.setVisible(true);
+    }
+
+    public JFrame getFrame() {
+        return this.frame;
     }
 }
 
