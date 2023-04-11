@@ -497,7 +497,7 @@ public class ScheduleBuilder {
             String textForHour = String.valueOf(times[i][0]) + ":00";
             int count = 0;
             for (int scheduleIndex = 0; scheduleIndex < schedule.size(); scheduleIndex++) { // iterate through the schedule arrayList
-                if (schedule.get(scheduleIndex).getTimeRemaining() < 0 ) { 
+                if (schedule.get(scheduleIndex).getTimeRemaining() < 0 ) { //if 
                     
                     int maxSize = schedule.get(scheduleIndex).getTreatmentIndices().size()-1;
                     int treatmentToChange = schedule.get(scheduleIndex).getTreatmentIndices().get(maxSize);
