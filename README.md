@@ -1,4 +1,8 @@
 **Pet Scheduling Program**
+
+Demo: https://www.youtube.com/watch?v=G3xXVc0liAE&ab_channel=Nessma
+
+
 Ever had to manage a centre of pets that require medicine, certain care, and certain foods given a limited amount of staff? This java program uses a clean GUI and an algorithm to sort through a database to create the perfect schedule to account for all pet needs.
 
 Included: all required code, UML, and JUnitTesting for all functions.  
