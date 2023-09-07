@@ -7,7 +7,7 @@ Ever had to manage a centre of pets that require medicine, certain care, and cer
 
 Included: all required code, UML, and JUnitTesting for all functions.  
 
-Group: Isha Haider, Saba Sadoughi Yarandi, Zahwa Fatima, Nessma Mohdy
+Group: Isha Haider, Saba Sadoughi, Zahwa Fatima, Nessma Mohdy
 Recieved Grade: 100%
 
 Instructions (Terminal Commands ) on running the code and tests:
